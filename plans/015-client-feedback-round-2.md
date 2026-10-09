@@ -198,36 +198,30 @@ Previews: https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg and https://claude.a
 - 3D: the door labels and desk text (`assets.fonts.sans`) switch to DM Sans. The extruded 419M+ is rebuilt
   with `node scripts/make-typeface.mjs Manrope-ExtraBold.ttf …`.
 
-**Big numbers: DECIDE.** Pick one 2D and one 3D style from the number styles preview.
-- 2D: full gradient, gradient with glow, white with a gradient suffix, silver to white, gradient outline, white
-  with a glowing gradient underline.
-- 3D: gradient face, metallic, white face with gradient sides, neon sign, chrome, and logo yellow with orange
-  sides.
-- All but the last one take the theme gradient.
+**Big numbers: DECIDE.** Pick one 2D and one 3D style from the number styles preview. All are solid colour.
+- 2D: solid accent, white with an accent "M+", solid white, accent outline, white with an accent underline,
+  dark number on an accent block.
+- 3D: accent with darker accent sides, white with accent sides, accent with black sides, white with
+  card-colour sides, outlined letters on an accent block, logo yellow with orange sides.
+- Every 3D style has one solid side colour, with no shading. All but the last take the theme accent.
 
-**Theme: DECIDE.** The client wants **dark, between black and brown, with gradients rather than flat colour**.
-Every earlier scheme was dropped, including Midnight & Mint, which is green-black. There are seven new themes:
+**Theme: DECIDE.** The client wants **dark, between black and brown**. After seeing gradients, the owner asked
+for **solid colours only**: no gradient text, buttons or edges, and no background glows. A very fine grain
+remains and can be removed. Each theme is a dark base, a slightly lighter card colour, warm white text and
+**one solid accent**:
 
-| Theme | Base | Gradient |
-|---|---|---|
-| **Espresso Noir** (default) | `#0E0A07` | copper `#C8733A` → gold `#F2B35A` → champagne `#FFE1A1` |
-| Black & Liquid Gold | `#070605` | metallic gold `#8A6A2F` → `#E9C46A` → `#FFF1C1` → `#D4A94C` |
-| Obsidian Ember | `#0A0807` | `#FF8A3D` → `#FF4D4D` → `#FF2E7E` |
-| Mocha Aurora | `#0D0A08` | teal `#3EE6B5` → lime `#9BE36E` → gold `#F2C14E` |
-| Cocoa & Rose Gold | `#120C0A` | `#C9826B` → `#F0B8A0` → `#FFE3D3` |
-| Onyx Sunset | `#080706` | amber `#FFB347` → coral `#FF6B6B` → violet `#A66CFF` |
-| Dark Roast & Lime | `#0C0A08` | lime `#D9FF5A` → mint `#7CF2A0` → teal `#3ED1C9` |
+| Theme | Base | Card | Accent | Accent hover | Text on accent |
+|---|---|---|---|---|---|
+| **Espresso & Copper** (default) | `#0E0A07` | `#18110C` | `#E08A45` | `#EDA066` | `#1A0F08` |
+| Black & Gold | `#070605` | `#12100D` | `#E9C46A` | `#F2D488` | `#120E06` |
+| Obsidian & Ember | `#0A0807` | `#14100E` | `#FF6A3D` | `#FF8A66` | `#1A0A06` |
+| Mocha & Mint | `#0D0A08` | `#17120F` | `#5FE0B0` | `#86EAC4` | `#0D0A08` |
+| Cocoa & Rose Gold | `#120C0A` | `#1B1310` | `#E9A58C` | `#F2BCA8` | `#1E110D` |
+| Onyx & Violet | `#080706` | `#131010` | `#B48CFF` | `#C8A9FF` | `#120A1E` |
+| Roast & Lime | `#0C0A08` | `#16120E` | `#D9FF5A` | `#E6FF8A` | `#0C0A08` |
 
-What makes them not flat:
-- The page background is a top-lit gradient with three soft glows in the theme colours. They drift slowly,
-  which is off for reduced motion, and a fine grain sits on top.
-- Cards are glass panels with gradient edges.
-- Buttons are gradient pills with a glow that shifts on hover.
-- The highlighted headline word, big numbers and eyebrow labels use the gradient.
-- Body text stays solid. Every text pairing is 4.5 : 1 or better, and gradient ends are checked as large text.
-
-All seven suit the dark 3D office as it is. The door glows, pendants and the 419M+ sign take the gradient
-colours.
+- Every accent is at least 6.6 : 1 on its base and card, and button labels are at least 6.7 : 1.
+- All seven suit the dark 3D office as it is. The door lights and the 419M+ sign take the accent.
 
 Detailed tokens get written into `app/app.css` once a theme is picked.
 
@@ -301,7 +295,7 @@ Recall"* is one option.
 4. **Room name**: Our Story / About Us / The TBC Story (point 10)
 5. **Story flow**: approve the spine and the room re-order (point 12)
 6. **Big numbers**: one 2D and one 3D style code (point 11)
-7. **Theme**: one of the seven dark gradient themes (point 11)
+7. **Theme**: one of the seven dark solid-colour themes (point 11)
 8. **Fonts**: the Denton + serif + Gilroy trio or another option, plus the licences that go with it (point 11)
 
 Phase 1 (the new headline, audio check, the 419M+ line, smaller titles, the rename) can start as soon as the room name is
