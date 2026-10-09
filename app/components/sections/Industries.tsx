@@ -6,7 +6,7 @@ import { dur, ease as easing } from "~/lib/motion";
 
 const ease = easing.out;
 
-export function Industries() {
+export function Industries({ tagline = true }: { tagline?: boolean }) {
   const ref = useRef<HTMLUListElement>(null);
   const onMove = (e: React.PointerEvent) => {
     const el = ref.current;
@@ -22,13 +22,15 @@ export function Industries() {
         <Reveal><p className="eyebrow">Industries we've worked with</p></Reveal>
         <RevealLines
           lines={["Different industries.", "The same growth mindset."]}
-          className="display mt-6 text-4xl md:text-6xl"
+          className="display title-lg mt-6"
         />
-        <Reveal delay={0.2}>
-          <p className="mx-auto mt-6 max-w-xl text-mist">
-            We don't specialise in one industry. <span className="text-ivory">We specialise in growth problems.</span>
-          </p>
-        </Reveal>
+        {tagline && (
+          <Reveal delay={0.2}>
+            <p className="mx-auto mt-6 max-w-xl text-mist">
+              We don't specialise in one industry. <span className="text-ivory">We specialise in growth problems.</span>
+            </p>
+          </Reveal>
+        )}
       </div>
 
       <ul
@@ -39,7 +41,7 @@ export function Industries() {
         <span
           aria-hidden
           className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-250 group-hover/grid:opacity-100"
-          style={{ background: "radial-gradient(260px circle at var(--mx) var(--my), rgb(234 214 173 / 0.12), transparent 70%)" }}
+          style={{ background: "radial-gradient(260px circle at var(--mx) var(--my), rgb(217 185 138 / 0.12), transparent 70%)" }}
         />
         {industries.map((ind, i) => (
           <motion.li

@@ -7,19 +7,19 @@ import "./app.css";
 export const links: Route.LinksFunction = () => [
   { rel: "icon", href: "/favicon.png", type: "image/png" },
   { rel: "preload", href: "/fonts/manrope-latin-wght-normal.woff2", as: "font", type: "font/woff2", crossOrigin: "anonymous" },
-  { rel: "preload", href: "/fonts/cormorant-garamond-latin-400-normal.woff2", as: "font", type: "font/woff2", crossOrigin: "anonymous" },
+  { rel: "preload", href: "/fonts/dm-sans-latin-wght-normal.woff2", as: "font", type: "font/woff2", crossOrigin: "anonymous" },
   { rel: "preload", href: "/media/founder.webp", as: "image" },
 ];
 
 export const meta: Route.MetaFunction = () => [
-  { title: "The Brand Cappuccino — We make brands grow." },
+  { title: "The Brand Cappuccino — We make brands that people remember." },
   {
     name: "description",
     content:
-      "TBC is a brand growth & strategy firm. Brand strategy, positioning, go-to-market, growth and creative execution for ambitious brands. 419M+ organic views.",
+      "TBC is a brand growth & strategy firm. Brand strategy, positioning, go-to-market, growth and creative execution for ambitious brands. 419M+ views without a rupee spent on ads.",
   },
-  { name: "theme-color", content: "#0a0807" },
-  { property: "og:title", content: "The Brand Cappuccino — We make brands grow." },
+  { name: "theme-color", content: "#150D09" },
+  { property: "og:title", content: "The Brand Cappuccino — We make brands that people remember." },
   { property: "og:description", content: "Brand strategy. Positioning. Growth. Creative execution." },
   { property: "og:image", content: "/media/tbc-logo-color.png" },
 ];
@@ -64,7 +64,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   return (
     <main className="room-light flex min-h-screen flex-col items-center justify-center gap-6 px-6 text-center">
       <p className="eyebrow">The Brand Cappuccino</p>
-      <h1 className="display text-5xl md:text-7xl">{title}</h1>
+      <h1 className="display title-xl">{title}</h1>
       <p className="text-mist">{details}</p>
       <a href="/" className="btn">Back to the entrance <span className="arrow">→</span></a>
     </main>

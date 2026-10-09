@@ -119,8 +119,8 @@ function BrassFigure() {
       <group position={[X, 0, workHall.curtainZ + 0.45]}>
         <mesh geometry={geometry} material={material} position-y={2.42} />
         <Text font={assets.fonts.sans} fontSize={0.075} letterSpacing={0.55} anchorX="center" position={[0, 2.22, 0.05]}>
-          ORGANIC VIEWS
-          <meshBasicMaterial color="#ead6ad" toneMapped={false} />
+          VIEWS · ZERO SPENT ON ADS
+          <meshBasicMaterial color="#D9B98A" toneMapped={false} />
         </Text>
       </group>
     </group>
@@ -186,18 +186,18 @@ function Screen({ c, i, variant, pos, rotY }: { c: WorkCategory; i: number; vari
       ctx.fillRect(0, 0, w, h);
       const pad = w * 0.06;
       if (variant === "title") {
-        ctx.fillStyle = "#c9a46a";
+        ctx.fillStyle = "#C99A45";
         ctx.font = '600 20px "Manrope", sans-serif';
         trackedText(ctx, `NO. 0${i + 1}`, pad, h - pad - 150, 6);
-        ctx.fillStyle = "#f4ede1";
-        ctx.font = '300 96px "Cormorant Garamond", serif';
+        ctx.fillStyle = "#F3EAD8";
+        ctx.font = '700 80px "Manrope", sans-serif';
         ctx.fillText(c.title.toUpperCase(), pad, h - pad - 52);
         ctx.fillStyle = "rgba(244,237,225,0.7)";
         ctx.font = '500 20px "Manrope", sans-serif';
         trackedText(ctx, c.subtitle.toUpperCase(), pad, h - pad, 3.5);
       } else {
         ctx.fillStyle = "rgba(244,237,225,0.92)";
-        ctx.font = 'italic 400 46px "Cormorant Garamond", serif';
+        ctx.font = 'italic 400 40px "DM Sans", sans-serif';
         // wrap the line
         const words = `“${c.body}”`.split(" ");
         const lines: string[] = [];
@@ -212,7 +212,7 @@ function Screen({ c, i, variant, pos, rotY }: { c: WorkCategory; i: number; vari
         lines.push(line);
         const y0 = h - pad - 60 - (lines.length - 1) * 54;
         lines.forEach((l, k) => ctx.fillText(l, pad, y0 + k * 54));
-        ctx.fillStyle = "#c9a46a";
+        ctx.fillStyle = "#C99A45";
         ctx.font = '600 20px "Manrope", sans-serif';
         trackedText(ctx, (c.items[0]?.client ?? "").toUpperCase(), pad, h - pad, 6);
       }
@@ -239,7 +239,7 @@ function Screen({ c, i, variant, pos, rotY }: { c: WorkCategory; i: number; vari
       ].map(([x, y, w, h], k) => (
         <mesh key={k} position={[x, y, 0.01]}>
           <boxGeometry args={[w, h, 0.04]} />
-          <meshStandardMaterial color="#c9a46a" metalness={1} roughness={0.35} />
+          <meshStandardMaterial color="#C99A45" metalness={1} roughness={0.35} />
         </mesh>
       ))}
       {/* the screen's light on the floor */}
@@ -260,16 +260,16 @@ function EndWall({ p }: { p: Palette }) {
     <group position={[X, 0, END + 0.05]}>
       <mesh position={[0, 2.3, 0.01]}>
         <planeGeometry args={[HW * 2, CORRIDOR_H]} />
-        <meshBasicMaterial map={radialTexture()} color="#c9a46a" transparent opacity={0.55} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
+        <meshBasicMaterial map={radialTexture()} color="#C99A45" transparent opacity={0.55} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
       </mesh>
       <Text font={assets.fonts.sans} fontSize={0.12} letterSpacing={0.55} anchorX="center" position={[0, 3.45, 0.05]}>
         AND COUNTING
-        <meshBasicMaterial color="#c9a46a" toneMapped={false} />
+        <meshBasicMaterial color="#C99A45" toneMapped={false} />
       </Text>
       <mesh geometry={geometry} material={material} position={[0, 2.0, 0.08]} />
       <Text font={assets.fonts.sans} fontSize={0.13} letterSpacing={0.55} anchorX="center" position={[0, 1.55, 0.05]}>
-        ORGANIC VIEWS
-        <meshBasicMaterial color="#ead6ad" toneMapped={false} />
+        VIEWS · WITHOUT A RUPEE ON ADS
+        <meshBasicMaterial color="#D9B98A" toneMapped={false} />
       </Text>
       <mesh material={p.brass} position={[0, 0.06, 0.02]}>
         <boxGeometry args={[HW * 2, 0.12, 0.02]} />

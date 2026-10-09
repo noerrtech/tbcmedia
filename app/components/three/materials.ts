@@ -32,7 +32,7 @@ export function usePalette() {
     });
 
     const brass = new THREE.MeshStandardMaterial({
-      color: "#c9a46a",
+      color: "#C99A45",
       metalness: 1,
       roughness: 0.55, // × the worn-brass map: a satin brass, not a mirror
       roughnessMap: brassTex.roughnessMap,

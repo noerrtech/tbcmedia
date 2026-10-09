@@ -37,9 +37,9 @@ export const assets = {
   },
   hdri: "/assets/hdri/lythwood_lounge_2k.hdr",
   fonts: {
-    display: "/fonts/cormorant-garamond-latin-300-normal.woff",
+    display: "/fonts/manrope-latin-700-normal.woff",
     /** three.js typeface for extruded lettering — scripts/make-typeface.mjs */
-    displayTypeface: "/fonts/cormorant-garamond-400.typeface.json",
+    displayTypeface: "/fonts/manrope-800.typeface.json",
     sans: "/fonts/manrope-latin-500-normal.woff",
   },
 } as const;

@@ -249,7 +249,7 @@ function Bookshelves({ p }: { p: Palette }) {
 function FloatingPanels() {
   const group = useRef<THREE.Group>(null);
   const mat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: "#d9cbb0", emissive: new THREE.Color("#f6e6c3"), emissiveIntensity: 0.05, roughness: 0.75 }),
+    () => new THREE.MeshStandardMaterial({ color: "#d9cbb0", emissive: new THREE.Color("#F3EAD8"), emissiveIntensity: 0.05, roughness: 0.75 }),
     [],
   );
   useLayoutEffect(() => () => mat.dispose(), [mat]);
@@ -271,7 +271,7 @@ function FloatingPanels() {
             </mesh>
             <Text font={assets.fonts.display} fontSize={0.16} anchorX="center" position={[0, 0.48, 0.016]}>
               {`0${i + 1}`}
-              <meshBasicMaterial color="#8f6c3e" />
+              <meshBasicMaterial color="#8A6A35" />
             </Text>
           </group>
         );
@@ -304,16 +304,16 @@ function JbnScreen() {
     g.addColorStop(1, "#090706");
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, w, h);
-    ctx.fillStyle = "#c9a46a";
+    ctx.fillStyle = "#C99A45";
     ctx.font = '600 22px "Manrope", sans-serif';
     trackedText(ctx, jbn.title.toUpperCase(), w / 2, h * 0.27, 9, "center");
-    ctx.fillStyle = "#f4ede1";
+    ctx.fillStyle = "#F3EAD8";
     ctx.textAlign = "center";
-    ctx.font = '300 78px "Cormorant Garamond", serif';
+    ctx.font = '700 66px "Manrope", sans-serif';
     ctx.fillText("20-MIN SOCIAL", w / 2, h * 0.47);
     ctx.fillText("MEDIA AUDIT", w / 2, h * 0.61);
     ctx.fillStyle = "#a79d8f";
-    ctx.font = 'italic 400 34px "Cormorant Garamond", serif';
+    ctx.font = 'italic 400 30px "DM Sans", sans-serif';
     ctx.fillText(`For the first ${jbn.total} members`, w / 2, h * 0.75);
     // scanlines
     ctx.fillStyle = "rgba(0,0,0,0.18)";
@@ -355,7 +355,7 @@ function JbnScreen() {
       ].map(([x, y, w, h], i) => (
         <mesh key={i} position={[x, y, 0.01]}>
           <boxGeometry args={[w, h, 0.04]} />
-          <meshStandardMaterial color="#c9a46a" metalness={1} roughness={0.35} />
+          <meshStandardMaterial color="#C99A45" metalness={1} roughness={0.35} />
         </mesh>
       ))}
       <pointLight ref={glow} position={[0, 0, 1.4]} color="#ffd9a8" intensity={0} distance={7} decay={2} />
@@ -380,7 +380,7 @@ export function JbnRoom({ p }: { p: Palette }) {
 /* ------------------------------------------------------------------------- */
 
 const ACTION: Bounds = { minX: -6, maxX: 6, minZ: 12.05, maxZ: 20, h: 5.2 };
-const actionTints = ["#ead6ad", "#f2c98a", "#d9694a"];
+const actionTints = ["#D9B98A", "#f2c98a", "#d9694a"];
 
 export function ActionRoomScene({ p }: { p: Palette }) {
   return (

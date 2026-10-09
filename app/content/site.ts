@@ -9,7 +9,9 @@ export const brand = {
   name: "The Brand Cappuccino",
   short: "TBC",
   label: "Brand Growth & Strategy",
-  headline: "We make brands grow.",
+  headline: "We make brands that people remember.",
+  /** The proof line that goes with 419M+ wherever it appears. */
+  proof: "Without a rupee spent on ads.",
   subline: "Brand strategy. Positioning. Growth. Creative execution.",
   pillars: ["Positioning", "Strategy", "Creative", "Growth"],
   promise: "We build brands that are built to grow.",
@@ -95,18 +97,18 @@ export const featuredIn: { name: string; verified: boolean }[] = [
 export type Stat = { value: number; suffix: string; label: string; note?: string };
 
 export const founderStats: Stat[] = [
-  { value: 419, suffix: "M+", label: "Organic views generated" },
-  { value: 51000, suffix: "+", label: "Professionals in a global community" },
-  { value: 44, suffix: "+", label: "Countries represented" },
+  { value: 419, suffix: "M+", label: "views.", note: "Without a rupee spent on ads." },
+  { value: 51000, suffix: "+", label: "professionals", note: "in a global community." },
+  { value: 44, suffix: "+", label: "countries", note: "represented." },
   // TODO(confirm): "35+ industries / categories" comes from the brief.
-  { value: 35, suffix: "+", label: "Industries & categories" },
+  { value: 35, suffix: "+", label: "industries", note: "and categories." },
 ];
 
 export const impactStats: Stat[] = [
-  { value: 419, suffix: "M+", label: "Organic views", note: "Across the TBC portfolio" },
-  { value: 51000, suffix: "+", label: "Community members", note: "Built across 44+ countries" },
-  { value: 35, suffix: "+", label: "Industries", note: "Growth problems, not niches" },
-  { value: 4, suffix: "", label: "Markets", note: "India · Dubai · UK · USA" },
+  { value: 419, suffix: "M+", label: "views.", note: "Without a rupee spent on ads." },
+  { value: 51000, suffix: "+", label: "community members,", note: "built across 44+ countries." },
+  { value: 35, suffix: "+", label: "industries.", note: "Growth problems, not niches." },
+  { value: 4, suffix: "", label: "markets.", note: "India · Dubai · UK · USA." },
 ];
 
 export const impactProofs = [
@@ -227,7 +229,7 @@ export const work: WorkCategory[] = [
     id: "visible",
     title: "Made visible",
     subtitle: "Social, content & awareness",
-    body: "Content systems that put brands in front of millions — 419M+ organic views and counting.",
+    body: "Content systems that put brands in front of millions — 419M+ views without a rupee spent on ads.",
     items: [{ client: "Case study", summary: "Organic reach built through strategy-led content." }],
   },
   {

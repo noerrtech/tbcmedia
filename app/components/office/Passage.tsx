@@ -64,7 +64,7 @@ export function Passage({ direction = "forward" }: { direction?: "forward" | "ba
           transition={{ duration: 1.3, times: [0, 0.3, 0.7, 1] }}
         >
           <p className="eyebrow">Room {room.no}</p>
-          <p className="display mt-4 text-4xl md:text-6xl">{room.name}</p>
+          <p className="display title-lg mt-4">{room.name}</p>
         </motion.div>
       )}
     </motion.div>

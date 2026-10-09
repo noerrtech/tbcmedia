@@ -35,11 +35,14 @@ export function FounderPortrait({ className = "" }: { className?: string }) {
 
 export function FounderStats() {
   return (
-    <div className="grid grid-cols-2 border-t border-line md:grid-cols-4">
+    <div className="grid border-t border-line sm:grid-cols-2">
       {founderStats.map((s, i) => (
-        <Reveal key={s.label} delay={i * 0.1} className="border-b border-line py-6 pr-4 md:border-b-0 md:border-r md:px-6 md:first:pl-0 md:last:border-r-0">
-          <CountUp value={s.value} suffix={s.suffix} className="font-display text-4xl text-ivory xl:text-5xl" />
-          <p className="mt-2 text-[0.6rem] leading-relaxed tracking-[0.2em] text-mist uppercase">{s.label}</p>
+        <Reveal key={s.label} delay={i * 0.1} className="border-b border-line py-8 pr-6">
+          <CountUp value={s.value} suffix={s.suffix} className="stat-num block" />
+          <p className="stat-label mt-3">
+            {s.label}
+            {s.note && <span className="soft"> {s.note}</span>}
+          </p>
         </Reveal>
       ))}
     </div>
@@ -52,7 +55,7 @@ export function FeaturedIn() {
     <div className="flex flex-wrap items-center gap-x-10 gap-y-4">
       <p className="eyebrow">Spoken at · Featured in</p>
       {verified.map((f) => (
-        <span key={f.name} className="font-display text-2xl text-ivory/80">{f.name}</span>
+        <span key={f.name} className="font-display text-xl font-semibold text-ivory/80">{f.name}</span>
       ))}
       <span className="text-sm text-mist">International & national media across domains</span>
     </div>
@@ -91,7 +94,7 @@ export function FounderProfile({ immediate = false }: { immediate?: boolean }) {
             immediate={immediate}
             as={immediate ? "h1" : "h2"}
             lines={["Meet", founder.name]}
-            className="display mt-6 text-5xl md:text-7xl 2xl:text-8xl"
+            className="display title-xl mt-6"
           />
           <Reveal delay={0.3}>
             <p className="mt-6 text-[0.7rem] tracking-[0.32em] text-champagne uppercase">{founder.roles.join("  •  ")}</p>
@@ -134,7 +137,7 @@ export function FounderProfile({ immediate = false }: { immediate?: boolean }) {
         <RevealLines
           as="p"
           lines={["“I didn't start TBC", "to create another", "marketing agency.”"]}
-          className="font-display text-4xl leading-[1.05] font-light text-champagne italic md:text-6xl"
+          className="display title-lg text-champagne"
         />
         <div className="space-y-5 text-lg leading-relaxed text-ivory/80">
           {founder.philosophy.map((p, i) => (

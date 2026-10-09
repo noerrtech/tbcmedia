@@ -19,15 +19,15 @@ export function FounderNote() {
       <div className="grid items-center gap-14 lg:grid-cols-[1fr_1.3fr]">
         <div>
           <Reveal><p className="eyebrow">Founder's message</p></Reveal>
-          <RevealLines lines={["A note from", "the founder"]} className="display mt-6 text-4xl md:text-6xl" />
+          <RevealLines lines={["A note from", "the founder"]} className="display title-lg mt-6" />
           <Reveal delay={0.2}>
-            <p className="mt-10 font-display text-2xl leading-snug text-ivory/85 italic">“{founder.note.opening}”</p>
+            <p className="mt-10 font-sans text-2xl leading-snug text-ivory/85 italic">“{founder.note.opening}”</p>
           </Reveal>
           <Reveal delay={0.3}>
             <p className="mt-6 leading-relaxed text-mist">{founder.note.ambition}</p>
           </Reveal>
           <Reveal delay={0.4}>
-            <p className="mt-10 font-script text-6xl text-champagne">{founder.name}</p>
+            <p className="display title-md mt-10 text-champagne">{founder.name}</p>
             <p className="mt-1 text-[0.6rem] tracking-[0.3em] text-mist uppercase">Founder, TBC</p>
           </Reveal>
         </div>
@@ -38,9 +38,9 @@ export function FounderNote() {
               <video src={founder.note.video} className="h-full w-full object-cover" autoPlay controls playsInline />
             ) : (
               <>
-                <div className="absolute inset-0 bg-[radial-gradient(70%_80%_at_50%_100%,rgb(143_108_62/0.45),transparent),linear-gradient(180deg,#120e0b,#050404)]" />
+                <div className="absolute inset-0 bg-umber" />
                 <img src={founder.portrait} alt="" className="absolute bottom-0 left-1/2 h-[92%] -translate-x-1/2 object-contain opacity-90 [mask-image:linear-gradient(180deg,#000_75%,transparent)]" />
-                <p className="absolute top-6 right-6 max-w-[14rem] text-right font-display text-xl leading-snug text-ivory/90 italic md:text-2xl">
+                <p className="absolute top-6 right-6 max-w-[14rem] text-right font-sans text-xl leading-snug text-ivory/90 italic md:text-2xl">
                   “{founder.note.quote}”
                 </p>
                 {hasVideo && (

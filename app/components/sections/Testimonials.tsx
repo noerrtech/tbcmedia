@@ -11,14 +11,14 @@ export function Testimonials() {
   return (
     <div className="mx-auto max-w-5xl px-6 text-center">
       <Reveal><p className="eyebrow">Testimonials</p></Reveal>
-      <RevealLines lines={["What our clients say"]} className="display mt-6 text-4xl md:text-6xl" />
+      <RevealLines lines={["What our clients say"]} className="display title-lg mt-6" />
 
       <div className="relative mt-16 flex items-center gap-4 md:gap-10">
         <button type="button" onClick={() => go(-1)} aria-label="Previous testimonial" className="flex h-12 w-12 shrink-0 items-center justify-center border border-line text-champagne transition-colors hover:bg-champagne hover:text-ink">
           ←
         </button>
         <div className="panel relative min-h-[18rem] flex-1 overflow-hidden px-6 py-12 md:px-16">
-          <span aria-hidden className="absolute top-4 left-6 font-display text-8xl leading-none text-gold/30">“</span>
+          <span aria-hidden className="absolute top-4 left-6 font-display text-6xl leading-none text-gold/30">“</span>
           <AnimatePresence mode="wait" custom={dir}>
             <motion.figure
               key={i}

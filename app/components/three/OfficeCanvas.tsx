@@ -261,8 +261,8 @@ export default function OfficeCanvas({ onReady }: { onReady: () => void }) {
       gl={{ antialias: false, powerPreference: "high-performance" }}
     >
       <PerformanceMonitor onDecline={() => setDpr(1)} onIncline={() => setDpr(1.5)} />
-      <color attach="background" args={["#0a0807"]} />
-      <fog attach="fog" args={["#0a0807", 13, 34]} />
+      <color attach="background" args={["#150D09"]} />
+      <fog attach="fog" args={["#150D09", 13, 34]} />
       <ambientLight intensity={0.04} />
       <Suspense fallback={null}>
         <Environment files={assets.hdri} environmentIntensity={0.35} />

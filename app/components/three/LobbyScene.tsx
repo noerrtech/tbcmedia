@@ -143,7 +143,7 @@ function Signage({ p }: { p: Palette }) {
         <planeGeometry args={[7, 3.4]} />
         <meshBasicMaterial
           map={radialTexture()}
-          color="#c9a46a"
+          color="#C99A45"
           transparent
           opacity={0.32}
           blending={THREE.AdditiveBlending}
@@ -314,7 +314,7 @@ export function LobbyScene({ p }: { p: Palette }) {
         id="next"
         pos={[0, 0, FRONT - 0.06]}
         normal={[0, 0, -1]}
-        tint="#ead6ad"
+        tint="#D9B98A"
         label="Start a project"
         width={FRONT_DOOR.width}
         height={FRONT_DOOR.height}

@@ -22,7 +22,7 @@ function Panel({ s, i, onOpen }: { s: Service; i: number; onOpen: () => void }) 
       <div
         aria-hidden
         className="pointer-events-none absolute -top-40 left-1/2 h-60 w-56 -translate-x-1/2 opacity-60 [mask-image:linear-gradient(180deg,transparent,#000_45%)]"
-        style={{ background: "radial-gradient(50% 100% at 50% 0%, rgb(234 214 173 / 0.35), transparent 70%)" }}
+        style={{ background: "radial-gradient(50% 100% at 50% 0%, rgb(217 185 138 / 0.35), transparent 70%)" }}
       />
       <div className="animate-drift" style={{ animationDelay: `${i * -0.8}s` }}>
       <motion.button
@@ -43,7 +43,7 @@ function Panel({ s, i, onOpen }: { s: Service; i: number; onOpen: () => void }) 
         />
         <span className="absolute inset-0 opacity-0 transition-opacity duration-250 group-hover:opacity-100" style={{ background: "radial-gradient(80% 50% at 50% 30%, rgb(255 255 255 / 0.55), transparent)" }} />
         <span className="relative flex h-full flex-col p-6 md:p-5 xl:p-6">
-          <span className="font-display text-5xl font-light text-bronze">{s.no}</span>
+          <span className="font-display text-4xl font-bold text-bronze">{s.no}</span>
           <span className="mt-6 font-display text-2xl leading-tight font-semibold tracking-wide uppercase md:text-lg xl:text-xl 2xl:text-2xl">{s.title}</span>
           <span className="mt-3 text-sm leading-relaxed text-ink/70">{s.question}</span>
           <span className="mt-auto flex items-center gap-3 border-t border-ink/15 pt-4 text-[0.6rem] font-semibold tracking-[0.26em] uppercase">
@@ -82,9 +82,9 @@ function Detail({ s, onClose }: { s: Service; onClose: () => void }) {
         style={{ background: "radial-gradient(120% 80% at 0% 0%, #fbf4e6, #e6d7ba 60%, #cdb994)" }}
       >
         <div className="border-b border-ink/10 p-8 md:border-r md:border-b-0 md:p-12">
-          <p className="font-display text-7xl font-light text-bronze">{s.no}</p>
-          <h3 className="mt-6 font-display text-4xl leading-none font-semibold uppercase md:text-5xl">{s.title}</h3>
-          <p className="mt-5 font-display text-2xl italic text-ink/70">{s.question}</p>
+          <p className="font-display text-5xl font-bold text-bronze">{s.no}</p>
+          <h3 className="display title-lg mt-6">{s.title}</h3>
+          <p className="mt-5 font-sans text-2xl italic text-ink/70">{s.question}</p>
         </div>
         <motion.div className="p-8 md:p-12" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.6 }}>
           <p className="text-lg leading-relaxed text-ink/80">{s.detail}</p>
@@ -105,14 +105,14 @@ function Detail({ s, onClose }: { s: Service; onClose: () => void }) {
   );
 }
 
-export function ServicesShowroom({ heading = true }: { heading?: boolean }) {
+export function ServicesShowroom({ heading = true, quote = true }: { heading?: boolean; quote?: boolean }) {
   const [active, setActive] = useState<Service | null>(null);
   return (
     <div className="relative">
       {heading && (
         <div className="mx-auto mb-24 max-w-3xl px-6 text-center">
           <Reveal><p className="eyebrow">What we do</p></Reveal>
-          <RevealLines lines={["What we do"]} className="display mt-6 text-5xl md:text-7xl" />
+          <RevealLines lines={["What we do"]} className="display title-lg mt-6" />
           <Reveal delay={0.2}>
             <p className="mt-6 text-mist">Strategy, creativity and growth systems for ambitious brands.</p>
           </Reveal>
@@ -125,13 +125,15 @@ export function ServicesShowroom({ heading = true }: { heading?: boolean }) {
         ))}
       </ul>
 
-      <div className="mx-auto mt-24 max-w-4xl px-6 text-center">
-        <RevealLines
-          as="p"
-          lines={[<>“{serviceLine.lead}</>, <span className="text-champagne italic">{serviceLine.follow}”</span>]}
-          className="font-display text-3xl leading-tight font-light md:text-5xl"
-        />
-      </div>
+      {quote && (
+        <div className="mx-auto mt-24 max-w-4xl px-6 text-center">
+          <RevealLines
+            as="p"
+            lines={[<>“{serviceLine.lead}</>, <span className="text-champagne">{serviceLine.follow}”</span>]}
+            className="display title-lg"
+          />
+        </div>
+      )}
 
       <AnimatePresence>{active && <Detail s={active} onClose={() => setActive(null)} />}</AnimatePresence>
     </div>
@@ -151,7 +153,7 @@ export function Capabilities() {
         transition={{ duration: 60, ease: "linear", repeat: Infinity }}
       >
         {row.map((c, i) => (
-          <span key={i} className="flex items-center gap-12 font-display text-2xl text-ivory/60 italic md:text-3xl">
+          <span key={i} className="flex items-center gap-12 font-display text-2xl font-semibold text-ivory/60 md:text-3xl">
             {c} <span className="text-gold not-italic">✦</span>
           </span>
         ))}

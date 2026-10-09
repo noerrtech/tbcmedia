@@ -100,15 +100,14 @@ else
 fi
 
 # --- fonts (OFL) — latin subsets, self-hosted ------------------------------
-cp "$SRC"/cormorant-garamond/static/cormorant-garamond-latin-{300,400,500,600}-normal.woff2 "$FONTS/"
-cp "$SRC"/cormorant-garamond/static/cormorant-garamond-latin-{300,400}-italic.woff2 "$FONTS/"
-cp "$SRC"/cormorant-garamond/static/cormorant-garamond-latin-300-normal.woff "$FONTS/" # for 3D signage (troika can't read woff2)
+# Manrope (headings, numbers) + DM Sans (text)
 cp "$SRC"/manrope/variable/manrope-latin-wght-normal.woff2 "$FONTS/"
-cp "$SRC"/manrope/static/manrope-latin-500-normal.woff "$FONTS/" # for 3D plaques
-cp "$SRC"/pinyon-script/static/pinyon-script-latin-400-normal.woff2 "$FONTS/"
-cp "$SRC"/cormorant-garamond/LICENSE "$FONTS/LICENSE-cormorant-garamond.txt"
+cp "$SRC"/manrope/static/manrope-latin-{500,700}-normal.woff "$FONTS/" # for 3D plaques/signs (troika can't read woff2)
+cp node_modules/@fontsource-variable/dm-sans/files/dm-sans-latin-wght-{normal,italic}.woff2 "$FONTS/"
 cp "$SRC"/manrope/LICENSE "$FONTS/LICENSE-manrope.txt"
-cp "$SRC"/pinyon-script/LICENSE "$FONTS/LICENSE-pinyon-script.txt"
+cp node_modules/@fontsource-variable/dm-sans/LICENSE "$FONTS/LICENSE-dm-sans.txt"
+# extruded 3D lettering (419M+ and the lobby sign)
+node scripts/make-typeface.mjs "$SRC"/manrope/static/manrope-latin-800-normal.woff "$FONTS/manrope-800.typeface.json"
 
 echo "Done."
 du -sh "$TEX" "$HDRI" "$MODELS" "$FONTS"

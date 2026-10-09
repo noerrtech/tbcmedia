@@ -14,7 +14,7 @@ export function RoomFooter() {
         <Link to={next.path} className="group relative block overflow-hidden px-6 py-24 text-center md:py-32">
           <span aria-hidden className="absolute inset-0 bg-[radial-gradient(40%_80%_at_50%_100%,rgb(201_164_106/0.18),transparent_70%)] opacity-50 transition-opacity duration-250 group-hover:opacity-100" />
           <span className="eyebrow relative">Next room — {next.no}</span>
-          <span className="display relative mt-5 flex items-center justify-center gap-6 text-4xl transition-colors duration-200 group-hover:text-champagne md:text-7xl">
+          <span className="display relative mt-5 flex items-center justify-center gap-6 title-lg transition-colors duration-200 group-hover:text-champagne">
             {next.name}
             <Arrow className="h-4 w-10 transition-transform duration-200 motion-safe:group-hover:translate-x-2" />
           </span>
@@ -31,7 +31,7 @@ export function RoomFooter() {
                   aria-current={here ? "page" : undefined}
                   className={`flex items-center gap-2 whitespace-nowrap px-2 py-1 text-[0.6rem] tracking-[0.22em] uppercase transition-colors ${here ? "text-champagne" : "text-smoke hover:text-ivory"}`}
                 >
-                  <span className={`h-1.5 w-1.5 rounded-full ${here ? "bg-champagne shadow-[0_0_10px_#ead6ad]" : "bg-smoke"}`} />
+                  <span className={`h-1.5 w-1.5 rounded-full ${here ? "bg-champagne" : "bg-smoke"}`} />
                   {r.name}
                 </Link>
                 {i < rooms.length - 1 && <span className="h-px w-6 bg-line" />}

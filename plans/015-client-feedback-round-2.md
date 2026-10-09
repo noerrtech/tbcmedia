@@ -1,11 +1,50 @@
 # 015 — Client feedback, round 2 (review call, 2026-10-09)
 
-- **Status**: PLAN — waiting on owner decisions (marked **DECIDE**)
+- **Status**: IN PROGRESS. Visual system and Phase 1 built; see Progress.
 - **Stamp**: `f31bc5a`
 - **Source**: 12 points from the review of `tbc-preview.web.app/tbc/`, plus a 13th added afterwards (the headline)
 
 Each point below says what the site does today, what we'd change and which files that touches. The
 last two (fonts, story flow) are recommendations rather than fixes.
+
+## Progress (2026-10-09)
+
+**Built (commit "Mughal Noir look, Manrope + DM Sans, new headline"):**
+- [x] **Colours:** Mughal Noir tokens in `app/app.css`. The old token names were kept, so every component picks
+  them up.
+  - Gradients, glows and glass panels are gone. Panels are solid Surface.
+  - The gold accent is only on main buttons. Numbers, eyebrows and highlights use Secondary.
+  - The 3D scene background, fog, brass, plaques and door tints are retinted to the palette.
+- [x] **Fonts:** Manrope (headings, numbers) + DM Sans (text), self-hosted.
+  - Cormorant Garamond and Pinyon Script are removed: files, deps, preloads, canvas text.
+  - The 3D extruded lettering now uses `public/fonts/manrope-800.typeface.json`.
+  - Quotes use DM Sans italic.
+- [x] **Point 5, smaller titles:** one type scale (`.title-xl` / `.title-lg` / `.title-md`) replaces about 40
+  one-off sizes. `.display` is sentence case.
+- [x] **Number labels at 1.5–2 rem:** `.stat-num` / `.stat-label`. The stat grids are 2-up, so labels don't
+  squeeze.
+- [x] **Point 13, headline:** "We make brands that people remember." everywhere (`brand.headline`).
+- [x] **Point 8, the 419M+ line:** "Without a rupee spent on ads." on every stat, the Work room curtain
+  (2D and 3D) and the meta description.
+- [x] **Point 7, audio:** the build has no audio files and no audio calls. three.js's bundled `AudioContext`
+  class is never instantiated. The founder film only plays after the visitor presses play.
+- [x] **Point 2 (partial), logo:** the header, footer, lobby sign (CSS) and loading screen use the real
+  colour logo, `public/media/tbc-logo-color.png`. It's a 512px working copy until the master file arrives.
+- [x] **Classic home rebuilt to the owner's mockup:**
+  - header links + an outlined "Book a consultation" button
+  - a centred hero with a gold "Enter TBC" button and a "Take the traditional route" link
+  - the numbers panel
+  - "We specialise in growth problems" with the six services
+  - the line on social between rules
+  - Duplicates further down (stats, the industries tagline, the services quote) are hidden on the home page.
+- [x] Buttons are sentence case, as in the mockup.
+
+**Not yet built:** 1 (the 3D lobby sign as the logo; needs the master file), 3, 4, 6, 9, 10, 12, and retinting
+the 3D materials beyond the colour swap (checking the look needs a GPU; the sandbox only has software
+rendering).
+
+**Found while checking:** `/tbc` routes log a React hydration mismatch (#418) when the 3D falls back. It's in
+the original build too, so it's not caused by this work.
 
 ---
 

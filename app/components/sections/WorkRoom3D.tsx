@@ -85,8 +85,8 @@ export function WorkRoom3D() {
           <div className="sticky top-0 h-screen">
             <div ref={curtainCopy} className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-6 px-6 pb-16 text-center">
               <p className="eyebrow">Room 04 — The work</p>
-              <h1 className="sr-only">The work: 419M+ organic views</h1>
-              <p className="font-display text-2xl text-ivory/85 italic md:text-3xl">The work speaks louder than the pitch.</p>
+              <h1 className="sr-only">The work: 419M+ views, without a rupee spent on ads</h1>
+              <p className="font-sans text-2xl text-ivory/85 italic md:text-3xl">The work speaks louder than the pitch.</p>
               <button type="button" onClick={openCurtain} className="btn bg-ink/40 backdrop-blur-sm">
                 Open the curtain ↓
               </button>
@@ -120,7 +120,7 @@ export function WorkRoom3D() {
                   <p className="eyebrow">
                     0{active + 1} / 0{work.length}
                   </p>
-                  <p className="display mt-3 text-4xl md:text-6xl">{c.title}</p>
+                  <p className="display title-lg mt-3">{c.title}</p>
                   <p className="mt-3 text-sm text-ivory/80">{c.body}</p>
                 </motion.div>
               </AnimatePresence>

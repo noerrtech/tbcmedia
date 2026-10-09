@@ -160,7 +160,7 @@ export function Doorway({
         position={[0, height + 0.42, 0.05]}
       >
         {label.toUpperCase()}
-        <meshBasicMaterial ref={plaque} color="#ead6ad" toneMapped={false} />
+        <meshBasicMaterial ref={plaque} color="#D9B98A" toneMapped={false} />
       </Text>
     </group>
   );

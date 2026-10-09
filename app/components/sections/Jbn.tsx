@@ -14,13 +14,13 @@ function Ring({ claimed, total }: { claimed: number; total: number }) {
   return (
     <div className="relative h-48 w-48">
       <svg viewBox="0 0 160 160" className="h-full w-full -rotate-90">
-        <circle cx="80" cy="80" r={r} fill="none" stroke="rgb(201 164 106 / 0.15)" strokeWidth="2" />
+        <circle cx="80" cy="80" r={r} fill="none" stroke="rgb(201 154 69 / 0.15)" strokeWidth="2" />
         <motion.circle
           cx="80"
           cy="80"
           r={r}
           fill="none"
-          stroke="url(#jbn-gold)"
+          stroke="#D9B98A"
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeDasharray={c}
@@ -29,15 +29,9 @@ function Ring({ claimed, total }: { claimed: number; total: number }) {
           viewport={{ once: true }}
           transition={{ duration: 1.2, ease, delay: 0.2 }}
         />
-        <defs>
-          <linearGradient id="jbn-gold" x1="0" x2="1">
-            <stop offset="0" stopColor="#f6e6c3" />
-            <stop offset="1" stopColor="#a37c45" />
-          </linearGradient>
-        </defs>
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <p className="font-display text-5xl text-ivory" style={{ fontVariantNumeric: "lining-nums tabular-nums" }}>
+        <p className="font-display text-5xl font-extrabold text-ivory" style={{ fontVariantNumeric: "lining-nums tabular-nums" }}>
           {claimed}<span className="text-mist"> / {total}</span>
         </p>
         <p className="mt-1 text-[0.6rem] tracking-[0.3em] text-gold uppercase">Claimed</p>
@@ -79,12 +73,12 @@ export function JbnOffer({ claimed }: { claimed: number }) {
         whileInView={{ opacity: 1, transform: "translateY(0px)" }}
         viewport={{ once: true }}
         transition={{ duration: dur.headline, ease }}
-        className="display gold-text mt-6 pb-3 text-6xl leading-[1.1] md:text-8xl"
+        className="display gold-text title-xl mt-6 pb-3"
       >
         {jbn.title}
       </motion.h2>
       <div className="hairline mx-auto my-10 w-40" />
-      <p className="font-display text-3xl text-ivory uppercase md:text-4xl">{jbn.offer}</p>
+      <p className="display title-md text-ivory">{jbn.offer}</p>
       <p className="mt-3 text-mist">For the first {jbn.total} members.</p>
 
       <div className="mt-12 flex flex-col items-center gap-4">

@@ -1,31 +1,28 @@
 @import "tailwindcss";
 
 /* Self-hosted type (OFL) — files in public/fonts */
-@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 300; font-display: swap; src: url("/fonts/cormorant-garamond-latin-300-normal.woff2") format("woff2"); }
-@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/cormorant-garamond-latin-400-normal.woff2") format("woff2"); }
-@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 500; font-display: swap; src: url("/fonts/cormorant-garamond-latin-500-normal.woff2") format("woff2"); }
-@font-face { font-family: "Cormorant Garamond"; font-style: normal; font-weight: 600; font-display: swap; src: url("/fonts/cormorant-garamond-latin-600-normal.woff2") format("woff2"); }
-@font-face { font-family: "Cormorant Garamond"; font-style: italic; font-weight: 300; font-display: swap; src: url("/fonts/cormorant-garamond-latin-300-italic.woff2") format("woff2"); }
-@font-face { font-family: "Cormorant Garamond"; font-style: italic; font-weight: 400; font-display: swap; src: url("/fonts/cormorant-garamond-latin-400-italic.woff2") format("woff2"); }
 @font-face { font-family: "Manrope"; font-style: normal; font-weight: 200 800; font-display: swap; src: url("/fonts/manrope-latin-wght-normal.woff2") format("woff2"); }
-@font-face { font-family: "Pinyon Script"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/pinyon-script-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "DM Sans"; font-style: normal; font-weight: 100 1000; font-display: swap; src: url("/fonts/dm-sans-latin-wght-normal.woff2") format("woff2"); }
+@font-face { font-family: "DM Sans"; font-style: italic; font-weight: 100 1000; font-display: swap; src: url("/fonts/dm-sans-latin-wght-italic.woff2") format("woff2"); }
 
 @theme {
-  --font-display: "Cormorant Garamond", "Times New Roman", serif;
-  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-script: "Pinyon Script", cursive;
+  /* Manrope for headings and numbers, DM Sans for everything else */
+  --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
 
-  --color-ink: #0a0807;
-  --color-coal: #12100d;
-  --color-umber: #1b1611;
-  --color-walnut: #2a2018;
-  --color-ivory: #f4ede1;
-  --color-mist: #a79d8f;
-  --color-smoke: #6f675d;
-  --color-champagne: #ead6ad;
-  --color-gold: #c9a46a;
-  --color-bronze: #8f6c3e;
-  --color-line: rgb(201 164 106 / 0.22);
+  /* Mughal Noir. The old token names are kept so every component picks the palette up. */
+  --color-ink: #150D09;        /* Background — the base everywhere */
+  --color-coal: #1B120D;       /* between Background and Surface */
+  --color-umber: #221710;      /* Surface — panels, highlighted areas */
+  --color-walnut: #3B2A1E;     /* Line — raised edges */
+  --color-ivory: #F3EAD8;      /* Text */
+  --color-mist: #B7A58A;       /* Muted text */
+  --color-smoke: #93806A;      /* Captions (5.1 : 1 on Background, 4.6 : 1 on Surface) */
+  --color-champagne: #D9B98A;  /* Secondary — light brown highlights: numbers, eyebrows, outlines */
+  --color-gold: #C99A45;       /* Accent — gold, only where it must stand out (main buttons) */
+  --color-gold-hover: #D6AB5C;
+  --color-bronze: #8A6A35;
+  --color-line: #3B2A1E;
 
   --ease-cinema: cubic-bezier(0.7, 0, 0.2, 1);
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
@@ -62,13 +59,13 @@
 }
 
 @layer components {
-  /* Display type — large, light, tracked */
+  /* Display type — Manrope, bold, tight, sentence case */
   .display {
     font-family: var(--font-display);
-    font-weight: 400;
-    letter-spacing: 0.02em;
-    line-height: 0.98;
-    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.04;
+    text-wrap: balance;
   }
   .display,
   .font-display {
@@ -76,23 +73,43 @@
   }
   .eyebrow {
     font-family: var(--font-sans);
-    font-size: 0.68rem;
-    font-weight: 500;
-    letter-spacing: 0.32em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--color-gold);
+    color: var(--color-champagne);
   }
+  /* Solid light brown for numbers and highlighted words (the name is historical — no gradient) */
   .gold-text {
-    background: linear-gradient(100deg, #f6e6c3 0%, #d4b07a 38%, #a37c45 62%, #ecd7ac 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--color-champagne);
   }
   .hairline {
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
-    opacity: 0.5;
+    background: var(--color-line);
   }
+
+  /* Type scale — every heading uses one of these instead of a one-off size */
+  .title-xl { font-size: clamp(2.5rem, 1.6rem + 3.6vw, 4.5rem); }   /* page / room h1 */
+  .title-lg { font-size: clamp(2rem, 1.4rem + 2.4vw, 3.25rem); }    /* section h2 */
+  .title-md { font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); }       /* card titles, sub-heads */
+  /* Big numbers and the labels beside them (labels 1.5–2 rem) */
+  .stat-num {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    font-variant-numeric: lining-nums;
+    color: var(--color-champagne);
+    font-size: clamp(2.8rem, 2rem + 3vw, 4rem);
+  }
+  .stat-hero { font-size: clamp(4.5rem, 2.5rem + 9vw, 9rem); }
+  .stat-label {
+    font-size: clamp(1.5rem, 1.1rem + 0.8vw, 2rem);
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--color-ivory);
+  }
+  .stat-label .soft { font-weight: 400; color: var(--color-mist); }
 
   /* Buttons */
   .btn {
@@ -100,12 +117,11 @@
     display: inline-flex;
     align-items: center;
     gap: 0.9rem;
-    padding: 1rem 1.6rem;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.26em;
-    text-transform: uppercase;
-    border: 1px solid rgb(234 214 173 / 0.55);
+    padding: 0.85rem 1.6rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    border: 1px solid var(--color-champagne);
     color: var(--color-ivory);
     overflow: hidden;
     isolation: isolate;
@@ -121,13 +137,14 @@
     transform-origin: right;
     transition: transform var(--dur-fill) var(--ease-out);
   }
+  /* the main button: solid gold, the one place the accent is used */
   .btn-solid {
-    background: var(--color-champagne);
+    background: var(--color-gold);
     color: var(--color-ink);
-    border-color: var(--color-champagne);
+    border-color: var(--color-gold);
   }
   .btn-solid::before {
-    background: var(--color-ivory);
+    background: var(--color-gold-hover);
   }
   .btn .arrow {
     transition: transform var(--dur-hover) var(--ease-out);
@@ -144,6 +161,7 @@
   /* hover only where there's a real pointer — touch fires false hovers on tap */
   @media (hover: hover) and (pointer: fine) {
     .btn:hover { color: var(--color-ink); border-color: var(--color-champagne); }
+    .btn-solid:hover { border-color: var(--color-gold-hover); }
     .btn:hover::before { transform: scaleX(1); transform-origin: left; }
     .btn:hover .arrow { transform: translateX(4px); }
     .link-underline:hover { background-size: 100% 1px; }
@@ -155,36 +173,30 @@
   /* press feedback (its transition is in the .btn list, so colour transitions keep working) */
   .btn:active { transform: scale(0.97); }
 
-  /* Glass-on-walnut panels used for cards inside rooms */
+  /* Surface panels used for cards inside rooms */
   .panel {
-    background: linear-gradient(180deg, rgb(32 26 20 / 0.72), rgb(14 12 10 / 0.82));
+    background: var(--color-umber);
     border: 1px solid var(--color-line);
-    backdrop-filter: blur(10px);
-    box-shadow: inset 0 1px 0 rgb(234 214 173 / 0.06), 0 30px 60px -30px rgb(0 0 0 / 0.8);
   }
 
   /* ---------- Architecture ---------- */
 
   /* Warm ambient room light */
   .room-light {
-    background:
-      radial-gradient(60% 50% at 50% 0%, rgb(201 164 106 / 0.18), transparent 70%),
-      radial-gradient(40% 60% at 85% 60%, rgb(143 108 62 / 0.12), transparent 70%),
-      radial-gradient(50% 50% at 10% 80%, rgb(80 55 30 / 0.18), transparent 70%),
-      var(--color-ink);
+    background: var(--color-ink);
   }
 
   /* Fluted walnut wall panelling */
   .fluted {
     background:
-      linear-gradient(180deg, rgb(10 8 7 / 0.2), rgb(10 8 7 / 0.85)),
+      linear-gradient(180deg, rgb(21 13 9 / 0.2), rgb(21 13 9 / 0.85)),
       repeating-linear-gradient(
         90deg,
-        #1f1812 0px,
-        #2c2219 6px,
-        #3a2c1f 9px,
-        #241c15 14px,
-        #17120e 18px
+        #1B120D 0px,
+        #221710 6px,
+        #3B2A1E 9px,
+        #221710 14px,
+        #150D09 18px
       );
   }
 
@@ -205,15 +217,14 @@
   /* Polished floor reflection */
   .floor {
     background:
-      radial-gradient(50% 120% at 50% 0%, rgb(234 214 173 / 0.16), transparent 60%),
-      linear-gradient(180deg, #17120e, #070605);
+      #1B120D;
   }
 
   /* Corridor floor with brass inlays */
   .corridor-floor {
     background:
-      repeating-linear-gradient(0deg, transparent 0 238px, rgb(201 164 106 / 0.35) 238px 240px),
-      linear-gradient(90deg, #0a0807, #1a140f 50%, #0a0807);
+      repeating-linear-gradient(0deg, transparent 0 238px, rgb(201 154 69 / 0.35) 238px 240px),
+      #150D09;
   }
 }
 

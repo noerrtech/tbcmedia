@@ -1,7 +1,7 @@
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
-import { rooms } from "~/content/site";
+import { bookingLink, rooms } from "~/content/site";
 import { Logo } from "~/components/ui/Logo";
 import { dur, ease } from "~/lib/motion";
 
@@ -12,6 +12,14 @@ const siteLinks = [
   { label: "Industries", href: "/#industries" },
   { label: "Founder", href: "/#founder" },
   { label: "Contact", href: "/#contact" },
+];
+
+/** The header's own short list, as in the Mughal Noir mockup. */
+const navLinks = [
+  { label: "Work", href: "/#work" },
+  { label: "What we do", href: "/#services" },
+  { label: "Founder", href: "/#founder" },
+  { label: "JBN offer", href: "/#jbn" },
 ];
 
 export function Header({ variant = "site" }: { variant?: "site" | "office" }) {
@@ -35,9 +43,9 @@ export function Header({ variant = "site" }: { variant?: "site" | "office" }) {
           <Logo to={variant === "office" ? "/tbc" : "/"} />
 
           {variant === "site" ? (
-            <nav className="hidden items-center gap-9 lg:flex" aria-label="Primary">
-              {siteLinks.map((l) => (
-                <a key={l.href} href={l.href} className="link-underline text-[0.7rem] tracking-[0.24em] text-ivory/75 uppercase hover:text-ivory">
+            <nav className="ml-auto hidden items-center gap-8 lg:flex" aria-label="Primary">
+              {navLinks.map((l) => (
+                <a key={l.href} href={l.href} className="text-sm text-ivory transition-colors hover:text-champagne">
                   {l.label}
                 </a>
               ))}
@@ -61,9 +69,14 @@ export function Header({ variant = "site" }: { variant?: "site" | "office" }) {
 
           <div className="flex items-center gap-5">
             {variant === "site" ? (
-              <Link to="/tbc" className="hidden text-[0.65rem] tracking-[0.28em] text-champagne uppercase sm:block link-underline">
-                Enter the office
-              </Link>
+              <a
+                href={bookingLink()}
+                target="_blank"
+                rel="noreferrer"
+                className="hidden border border-champagne px-4 py-2.5 text-sm font-medium text-ivory transition-colors hover:bg-champagne hover:text-ink sm:block"
+              >
+                Book a consultation
+              </a>
             ) : (
               <Link to="/" className="hidden text-[0.65rem] tracking-[0.28em] text-champagne uppercase sm:block link-underline">
                 Classic site
@@ -74,7 +87,7 @@ export function Header({ variant = "site" }: { variant?: "site" | "office" }) {
               onClick={() => setOpen((o) => !o)}
               aria-expanded={open}
               aria-label={open ? "Close menu" : "Open menu"}
-              className="group relative flex h-10 w-10 flex-col items-center justify-center gap-[6px]"
+              className={`group relative flex h-10 w-10 ${variant === "site" ? "lg:hidden" : ""} flex-col items-center justify-center gap-[6px]`}
             >
               <span className={`h-px w-6 bg-ivory transition-transform duration-200 ${open ? "translate-y-[3.5px] rotate-45" : ""}`} />
               <span className={`h-px w-6 bg-ivory transition-transform duration-200 ${open ? "-translate-y-[3.5px] -rotate-45" : ""}`} />
@@ -106,7 +119,7 @@ export function Header({ variant = "site" }: { variant?: "site" | "office" }) {
                     >
                       <Link to={r.path} className="group flex items-baseline gap-5">
                         <span className="text-xs text-gold">{r.no}</span>
-                        <span className="display text-3xl text-ivory/80 transition-colors group-hover:text-champagne md:text-5xl">{r.name}</span>
+                        <span className="display title-md text-ivory/80 transition-colors group-hover:text-champagne">{r.name}</span>
                       </Link>
                     </motion.li>
                   ))}
@@ -122,7 +135,7 @@ export function Header({ variant = "site" }: { variant?: "site" | "office" }) {
                       animate={{ opacity: 1, transform: "translateX(0px)" }}
                       transition={{ delay: 0.16 + i * 0.04, duration: 0.35, ease: ease.out }}
                     >
-                      <a href={l.href} onClick={() => setOpen(false)} className="display text-3xl text-ivory/80 transition-colors hover:text-champagne md:text-5xl">
+                      <a href={l.href} onClick={() => setOpen(false)} className="display title-md text-ivory/80 transition-colors hover:text-champagne">
                         {l.label}
                       </a>
                     </motion.li>

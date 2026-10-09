@@ -33,7 +33,7 @@ function Journey() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 + i * 0.12, duration: dur.reveal, ease }}
-          className="font-script text-3xl text-champagne md:text-4xl"
+          className="display title-md text-champagne"
         >
           {step}
         </motion.li>
@@ -48,7 +48,7 @@ export function WhyTBC() {
       <div className="grid items-center gap-16 lg:grid-cols-[1.3fr_1fr]">
         <div>
           <Reveal><p className="eyebrow">About</p></Reveal>
-          <RevealLines lines={["Why", "TBC exists"]} className="display mt-6 text-5xl md:text-8xl" />
+          <RevealLines lines={["Why", "TBC exists"]} className="display title-xl mt-6" />
           <Reveal delay={0.2}>
             <p className="mt-10 max-w-xl font-display text-2xl leading-snug text-ivory/90 md:text-3xl">{beliefs.body}</p>
           </Reveal>
@@ -65,7 +65,7 @@ export function WhyTBC() {
 
       <div className="mt-32">
         <div className="flex items-end justify-between gap-6 border-b border-line pb-6">
-          <RevealLines lines={["The TBC way"]} className="display text-3xl md:text-5xl" />
+          <RevealLines lines={["The TBC way"]} className="display title-lg" />
           <Reveal><p className="eyebrow hidden md:block">Four principles</p></Reveal>
         </div>
         <ol className="grid md:grid-cols-2 lg:grid-cols-4">

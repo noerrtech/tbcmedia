@@ -4,7 +4,7 @@ import { useLocation, useNavigationType, useOutlet } from "react-router";
 import { Header } from "~/components/layout/Header";
 import { Passage } from "~/components/office/Passage";
 import { OfficeContext } from "~/components/office/OfficeContext";
-import { Monogram } from "~/components/ui/Logo";
+import { LogoMark } from "~/components/ui/Logo";
 import { goTo, stationForPath, world, type Direction, type StationKey } from "~/components/three/world";
 import { rooms } from "~/content/site";
 import { dur, ease } from "~/lib/motion";
@@ -31,7 +31,7 @@ class SceneBoundary extends Component<{ onError: () => void; children: ReactNode
 export function LightsComingOn() {
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 bg-ink">
-      <Monogram className="gold-text animate-flicker text-6xl" />
+      <LogoMark className="animate-flicker w-24" />
       <p className="eyebrow">The lights are coming on</p>
     </div>
   );

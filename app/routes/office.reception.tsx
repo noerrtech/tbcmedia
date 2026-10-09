@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { brand, receptionOptions } from "~/content/site";
-import { Monogram } from "~/components/ui/Logo";
+import { LogoMark } from "~/components/ui/Logo";
 import { SpeechBubble } from "~/components/office/Concierge";
 import { Arrow } from "~/components/ui/Arrow";
 import { useOffice } from "~/components/office/OfficeContext";
@@ -64,7 +64,7 @@ export default function Reception() {
   // The lobby itself is the 3D world behind this page (see the office layout).
   return (
     <section className="relative h-[100svh] min-h-[640px] overflow-hidden" aria-label="TBC reception">
-      <h1 className="sr-only">We make brands grow — The Brand Cappuccino reception</h1>
+      <h1 className="sr-only">{brand.headline} The Brand Cappuccino reception</h1>
 
       {/* legibility scrim for the options */}
       <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[42%] bg-gradient-to-t from-ink via-ink/75 to-transparent" />
@@ -78,7 +78,7 @@ export default function Reception() {
             animate={{ opacity: 1, transition: { duration: dur.page, ease: easing.out } }}
             exit={{ opacity: 0, transition: { duration: dur.exit, ease: easing.out } }}
           >
-            <p className="display text-4xl md:text-6xl">We make brands grow.</p>
+            <p className="display title-xl">{brand.headline}</p>
             <p className="mt-3 text-[0.7rem] tracking-[0.34em] text-champagne uppercase">{brand.label}</p>
           </motion.div>
         )}
@@ -226,7 +226,7 @@ function ClassicLobby({ line, showOptions, leaving, choose }: { line: string; sh
         animate={{ opacity: 1, filter: "blur(0px)" }}
         transition={{ duration: 2, delay: 0.6, ease }}
       >
-        <Monogram className="gold-text animate-flicker text-7xl drop-shadow-[0_0_30px_rgba(234,214,173,0.35)] md:text-9xl" />
+        <LogoMark className="animate-flicker w-28 md:w-36" />
         <p className="mt-3 text-[0.6rem] tracking-[0.5em] text-mist uppercase md:text-xs">{brand.name}</p>
       </motion.div>
 
@@ -237,7 +237,7 @@ function ClassicLobby({ line, showOptions, leaving, choose }: { line: string; sh
         </div>
         <motion.div
           aria-hidden
-          className="relative mt-5 h-16 rounded-t-sm border-t border-gold/50 bg-[linear-gradient(180deg,#2a2018,#120e0b)] shadow-[0_-20px_60px_-20px_rgba(234,214,173,0.25)] md:h-20"
+          className="relative mt-5 h-16 rounded-t-sm border-t border-gold/50 bg-umber md:h-20"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 0.9, ease }}

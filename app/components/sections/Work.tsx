@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { work, type WorkCategory } from "~/content/site";
+import { brand, work, type WorkCategory } from "~/content/site";
 import { gsap, ScrollTrigger, useGSAP } from "~/lib/gsap";
 import { useLenis } from "~/lib/smooth-scroll";
 import { Reveal, RevealLines } from "~/components/ui/Reveal";
@@ -42,7 +42,7 @@ export function WorkScreen({ c, i, variant = "title" }: { c: WorkCategory; i: nu
         </div>
       ) : (
         <div className="absolute inset-0 flex flex-col justify-end p-[6%]">
-          <p className="font-display text-[1.6em] leading-snug text-ivory/90 italic">“{c.body}”</p>
+          <p className="font-sans text-[1.6em] leading-snug text-ivory/90 italic">“{c.body}”</p>
           <p className="mt-[0.6em] text-[0.7em] tracking-[0.28em] text-gold uppercase">{c.items[0]?.client}</p>
         </div>
       )}
@@ -85,7 +85,7 @@ export function Curtain() {
         <div data-stage className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
           <div aria-hidden className="absolute inset-x-0 top-0 h-full bg-[radial-gradient(40%_70%_at_50%_0%,rgb(234_214_173/0.22),transparent_70%)]" />
           <p className="eyebrow relative">The work</p>
-          <h2 className="display relative mt-6 text-5xl md:text-8xl">
+          <h2 className="display title-xl relative mt-6">
             The work speaks
             <br />
             <span className="gold-text">louder than the pitch.</span>
@@ -105,12 +105,12 @@ export function Curtain() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
-            className="gold-text mt-6 font-display text-[22vw] leading-none font-light md:text-[14rem]"
+            className="stat-num stat-hero mt-6"
           >
             419M+
           </motion.p>
-          <p className="display text-2xl tracking-[0.2em] md:text-4xl">Organic views</p>
-          <p className="mt-6 font-display text-xl text-ivory/70 italic">The work speaks louder than the pitch.</p>
+          <p className="stat-label mt-4">Views. <span className="soft">{brand.proof}</span></p>
+          <p className="mt-6 font-sans text-xl text-ivory/70 italic">The work speaks louder than the pitch.</p>
           <button type="button" onClick={open} className="btn pointer-events-auto mt-12">
             Open the curtain ↓
           </button>
@@ -208,7 +208,7 @@ export function Corridor() {
               height: L,
               transform: `translate3d(${-WALL_X}px, ${-H / 2}px, 0) rotateX(-90deg)`,
               transformOrigin: "0 0",
-              background: "linear-gradient(90deg,#070605,#120e0b 40%,rgb(234 214 173 / 0.5) 49.6%,rgb(234 214 173 / 0.5) 50.4%,#120e0b 60%,#070605)",
+              background: "linear-gradient(90deg,#150D09,#1B120D 40%,rgb(217 185 138 / 0.5) 49.6%,rgb(217 185 138 / 0.5) 50.4%,#1B120D 60%,#150D09)",
             }}
           />
           {/* left wall */}
@@ -230,11 +230,11 @@ export function Corridor() {
           {/* end wall */}
           <div
             className="absolute flex flex-col items-center justify-center text-center"
-            style={{ width: WALL_X * 2, height: H, transform: `translate3d(${-WALL_X}px, ${-H / 2}px, ${-L}px)`, background: "radial-gradient(50% 60% at 50% 45%, rgb(234 214 173 / 0.28), #0a0807 75%)" }}
+            style={{ width: WALL_X * 2, height: H, transform: `translate3d(${-WALL_X}px, ${-H / 2}px, ${-L}px)`, background: "radial-gradient(50% 60% at 50% 45%, rgb(217 185 138 / 0.28), #150D09 75%)" }}
           >
             <p className="eyebrow">And counting</p>
-            <p className="gold-text mt-4 font-display text-[9rem] leading-none font-light">419M+</p>
-            <p className="display mt-4 text-3xl">Organic views</p>
+            <p className="stat-num stat-hero mt-4">419M+</p>
+            <p className="stat-label mt-4">Views. <span className="soft">{brand.proof}</span></p>
           </div>
         </div>
 
@@ -253,7 +253,7 @@ export function Corridor() {
               className="max-w-xl text-center"
             >
               <p className="eyebrow">0{active + 1} / 0{work.length}</p>
-              <p className="display mt-3 text-4xl md:text-6xl">{c.title}</p>
+              <p className="display title-lg mt-3">{c.title}</p>
               <p className="mt-3 text-sm text-ivory/70">{c.body}</p>
             </motion.div>
           </AnimatePresence>
@@ -317,7 +317,7 @@ export function WorkGallery() {
         <div ref={track} className="flex w-max flex-col gap-8 px-6 md:flex-row md:items-center md:gap-10 md:px-10">
           <div className="w-[calc(100vw-3rem)] shrink-0 md:w-[34vw]">
             <p className="eyebrow">Our work</p>
-            <h2 className="display mt-6 text-5xl md:text-7xl">
+            <h2 className="display title-xl mt-6">
               The work speaks <span className="gold-text">louder than the pitch.</span>
             </h2>
             <p className="mt-6 max-w-sm text-mist">Organised by the business problem we solved — not by the posts we made.</p>
@@ -341,7 +341,7 @@ export function CorridorIntro() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-32 text-center">
       <Reveal><p className="eyebrow">Walk the corridor</p></Reveal>
-      <RevealLines lines={["Five problems.", "Five kinds of growth."]} className="display mt-6 text-4xl md:text-6xl" />
+      <RevealLines lines={["Five problems.", "Five kinds of growth."]} className="display title-lg mt-6" />
       <Reveal delay={0.2}>
         <p className="mt-6 text-mist">We organise our work by the business problem it solved. Scroll to walk.</p>
       </Reveal>

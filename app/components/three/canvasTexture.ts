@@ -3,7 +3,7 @@ import * as THREE from "three";
 
 /**
  * A texture drawn with the 2D canvas — screens, cards. Redrawn once the site fonts have
- * loaded, so the type is Cormorant / Manrope rather than a fallback.
+ * loaded, so the type is Manrope / DM Sans rather than a fallback.
  */
 export function useCanvasTexture(draw: (ctx: CanvasRenderingContext2D, w: number, h: number) => void, w = 1024, h = 576, key = "") {
   const texture = useMemo(() => {
@@ -28,8 +28,8 @@ export function useCanvasTexture(draw: (ctx: CanvasRenderingContext2D, w: number
     paint();
     let alive = true;
     Promise.all([
-      document.fonts.load('300 120px "Cormorant Garamond"'),
-      document.fonts.load('italic 400 60px "Cormorant Garamond"'),
+      document.fonts.load('700 120px "Manrope"'),
+      document.fonts.load('italic 400 60px "DM Sans"'),
       document.fonts.load('600 30px "Manrope"'),
     ])
       .then(() => alive && paint())

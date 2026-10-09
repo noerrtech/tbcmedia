@@ -1,6 +1,6 @@
 # The Brand Cappuccino — website
 
-**We make brands grow.** The marketing site for TBC (Brand Growth & Strategy).
+**We make brands that people remember.** The marketing site for TBC (Brand Growth & Strategy).
 
 The site has two ways in, as in the brief:
 
@@ -123,7 +123,7 @@ textures, smaller HDRIs, Meshopt) comes later. The 3D lettering font is generate
 | Armchairs, ceiling lamp, books, candleholders, vases, plant | Poly Haven (`.blend` → `.glb` via `scripts/blend-to-glb.py`) | CC0 |
 | Worn brass (roughness/normal only) | TextureCan — Metal 0065 | verify before launch |
 | Porcelain vase (F1980.194), marble sculpture (SAAM 1983.95.181) | Smithsonian Open Access | CC0 |
-| Cormorant Garamond, Manrope, Pinyon Script | Google Fonts / Fontsource | OFL (licences in `public/fonts`) |
+| Manrope, DM Sans | Google Fonts / Fontsource | OFL (licences in `public/fonts`) |
 
 The `.blend` models are exported with Blender (`BLENDER=/path/to/Blender` to override the default
 `/Applications/Blender.app`).
