@@ -21,6 +21,7 @@ Stamp: `b1e86b3` + the uncommitted 3D-office working tree of 2026-10-09.
 | 012 | [Walk the first time; cut on revisits](012-cut-on-revisits.md) | MEDIUM | ✅ | DONE |
 | 013 | [Shorter Work room scroll](013-shorter-work-scroll.md) | MEDIUM | ✅ | DONE |
 | 014 | [Clickable sooner](014-faster-first-click.md) | MEDIUM | ✅ | DONE |
+| 015 | [Client feedback, round 2 (13 points)](015-client-feedback-round-2.md) | — | ⏳ | PLAN |
 
 ## Notes from execution (2026-10-09)
 
