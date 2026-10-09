@@ -20,13 +20,13 @@ export const actProgress = (i: number) => (i + 0.5) / ACTS;
 
 /**
  * Where act i's screen is at p (0 … ACTS): `up` 0 = hanging in place, 1 = flown out of sight.
- * At each change the old screen flies out (0.80 → 1.04) as the new one comes down (0.82 → 1.08):
- * they pass in the air, on different battens, and the stage is never bare.
+ * At each change the new screen comes down first, on the batten behind (0.64 → 0.90 into the act),
+ * then the old one flies out (0.90 → 1.14) and reveals it — so there is always a screen in place.
  */
 export function fly(i: number, p: number) {
   const local = p - i;
-  const enter = i === 0 ? 1 : smoothstep(-0.18, 0.08, local);
-  const exit = i === ACTS - 1 ? 0 : smoothstep(0.8, 1.04, local);
+  const enter = i === 0 ? 1 : smoothstep(-0.36, -0.1, local);
+  const exit = i === ACTS - 1 ? 0 : smoothstep(0.9, 1.14, local);
   const up = Math.min(1, 1 - enter + exit);
   return { up, visible: up < 0.999 };
 }

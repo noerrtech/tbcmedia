@@ -20,11 +20,11 @@ describe("the Work room's acts", () => {
     expect(fly(ACTS - 1, ACTS).up).toBe(0);
   });
 
-  it("brings the next screen down before the current one has gone, so the stage is never bare", () => {
+  it("has the next screen in place behind before the current one lifts away: the stage is never bare", () => {
     for (let i = 0; i < ACTS - 1; i++) {
       for (let p = i + 0.5; p <= i + 1.5; p += 0.01) {
         const shown = Math.min(fly(i, p).up, fly(i + 1, p).up);
-        expect(shown).toBeLessThan(0.75);
+        expect(shown).toBeLessThan(0.02);
       }
     }
   });

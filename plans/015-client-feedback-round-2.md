@@ -378,3 +378,12 @@ slides between them, hem trailing. Oxblood velvet in the Mughal Noir browns. Aro
 over a mirror (renders only while on screen), a front key light whose shadow puts 419M+ on the folds, two side
 spots with faint beams, dust and low haze. Camera moved back to the door and up so the boards show. The curtain
 opens on a click anywhere on the stage (3D and classic), as well as the button.
+
+## The Work room as five acts
+
+The corridor of side-wall screens is gone (unreadable at an angle; the camera swung left and right). After the
+curtain the camera steps through the proscenium and holds straight on. Each case study is an act: its screen
+hangs on its own batten; at a change the next screen lowers in behind, then the current one lifts away and
+reveals it (timing in app/lib/acts.ts, tested). Beside it the case study reads as a story — problem, what we
+did, what changed, numbers where TBC has them, services — with an act bar to jump. The classic site plays the
+same acts on a pinned page (stacked on phones). Case-study copy is placeholder until the real ones arrive.

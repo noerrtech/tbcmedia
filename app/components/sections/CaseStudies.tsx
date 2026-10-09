@@ -164,7 +164,7 @@ export function CaseStudiesFlat() {
               <span aria-hidden className="absolute -top-[40vh] left-[18%] h-[40vh] w-px bg-champagne/25" />
               <span aria-hidden className="absolute -top-[40vh] right-[18%] h-[40vh] w-px bg-champagne/25" />
               {work.map((c, i) => (
-                <div key={c.id} data-act-screen className="absolute inset-0 text-[16px] xl:text-[18px]" style={{ zIndex: i % 2 ? 2 : 1, visibility: i === 0 ? "visible" : "hidden" }}>
+                <div key={c.id} data-act-screen className="absolute inset-0 text-[16px] xl:text-[18px]" style={{ zIndex: ACTS - i, visibility: i === 0 ? "visible" : "hidden" }}>
                   <WorkScreen c={c} i={i} />
                 </div>
               ))}
