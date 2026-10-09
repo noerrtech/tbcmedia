@@ -5,7 +5,9 @@ import { CountUp } from "~/components/ui/CountUp";
 import { Reveal, RevealLines } from "~/components/ui/Reveal";
 import { Arrow } from "~/components/ui/Arrow";
 
-const ease = [0.22, 1, 0.36, 1] as const;
+import { dur, ease as easing, stagger as STAGGER } from "~/lib/motion";
+
+const ease = easing.out;
 
 export function FounderPortrait({ className = "" }: { className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -24,7 +26,7 @@ export function FounderPortrait({ className = "" }: { className?: string }) {
         initial={{ opacity: 0, scale: 1.04 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 1.6, ease }}
+        transition={{ duration: dur.headline, ease }}
         className="relative z-10 mx-auto w-full max-w-md [filter:sepia(0.12)_contrast(1.05)_brightness(0.95)] [mask-image:linear-gradient(180deg,#000_70%,transparent)]"
       />
     </div>
@@ -67,7 +69,7 @@ function Journey() {
           initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.6 + i * 0.18 }}
+          transition={{ delay: 0.3 + i * STAGGER, duration: dur.reveal, ease }}
         >
           <span className={i === founder.journey.length - 1 ? "text-champagne" : ""}>{step}</span>
           {i < founder.journey.length - 1 && <span className="text-gold">→</span>}

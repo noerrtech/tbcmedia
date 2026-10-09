@@ -1,6 +1,9 @@
 import { motion } from "framer-motion";
 import { beliefs, founder, principles } from "~/content/site";
 import { Reveal, RevealLines } from "~/components/ui/Reveal";
+import { dur, ease as easing } from "~/lib/motion";
+
+const ease = easing.out;
 
 /** Handwritten journey with hand-drawn connectors, as in the "Why TBC exists" mockup. */
 function Journey() {
@@ -20,7 +23,7 @@ function Journey() {
           initial={{ pathLength: 0 }}
           whileInView={{ pathLength: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 2.4, ease: "easeInOut" }}
+          transition={{ duration: 1.4, ease: easing.inOut }}
         />
       </motion.svg>
       {founder.journey.map((step, i) => (
@@ -29,7 +32,7 @@ function Journey() {
           initial={{ opacity: 0, x: -12 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.4 + i * 0.35, duration: 0.8 }}
+          transition={{ delay: 0.2 + i * 0.12, duration: dur.reveal, ease }}
           className="font-script text-3xl text-champagne md:text-4xl"
         >
           {step}

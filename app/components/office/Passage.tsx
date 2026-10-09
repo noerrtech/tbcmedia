@@ -5,9 +5,10 @@ import { rooms } from "~/content/site";
 
 /**
  * The "camera travelling through the building" moment between rooms:
- * a rush of doorframes towards the viewer with the next room's name.
+ * a rush of doorframes towards the viewer with the next room's name — or, going back,
+ * the doorframes receding behind you.
  */
-export function Passage() {
+export function Passage({ direction = "forward" }: { direction?: "forward" | "back" }) {
   const { pathname } = useLocation();
   const reduce = useReducedMotion();
   const first = useRef(true);
@@ -23,6 +24,7 @@ export function Passage() {
 
   if (run === 0 || reduce) return null;
   const room = rooms.find((r) => r.path === pathname);
+  const back = direction === "back";
 
   return (
     <motion.div
@@ -39,8 +41,8 @@ export function Passage() {
           key={i}
           className="absolute top-1/2 left-1/2 h-[46vh] w-[26vh] -translate-x-1/2 -translate-y-1/2 rounded-t-full border border-champagne/50 shadow-[0_0_40px_rgba(234,214,173,0.15)]"
           initial={{ scale: 0.15, opacity: 0 }}
-          animate={{ scale: [0.15, 1, 5], opacity: [0, 1, 0] }}
-          transition={{ duration: 1.05, delay: i * 0.09, ease: [0.55, 0, 0.9, 0.4] }}
+          animate={{ scale: back ? [5, 1, 0.15] : [0.15, 1, 5], opacity: [0, 1, 0] }}
+          transition={{ duration: 1.05, delay: (back ? 5 - i : i) * 0.09, ease: [0.55, 0, 0.9, 0.4] }}
         />
       ))}
       {/* light streaks along the floor */}
@@ -50,7 +52,7 @@ export function Passage() {
           className="absolute top-1/2 left-1/2 h-px w-[40vw] origin-left bg-gradient-to-r from-champagne/60 to-transparent"
           style={{ rotate: 25 + i * 40 }}
           initial={{ scaleX: 0, opacity: 0 }}
-          animate={{ scaleX: [0, 1], opacity: [0, 0.8, 0] }}
+          animate={{ scaleX: back ? [1, 0] : [0, 1], opacity: [0, 0.8, 0] }}
           transition={{ duration: 0.9, delay: 0.1 + i * 0.05, ease: "easeIn" }}
         />
       ))}

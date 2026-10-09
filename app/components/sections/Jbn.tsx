@@ -3,7 +3,9 @@ import { useState } from "react";
 import { jbn, whatsappLink } from "~/content/site";
 import { Arrow } from "~/components/ui/Arrow";
 
-const ease = [0.22, 1, 0.36, 1] as const;
+import { dur, ease as easing } from "~/lib/motion";
+
+const ease = easing.out;
 
 function Ring({ claimed, total }: { claimed: number; total: number }) {
   const r = 70;
@@ -25,7 +27,7 @@ function Ring({ claimed, total }: { claimed: number; total: number }) {
           initial={{ strokeDashoffset: c }}
           whileInView={{ strokeDashoffset: c * (1 - pct) }}
           viewport={{ once: true }}
-          transition={{ duration: 2, ease, delay: 0.3 }}
+          transition={{ duration: 1.2, ease, delay: 0.2 }}
         />
         <defs>
           <linearGradient id="jbn-gold" x1="0" x2="1">
@@ -73,10 +75,10 @@ export function JbnOffer({ claimed }: { claimed: number }) {
         Community offer
       </motion.p>
       <motion.h2
-        initial={{ opacity: 0, letterSpacing: "0.3em" }}
-        whileInView={{ opacity: 1, letterSpacing: "0.02em" }}
+        initial={{ opacity: 0, transform: "translateY(16px)" }}
+        whileInView={{ opacity: 1, transform: "translateY(0px)" }}
         viewport={{ once: true }}
-        transition={{ duration: 1.6, ease }}
+        transition={{ duration: dur.headline, ease }}
         className="display gold-text mt-6 pb-3 text-6xl leading-[1.1] md:text-8xl"
       >
         {jbn.title}

@@ -12,11 +12,11 @@ export function RoomFooter() {
     <div className="border-t border-line">
       {next && (
         <Link to={next.path} className="group relative block overflow-hidden px-6 py-24 text-center md:py-32">
-          <span aria-hidden className="absolute inset-0 bg-[radial-gradient(40%_80%_at_50%_100%,rgb(201_164_106/0.18),transparent_70%)] opacity-50 transition-opacity duration-700 group-hover:opacity-100" />
+          <span aria-hidden className="absolute inset-0 bg-[radial-gradient(40%_80%_at_50%_100%,rgb(201_164_106/0.18),transparent_70%)] opacity-50 transition-opacity duration-250 group-hover:opacity-100" />
           <span className="eyebrow relative">Next room — {next.no}</span>
-          <span className="display relative mt-5 flex items-center justify-center gap-6 text-4xl transition-colors duration-500 group-hover:text-champagne md:text-7xl">
+          <span className="display relative mt-5 flex items-center justify-center gap-6 text-4xl transition-colors duration-200 group-hover:text-champagne md:text-7xl">
             {next.name}
-            <Arrow className="h-4 w-10 transition-transform duration-500 group-hover:translate-x-2" />
+            <Arrow className="h-4 w-10 transition-transform duration-200 motion-safe:group-hover:translate-x-2" />
           </span>
         </Link>
       )}

@@ -2,6 +2,9 @@ import { motion } from "framer-motion";
 import { useRef } from "react";
 import { industries } from "~/content/site";
 import { Reveal, RevealLines } from "~/components/ui/Reveal";
+import { dur, ease as easing } from "~/lib/motion";
+
+const ease = easing.out;
 
 export function Industries() {
   const ref = useRef<HTMLUListElement>(null);
@@ -35,7 +38,7 @@ export function Industries() {
       >
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-500 group-hover/grid:opacity-100"
+          className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-250 group-hover/grid:opacity-100"
           style={{ background: "radial-gradient(260px circle at var(--mx) var(--my), rgb(234 214 173 / 0.12), transparent 70%)" }}
         />
         {industries.map((ind, i) => (
@@ -44,15 +47,15 @@ export function Industries() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 1, delay: i * 0.07 }}
+            transition={{ duration: dur.reveal, ease, delay: i * 0.04 }}
             className={`group relative flex aspect-[4/3] flex-col justify-between overflow-hidden bg-gradient-to-br ${ind.tone} to-coal p-5 md:aspect-[5/4] md:p-7`}
           >
             <span className="text-[0.6rem] tracking-[0.3em] text-gold">{String(i + 1).padStart(2, "0")}</span>
-            <span aria-hidden className="absolute right-4 bottom-3 font-display text-[7rem] leading-none text-ivory/[0.04] transition-all duration-700 group-hover:text-champagne/10 md:text-[10rem]">
+            <span aria-hidden className="absolute right-4 bottom-3 font-display text-[7rem] leading-none text-ivory/[0.04] transition-colors duration-250 group-hover:text-champagne/10 md:text-[10rem]">
               {ind.name[0]}
             </span>
             <span className="relative font-display text-xl leading-tight text-ivory md:text-3xl">{ind.name}</span>
-            <span className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-gold transition-transform duration-700 group-hover:scale-x-100" />
+            <span className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-gold transition-transform duration-250 group-hover:scale-x-100" />
           </motion.li>
         ))}
       </ul>

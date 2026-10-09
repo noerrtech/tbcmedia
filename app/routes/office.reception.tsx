@@ -5,6 +5,10 @@ import { brand, receptionOptions } from "~/content/site";
 import { Monogram } from "~/components/ui/Logo";
 import { SpeechBubble } from "~/components/office/Concierge";
 import { Arrow } from "~/components/ui/Arrow";
+import { useOffice } from "~/components/office/OfficeContext";
+import { doorForPath } from "~/components/three/doors";
+import { goTo, stationForPath, world } from "~/components/three/world";
+import { dur, ease as easing } from "~/lib/motion";
 import type { Route } from "./+types/office.reception";
 
 export const meta: Route.MetaFunction = () => [{ title: "Reception — The Brand Cappuccino" }];
@@ -14,10 +18,172 @@ const ease = [0.22, 1, 0.36, 1] as const;
 const replies: Record<string, string> = {
   "/tbc/founder": "Riya's cabin is just down the hall. Right this way.",
   "/tbc/work": "The screening corridor. Follow me.",
-  "/tbc/services": "Let's start in the strategy library.",
+  "/tbc/services": "Let's start with what we do. This way.",
   "/tbc/jbn": "Oh, you're here through JBN? Come with me.",
-  "/tbc/next": "Of course. Straight to the action room.",
+  "/tbc/next": "Of course. Let's get you started.",
 };
+
+/** The concierge's script: greet, ask, then offer the options. */
+function useConcierge(started: boolean) {
+  const [line, setLine] = useState("Hi. Welcome to TBC.");
+  const [showOptions, setShowOptions] = useState(false);
+  useEffect(() => {
+    if (!started) return;
+    const a = window.setTimeout(() => setLine("Hi. Welcome to TBC. What brings you in today?"), 900);
+    const b = window.setTimeout(() => setShowOptions(true), 1400);
+    return () => {
+      window.clearTimeout(a);
+      window.clearTimeout(b);
+    };
+  }, [started]);
+  return { line, setLine, showOptions };
+}
+
+export default function Reception() {
+  const navigate = useNavigate();
+  const { mode, ready } = useOffice();
+  const three = mode === "3d";
+  const [leaving, setLeaving] = useState<string | null>(null);
+  const { line, setLine, showOptions } = useConcierge(ready);
+
+  // leaving the lobby: nothing is being considered any more
+  useEffect(() => () => void (world.hovered = null), []);
+
+  const choose = (to: string) => {
+    if (leaving) return;
+    setLeaving(to);
+    setLine(replies[to]);
+    // 3D: the camera sets off on the click itself; the page follows while she's speaking
+    if (three) goTo(stationForPath[to]);
+    window.setTimeout(() => navigate(to), three ? 450 : 700);
+  };
+
+  if (mode === "pending") return <section className="h-[100svh] min-h-[640px]" aria-busy="true" />;
+  if (!three) return <ClassicLobby line={line} showOptions={showOptions} leaving={Boolean(leaving)} choose={choose} />;
+
+  // The lobby itself is the 3D world behind this page (see the office layout).
+  return (
+    <section className="relative h-[100svh] min-h-[640px] overflow-hidden" aria-label="TBC reception">
+      <h1 className="sr-only">We make brands grow — The Brand Cappuccino reception</h1>
+
+      {/* legibility scrim for the options */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[42%] bg-gradient-to-t from-ink via-ink/75 to-transparent" />
+
+      {/* the promise first — it gives way to the options */}
+      <AnimatePresence>
+        {ready && !showOptions && (
+          <motion.div
+            className="pointer-events-none absolute inset-x-0 top-[22%] px-6 text-center [text-shadow:0_2px_30px_rgb(0_0_0/0.8)]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: dur.page, ease: easing.out } }}
+            exit={{ opacity: 0, transition: { duration: dur.exit, ease: easing.out } }}
+          >
+            <p className="display text-4xl md:text-6xl">We make brands grow.</p>
+            <p className="mt-3 text-[0.7rem] tracking-[0.34em] text-champagne uppercase">{brand.label}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {ready && (
+        <>
+          {/* the concierge stands behind the desk */}
+          <div className="absolute inset-x-0 top-[43%] flex justify-center px-6">
+            <SpeechBubble text={line} />
+          </div>
+
+          <div className="absolute inset-x-0 bottom-0 px-6 pb-8 md:px-10">
+            <Options
+              show={showOptions}
+              leaving={Boolean(leaving)}
+              choose={choose}
+              onHover={(to) => (world.hovered = to ? doorForPath[to] : null)}
+              layout="bar"
+            />
+            <motion.a
+              href="/"
+              className="link-underline mx-auto mt-6 block w-fit text-center text-[0.62rem] tracking-[0.28em] text-mist uppercase"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: showOptions ? 1 : 0 }}
+              transition={{ delay: 0.8 }}
+            >
+              Prefer the traditional route? Take the classic site →
+            </motion.a>
+          </div>
+        </>
+      )}
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------------- */
+
+function Options({
+  show,
+  leaving,
+  choose,
+  onHover,
+  layout,
+}: {
+  show: boolean;
+  leaving: boolean;
+  choose: (to: string) => void;
+  onHover?: (to: string | null) => void;
+  layout: "grid" | "bar";
+}) {
+  const bar = layout === "bar";
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.ul
+          className={bar ? "mx-auto grid max-w-[1400px] gap-3 md:grid-cols-5" : "grid gap-3 md:grid-cols-2"}
+          initial="hidden"
+          animate={leaving ? "leave" : "show"}
+          variants={{ show: { transition: { staggerChildren: 0.06 } }, leave: { transition: { staggerChildren: 0.03 } } }}
+          aria-label="What are you looking for?"
+        >
+          {receptionOptions.map((o, i) => (
+            <motion.li
+              key={o.to}
+              className={!bar && i === receptionOptions.length - 1 ? "md:col-span-2" : ""}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                show: { opacity: 1, y: 0, transition: { duration: 0.6, ease } },
+                leave: { opacity: 0, y: 12, transition: { duration: 0.3 } },
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => choose(o.to)}
+                onMouseEnter={() => onHover?.(o.to)}
+                onMouseLeave={() => onHover?.(null)}
+                onFocus={() => onHover?.(o.to)}
+                onBlur={() => onHover?.(null)}
+                className={`panel group flex w-full text-left transition-colors duration-200 hover:border-gold/60 focus-visible:border-gold/60 ${
+                  bar ? "h-full flex-col gap-3 px-5 py-4" : "items-center gap-5 px-5 py-4 md:px-6 md:py-5"
+                }`}
+              >
+                {bar && (
+                  <span className="flex justify-end">
+                    <Arrow className="text-champagne transition-transform duration-200 motion-safe:group-hover:translate-x-1" />
+                  </span>
+                )}
+                <span className="flex-1">
+                  <span className="block text-[0.68rem] font-semibold tracking-[0.22em] text-ivory uppercase">{o.title}</span>
+                  <span className={`mt-1 block text-mist ${bar ? "text-xs leading-relaxed" : "text-sm"}`}>{o.body}</span>
+                </span>
+                {!bar && <Arrow className="text-champagne transition-transform duration-200 motion-safe:group-hover:translate-x-1" />}
+              </button>
+            </motion.li>
+          ))}
+        </motion.ul>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ------------------------------------------------------------------------- */
+/*  The CSS lobby — phones, no WebGL, or if the 3D scene can't load          */
+/* ------------------------------------------------------------------------- */
 
 function Pendant({ x, delay }: { x: string; delay: number }) {
   return (
@@ -33,28 +199,7 @@ function Pendant({ x, delay }: { x: string; delay: number }) {
   );
 }
 
-export default function Reception() {
-  const navigate = useNavigate();
-  const [line, setLine] = useState("Hi. Welcome to TBC.");
-  const [showOptions, setShowOptions] = useState(false);
-  const [leaving, setLeaving] = useState(false);
-
-  useEffect(() => {
-    const a = window.setTimeout(() => setLine("Hi. Welcome to TBC. What brings you in today?"), 1700);
-    const b = window.setTimeout(() => setShowOptions(true), 2600);
-    return () => {
-      window.clearTimeout(a);
-      window.clearTimeout(b);
-    };
-  }, []);
-
-  const choose = (to: string) => {
-    if (leaving) return;
-    setLeaving(true);
-    setLine(replies[to]);
-    window.setTimeout(() => navigate(to), 1300);
-  };
-
+function ClassicLobby({ line, showOptions, leaving, choose }: { line: string; showOptions: boolean; leaving: boolean; choose: (to: string) => void }) {
   return (
     <section className="relative min-h-screen overflow-hidden">
       {/* --- The lobby --- */}
@@ -104,42 +249,7 @@ export default function Reception() {
 
       {/* Options */}
       <div className="relative z-10 mx-auto max-w-5xl px-6 pt-6 pb-24">
-        <AnimatePresence>
-          {showOptions && (
-            <motion.ul
-              className="grid gap-3 md:grid-cols-2"
-              initial="hidden"
-              animate={leaving ? "leave" : "show"}
-              variants={{ show: { transition: { staggerChildren: 0.09 } }, leave: { transition: { staggerChildren: 0.03 } } }}
-              aria-label="What are you looking for?"
-            >
-              {receptionOptions.map((o, i) => (
-                <motion.li
-                  key={o.to}
-                  className={i === receptionOptions.length - 1 ? "md:col-span-2" : ""}
-                  variants={{
-                    hidden: { opacity: 0, y: 24 },
-                    show: { opacity: 1, y: 0, transition: { duration: 0.8, ease } },
-                    leave: { opacity: 0, y: 12, transition: { duration: 0.4 } },
-                  }}
-                >
-                  <button
-                    type="button"
-                    onClick={() => choose(o.to)}
-                    className="panel group flex w-full items-center gap-5 px-5 py-4 text-left transition-colors duration-500 hover:border-gold/60 md:px-6 md:py-5"
-                  >
-                    <span className="font-display text-2xl text-gold">{o.no}</span>
-                    <span className="flex-1">
-                      <span className="block text-[0.7rem] font-semibold tracking-[0.24em] text-ivory uppercase">{o.title}</span>
-                      <span className="mt-1 block text-sm text-mist">{o.body}</span>
-                    </span>
-                    <Arrow className="text-champagne transition-transform duration-500 group-hover:translate-x-1" />
-                  </button>
-                </motion.li>
-              ))}
-            </motion.ul>
-          )}
-        </AnimatePresence>
+        <Options show={showOptions} leaving={leaving} choose={choose} layout="grid" />
         <motion.a
           href="/"
           className="mt-10 block text-center text-[0.65rem] tracking-[0.28em] text-mist uppercase link-underline"

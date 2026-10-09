@@ -4,17 +4,19 @@ import { capabilities, serviceLine, services, type Service } from "~/content/sit
 import { Reveal, RevealLines } from "~/components/ui/Reveal";
 import { Arrow } from "~/components/ui/Arrow";
 
-const ease = [0.22, 1, 0.36, 1] as const;
+import { dur, ease as easing, stagger as STAGGER } from "~/lib/motion";
+
+const ease = easing.out;
 
 function Panel({ s, i, onOpen }: { s: Service; i: number; onOpen: () => void }) {
   const offset = i - (services.length - 1) / 2;
   return (
     <motion.li
       className="relative shrink-0 snap-center [perspective:1400px]"
-      initial={{ opacity: 0, y: 80 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, transform: "translateY(32px)" }}
+      whileInView={{ opacity: 1, transform: "translateY(0px)" }}
       viewport={{ once: true, margin: "-5% 0px" }}
-      transition={{ duration: 1.3, ease, delay: 0.1 + Math.abs(offset) * 0.12 }}
+      transition={{ duration: dur.headline, ease, delay: Math.abs(offset) * STAGGER }}
     >
       {/* light cone from the ceiling */}
       <div
@@ -39,13 +41,13 @@ function Panel({ s, i, onOpen }: { s: Service; i: number; onOpen: () => void }) 
               "radial-gradient(120% 60% at 50% 0%, #fbf4e6, #e9dcc2 55%, #cdb994 100%)",
           }}
         />
-        <span className="absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100" style={{ background: "radial-gradient(80% 50% at 50% 30%, rgb(255 255 255 / 0.55), transparent)" }} />
+        <span className="absolute inset-0 opacity-0 transition-opacity duration-250 group-hover:opacity-100" style={{ background: "radial-gradient(80% 50% at 50% 30%, rgb(255 255 255 / 0.55), transparent)" }} />
         <span className="relative flex h-full flex-col p-6 md:p-5 xl:p-6">
           <span className="font-display text-5xl font-light text-bronze">{s.no}</span>
           <span className="mt-6 font-display text-2xl leading-tight font-semibold tracking-wide uppercase md:text-lg xl:text-xl 2xl:text-2xl">{s.title}</span>
           <span className="mt-3 text-sm leading-relaxed text-ink/70">{s.question}</span>
           <span className="mt-auto flex items-center gap-3 border-t border-ink/15 pt-4 text-[0.6rem] font-semibold tracking-[0.26em] uppercase">
-            Explore <Arrow className="transition-transform duration-500 group-hover:translate-x-1" />
+            Explore <Arrow className="transition-transform duration-200 motion-safe:group-hover:translate-x-1" />
           </span>
         </span>
       </motion.button>

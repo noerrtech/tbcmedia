@@ -324,7 +324,7 @@ export function WorkGallery() {
           </div>
           {work.map((w, i) => (
             <article key={w.id} className="group w-[calc(100vw-3rem)] shrink-0 md:w-[46vw] lg:w-[38vw]">
-              <div className="aspect-[16/10] text-[11px] transition-transform duration-700 group-hover:scale-[1.015] md:text-[14px]">
+              <div className="aspect-[16/10] text-[11px] transition-transform duration-250 motion-safe:group-hover:scale-[1.015] md:text-[14px]">
                 <WorkScreen c={w} i={i} />
               </div>
               <p className="mt-5 text-sm leading-relaxed text-mist">{w.body}</p>

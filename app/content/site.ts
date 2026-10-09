@@ -313,16 +313,16 @@ export const rooms = [
   { path: "/tbc", key: "reception", no: "00", name: "Reception" },
   { path: "/tbc/founder", key: "founder", no: "01", name: "The Founder's Room" },
   { path: "/tbc/story", key: "story", no: "02", name: "Why TBC Exists" },
-  { path: "/tbc/services", key: "services", no: "03", name: "The Strategy Library" },
+  { path: "/tbc/services", key: "services", no: "03", name: "What We Do" },
   { path: "/tbc/work", key: "work", no: "04", name: "The Work" },
-  { path: "/tbc/jbn", key: "jbn", no: "05", name: "The JBN Room" },
-  { path: "/tbc/next", key: "next", no: "06", name: "The Action Room" },
+  { path: "/tbc/jbn", key: "jbn", no: "05", name: "JBN Offer" },
+  { path: "/tbc/next", key: "next", no: "06", name: "Start a project" },
 ] as const;
 
 export const receptionOptions = [
   { no: "01", title: "Meet the Founder", body: "I want to understand who is behind TBC.", to: "/tbc/founder" },
   { no: "02", title: "See the Work", body: "Show me what you've built.", to: "/tbc/work" },
-  { no: "03", title: "Explore What We Do", body: "I have a brand problem. Let's talk.", to: "/tbc/services" },
-  { no: "04", title: "TBC / JBN Offers", body: "I heard there's something for the community.", to: "/tbc/jbn" },
-  { no: "05", title: "I Know What I Need", body: "Take me straight to the next step.", to: "/tbc/next" },
+  { no: "03", title: "What We Do", body: "I have a brand problem. Let's talk.", to: "/tbc/services" },
+  { no: "04", title: "JBN Offer", body: "I heard there's something for the community.", to: "/tbc/jbn" },
+  { no: "05", title: "Start a project", body: "Take me straight to the next step.", to: "/tbc/next" },
 ];

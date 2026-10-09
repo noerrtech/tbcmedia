@@ -27,6 +27,26 @@ The site has two ways in, as in the brief:
 - **Framer Motion** — room transitions, reveals, shared-element service panels, concierge.
 - **GSAP + ScrollTrigger** — scroll-scrubbed curtain, 3D corridor camera, pinned work gallery, word highlight.
 - **Lenis** — smooth scrolling, driven by the GSAP ticker.
+- **three.js + React Three Fiber + drei + postprocessing** — the real-time 3D office (desktop only, lazy-loaded).
+
+### The 3D office: one world
+
+On desktop, `/tbc` and every room are **one persistent 3D building** (`app/components/three/`). The
+canvas lives in the office layout (`app/routes/office.tsx`) and never unloads; each route is a
+camera *station* (`world.ts`). Changing room walks the camera from wherever it is, out through the
+doorway, across the lobby and into the next room — the page's words fade out as it sets off and
+in as it arrives. Doorways are real openings cut through the walls (`cutMaterial`).
+
+| Room | Where it is | 3D |
+|---|---|---|
+| Reception | the lobby | fluted walnut, brass sign, concierge desk, pendants, plinths, lounges |
+| Founder / Why TBC Exists | behind the back-right door | the cabin: desk, lamp, chairs, dusk window |
+| Strategy library | through the left wall | shelves of ~3,000 books, six floating panels |
+| The Work | behind the back-left door | velvet curtain (cloth shader) that parts on scroll, 419M+ in brass rising into the loft, then a corridor of screens you walk down on scroll |
+| JBN | through the right wall | a screening room whose screen powers on as you arrive |
+| Action room | behind you, through the entrance | three lit doorways |
+
+Phones, no-WebGL2, data-saver, a failed load, or 15s of visible waiting get the CSS rooms instead.
 - **Tailwind CSS v4** — design tokens live in `app/app.css` (`@theme`).
 
 ## Develop
@@ -38,14 +58,15 @@ npm run typecheck
 npm run build && npm start   # production server on :3000
 ```
 
-Node 20+. Deploys anywhere that runs a Node server (Render, Railway, Fly, a VPS) — or swap in the
-Vercel/Netlify React Router adapter.
+Node 20+. `react-router.config.ts` is set to `ssr: false, prerender: true`, so `npm run build`
+produces a static site in `build/client` — host it on any static host. (`npm start` expects a
+server build, so it only applies if SSR is turned back on.)
 
 ### Environment
 
 | Var | Purpose |
 |---|---|
-| `JBN_CLAIMED` | How many JBN audits are claimed (drives the live counter). Default `17`. |
+| `JBN_CLAIMED` | How many JBN audits are claimed (drives the counter). Default `17`. With prerendering it's read **at build time** — rebuild to update it. |
 
 ## Editing content
 
@@ -78,5 +99,31 @@ Drop files in `public/media/`:
 
 - `prefers-reduced-motion` turns off smooth scroll, passage transitions, grain and drift.
 - Every interactive room has a plain route, real links and keyboard-reachable controls.
-- No 3D library or WebGL — the corridor is CSS 3D driven by GSAP, so it is light on mobile
-  (phones get a horizontal gallery instead).
+- The 3D lobby loads only on desktop with WebGL2 (and not on data-saver). Phones, older machines,
+  a failed load, or 15s of visible waiting all fall back to the CSS lobby. The 3D bundle is a
+  separate chunk the classic site never downloads.
+- Reduced motion: the 3D lobby renders still — no walk-in, no drift, no walk to the door.
+
+## 3D office assets
+
+Source files live outside the repo (in `~/Downloads`); `scripts/prepare-assets.sh` builds web
+working copies into `public/assets/` and `public/fonts/`. Re-run it after swapping a source file:
+
+```bash
+SRC=~/Downloads bash scripts/prepare-assets.sh
+```
+
+These are **2K working copies** for building the look — the final compression pass (KTX2
+textures, smaller HDRIs, Meshopt) comes later. The 3D lettering font is generated with
+`node scripts/make-typeface.mjs <font.ttf> <out.json>`.
+
+| Asset | Source | License |
+|---|---|---|
+| Walnut veneers, marble, HDRIs | Poly Haven | CC0 |
+| Armchairs, ceiling lamp, books, candleholders, vases, plant | Poly Haven (`.blend` → `.glb` via `scripts/blend-to-glb.py`) | CC0 |
+| Worn brass (roughness/normal only) | TextureCan — Metal 0065 | verify before launch |
+| Porcelain vase (F1980.194), marble sculpture (SAAM 1983.95.181) | Smithsonian Open Access | CC0 |
+| Cormorant Garamond, Manrope, Pinyon Script | Google Fonts / Fontsource | OFL (licences in `public/fonts`) |
+
+The `.blend` models are exported with Blender (`BLENDER=/path/to/Blender` to override the default
+`/Applications/Blender.app`).

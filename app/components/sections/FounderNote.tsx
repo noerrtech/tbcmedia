@@ -48,7 +48,7 @@ export function FounderNote() {
                     type="button"
                     onClick={() => setPlaying(true)}
                     aria-label="Play the founder's message"
-                    className="group absolute top-1/2 left-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-champagne/70 backdrop-blur-sm transition-transform duration-500 hover:scale-110"
+                    className="group absolute top-1/2 left-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-champagne/70 backdrop-blur-sm transition-transform duration-200 motion-safe:hover:scale-110"
                   >
                     <span className="ml-1 border-y-[9px] border-l-[15px] border-y-transparent border-l-champagne" />
                   </button>

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { rooms } from "~/content/site";
 import { Logo } from "~/components/ui/Logo";
+import { dur, ease } from "~/lib/motion";
 
 const siteLinks = [
   { label: "About", href: "/#about" },
@@ -75,8 +76,8 @@ export function Header({ variant = "site" }: { variant?: "site" | "office" }) {
               aria-label={open ? "Close menu" : "Open menu"}
               className="group relative flex h-10 w-10 flex-col items-center justify-center gap-[6px]"
             >
-              <span className={`h-px w-6 bg-ivory transition-transform duration-500 ${open ? "translate-y-[3.5px] rotate-45" : ""}`} />
-              <span className={`h-px w-6 bg-ivory transition-transform duration-500 ${open ? "-translate-y-[3.5px] -rotate-45" : ""}`} />
+              <span className={`h-px w-6 bg-ivory transition-transform duration-200 ${open ? "translate-y-[3.5px] rotate-45" : ""}`} />
+              <span className={`h-px w-6 bg-ivory transition-transform duration-200 ${open ? "-translate-y-[3.5px] -rotate-45" : ""}`} />
             </button>
           </div>
         </div>
@@ -88,8 +89,8 @@ export function Header({ variant = "site" }: { variant?: "site" | "office" }) {
             className="fixed inset-0 z-40 overflow-y-auto bg-ink/95 backdrop-blur-xl"
             initial={{ clipPath: "inset(0 0 100% 0)" }}
             animate={{ clipPath: "inset(0 0 0% 0)" }}
-            exit={{ clipPath: "inset(0 0 100% 0)" }}
-            transition={{ duration: 0.8, ease: [0.7, 0, 0.2, 1] }}
+            exit={{ clipPath: "inset(0 0 100% 0)", transition: { duration: 0.32, ease: ease.out } }}
+            transition={{ duration: dur.menu, ease: ease.drawer }}
             data-lenis-prevent
           >
             <div className="mx-auto grid min-h-full max-w-[1600px] gap-16 px-6 pt-32 pb-16 md:grid-cols-2 md:px-10">
@@ -97,7 +98,12 @@ export function Header({ variant = "site" }: { variant?: "site" | "office" }) {
                 <p className="eyebrow mb-8">The office — walk the rooms</p>
                 <ul className="space-y-3">
                   {rooms.map((r, i) => (
-                    <motion.li key={r.key} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.05 }}>
+                    <motion.li
+                      key={r.key}
+                      initial={{ opacity: 0, transform: "translateX(-12px)" }}
+                      animate={{ opacity: 1, transform: "translateX(0px)" }}
+                      transition={{ delay: 0.12 + i * 0.04, duration: 0.35, ease: ease.out }}
+                    >
                       <Link to={r.path} className="group flex items-baseline gap-5">
                         <span className="text-xs text-gold">{r.no}</span>
                         <span className="display text-3xl text-ivory/80 transition-colors group-hover:text-champagne md:text-5xl">{r.name}</span>
@@ -110,7 +116,12 @@ export function Header({ variant = "site" }: { variant?: "site" | "office" }) {
                 <p className="eyebrow mb-8">The classic route — just scroll</p>
                 <ul className="space-y-3">
                   {siteLinks.map((l, i) => (
-                    <motion.li key={l.href} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.35 + i * 0.05 }}>
+                    <motion.li
+                      key={l.href}
+                      initial={{ opacity: 0, transform: "translateX(-12px)" }}
+                      animate={{ opacity: 1, transform: "translateX(0px)" }}
+                      transition={{ delay: 0.16 + i * 0.04, duration: 0.35, ease: ease.out }}
+                    >
                       <a href={l.href} onClick={() => setOpen(false)} className="display text-3xl text-ivory/80 transition-colors hover:text-champagne md:text-5xl">
                         {l.label}
                       </a>

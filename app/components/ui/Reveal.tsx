@@ -1,12 +1,14 @@
 import { motion, type Variants } from "framer-motion";
 import type { ReactNode } from "react";
 
-const ease = [0.22, 1, 0.36, 1] as const;
+import { dur, ease as easing } from "~/lib/motion";
+
+const ease = easing.out;
 
 export function Reveal({
   children,
   delay = 0,
-  y = 28,
+  y = 16,
   className = "",
   as = "div",
 }: {
@@ -20,10 +22,10 @@ export function Reveal({
   return (
     <Tag
       className={className}
-      initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, transform: `translateY(${y}px)` }}
+      whileInView={{ opacity: 1, transform: "translateY(0px)" }}
       viewport={{ once: true, margin: "-10% 0px" }}
-      transition={{ duration: 1.1, ease, delay }}
+      transition={{ duration: dur.reveal, ease, delay }}
     >
       {children}
     </Tag>
@@ -35,8 +37,8 @@ const lineParent: Variants = {
   show: (stagger: number) => ({ transition: { staggerChildren: stagger } }),
 };
 const lineChild: Variants = {
-  hidden: { y: "110%", rotate: 2 },
-  show: { y: "0%", rotate: 0, transition: { duration: 1.2, ease } },
+  hidden: { transform: "translateY(110%) rotate(2deg)" },
+  show: { transform: "translateY(0%) rotate(0deg)", transition: { duration: dur.headline, ease } },
 };
 
 /**
@@ -47,7 +49,7 @@ export function RevealLines({
   lines,
   className = "",
   lineClassName = "",
-  stagger = 0.12,
+  stagger = 0.08,
   delay = 0,
   immediate = false,
   as = "h2",

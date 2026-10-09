@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { BubbleMark } from "~/components/ui/Logo";
 
 /** Types a line out like someone speaking, then calls onDone. */
-export function useTyped(text: string, { speed = 28, start = true } = {}) {
+export function useTyped(text: string, { speed = 16, start = true } = {}) {
   const [out, setOut] = useState("");
   useEffect(() => {
     if (!start) return;
