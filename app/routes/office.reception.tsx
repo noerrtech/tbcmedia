@@ -117,28 +117,6 @@ export default function Reception() {
 
 /* ------------------------------------------------------------------------- */
 
-/** The receptionist at her laptop, drawn flat for the CSS lobby (twin of the 3D figure). */
-function Receptionist({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 120 112" className={className} aria-hidden>
-      {/* hair bun, head, neck */}
-      <circle cx="74" cy="22" r="7" fill="#1a100b" />
-      <ellipse cx="64" cy="26" rx="11" ry="13.5" fill="#d6bfa4" />
-      <path d="M53 25c0-9 5-14 11.5-14S76 16 76 25c-3-5-7-7-11.5-7S56 20 53 25Z" fill="#1a100b" />
-      <rect x="60" y="38" width="9" height="9" rx="3" fill="#d6bfa4" />
-      {/* blazer, with a V of blouse */}
-      <path d="M38 112V68c0-14 10-22 26-22s26 8 26 22v44Z" fill="#2a1c14" />
-      <path d="M58 46h12l-6 12Z" fill="#D9B98A" />
-      {/* arms reaching to the laptop */}
-      <path d="M44 66c-6 12-8 24-4 34l18-2" fill="none" stroke="#2a1c14" strokeWidth="9" strokeLinecap="round" />
-      <path d="M84 66c2 14-6 26-24 33" fill="none" stroke="#2a1c14" strokeWidth="9" strokeLinecap="round" />
-      {/* the laptop lid, logo towards us */}
-      <path d="M14 112l6-34h40l-4 34Z" fill="#3d3f42" />
-      <circle cx="37" cy="95" r="3.2" fill="#F5A623" />
-    </svg>
-  );
-}
-
 function Options({
   show,
   leaving,
@@ -259,13 +237,12 @@ function ClassicLobby({ line, showOptions, leaving, choose }: { line: string; sh
         </div>
         <motion.div
           aria-hidden
-          className="relative mt-28 h-16 rounded-t-sm border-t border-gold/50 bg-umber md:mt-5 md:h-20"
+          className="relative mt-5 h-16 rounded-t-sm border-t border-gold/50 bg-umber md:h-20"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 0.9, ease }}
         >
           <div className="absolute inset-x-0 top-0 h-px bg-champagne/50" />
-          <Receptionist className="absolute right-[10%] bottom-full w-28 md:right-[16%] md:w-36" />
           <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[0.55rem] tracking-[0.5em] text-gold/80 uppercase">Concierge</p>
         </motion.div>
       </div>
