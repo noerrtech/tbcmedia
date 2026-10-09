@@ -199,10 +199,12 @@ The notes below were written for option A and get adjusted to whichever option i
 - 3D: the door labels and desk text (`assets.fonts.sans`) switch to DM Sans. The extruded 419M+ is rebuilt
   with `node scripts/make-typeface.mjs Manrope-ExtraBold.ttf …`.
 
-**Big numbers: DECIDE.** 2D-A to 2D-F and 3D-A to 3D-E take their colours from the chosen theme (including two growth-gradient styles, 2D-D and 3D-C); 3D-F keeps the logo yellow and orange. There are two treatments, a 2D one for the classic site and stat rows and a 3D one
-for hero moments and the 3D office. Pick one code from each: 2D-A to 2D-E and 3D-A to 3D-H in the number
-styles preview. On beige, the 2D options use espresso and burnt orange, with yellow as a highlighter;
-none of the 3D options use the red-orange shadow.
+**Big numbers: DECIDE.** There are two treatments: a 2D one for the classic site and stat rows, and a 3D one
+for hero moments and the 3D office. Pick one of each from the number styles preview: 2D-A to 2D-F and
+3D-A to 3D-F.
+- All but 3D-F take their colours from the chosen theme. Two of them use the growth gradient: 2D-D and 3D-C.
+- 3D-F keeps the logo yellow and orange.
+- None use the red-orange shadow.
 
 **Theme: DECIDE.** The owner wants something **fresh, with growth and strategy vibes, not tied to the logo**.
 Midnight & Mint is kept. Every other light and logo-based scheme was rejected as boring and is dropped.
