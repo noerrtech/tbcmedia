@@ -194,64 +194,33 @@ https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg and https://claude.ai/artifact
   card-colour sides, outlined letters on an accent block, logo yellow with orange sides.
 - Every 3D style has one solid side colour, with no shading. All but the last take the theme accent.
 
-**Theme: owner's recommended palette (2026-10-09), now the default in the previews.**
+**Theme: DECIDED (owner, 2026-10-09): Mughal Noir.** This replaces every earlier option: the Obsidian
+palette, the grey reference gradient and the brown-black, bold and light schemes.
 
-| Name | Hex | Role in the build |
-|---|---|---|
-| Obsidian | `#111315` | Page background |
-| Graphite | `#292C2F` | Cards, panels, header |
-| Steel Grey | `#64696B` | Borders, dividers, icons. **Not text**: 3.4 : 1 on Obsidian, 2.5 : 1 on Graphite |
-| Mist Grey | `#D0D2D1` | Secondary text (12.3 : 1) |
-| Cloud White | `#F4F4F1` | Headings and body text (16.9 : 1) |
-| Electric Yellow | `#FFE95A` | Optional accent, about 5%: highlighted word, big numbers, main button (15.1 : 1; Obsidian text on it 15.1 : 1) |
+| Role | Token | Hex | Contrast |
+|---|---|---|---|
+| Background | `bg` | `#150D09` | — |
+| Surface | `surface` | `#221710` | — |
+| Text | `ink` | `#F3EAD8` | 16.1 : 1 on Background, 14.7 : 1 on Surface |
+| Secondary | `ink-2` | `#D9B98A` | 10.3 : 1 / 9.4 : 1 |
+| Accent | `accent` | `#C99A45` | 7.5 : 1 / 6.8 : 1 |
+| *Caption (derived)* | `ink-3` | `#A88A63` | 5.9 : 1 / 5.4 : 1 |
+| *Accent hover (derived)* | `accent-hover` | `#D6AB5C` | Background text on it: 9.0 : 1 |
+| *Text on accent* | `on-accent` | `#150D09` (= Background) | 7.5 : 1 |
+| *Lines* | `line` | `rgb(217 185 138 / 0.18)` (Secondary at 18%) | — |
 
-- Proportions: about 70% dark neutrals, 25% light grey and white, 5% accent.
-- Two variants are in the preview:
-  - **Obsidian & Electric Yellow**
-  - **Obsidian Monochrome**, where Cloud White replaces the yellow as the accent and Mist Grey is the button
-    hover
-- One addition, for captions only: Steel Grey lifted to `#8E9395`, which passes 4.5 : 1 on Graphite.
-  The original Steel Grey stays for lines.
-- Electric Yellow is cooler than the logo's golden `#FCBB17`. Keep it sparse, or go monochrome so the logo
-  is the only warm colour on the page.
-
-**Background: the owner's reference gradient (2026-10-09), for full-screen scenes.** Sampled from the
-reference image, top to bottom:
-`#161A1C` → `#1F2427` → `#33393C` → `#495052` → `#60686A` → `#777F81` → `#899293` → `#A8AEB0` → `#C9CDD0` →
-`#D3D6D9`, light mist from about 65% down, with a fine grain.
-- It goes on full-screen scenes only: the reception (`/tbc`) and each room's opening screen. It mirrors the
-  reference:
-  - the headline and 419M+ sit in the dark top third
-  - the option cards become the **black bar** (`#0B0C0D`) with a soft shadow falling onto the light floor
-  - the floor holds dark buttons and links (Obsidian `#111315` on mist, about 12 : 1)
-- Long reading sections stay solid Obsidian, because Cloud White text fails on the light lower half.
-- Accents, numbers and buttons stay solid colours.
-- In code:
-  - a `--stage-bg` token used by the reception and room hero sections
-  - `--shelf` for the option bar
-  - `--floor-ink` for text on the light floor
-  - the 3D lobby's backdrop and fog would be tuned to the same top-to-bottom values
-- Preview: https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg (opens on this scene).
-
-**Theme: DECIDE.** The client wants **dark, between black and brown**. After seeing gradients, the owner asked
-for **solid colours only**: no gradient text, buttons or edges, and no background glows. A very fine grain
-remains and can be removed. Each theme is a dark base, a slightly lighter card colour, warm white text and
-**one solid accent**:
-
-| Theme | Base | Card | Accent | Accent hover | Text on accent |
-|---|---|---|---|---|---|
-| **Espresso & Copper** (default) | `#0E0A07` | `#18110C` | `#E08A45` | `#EDA066` | `#1A0F08` |
-| Black & Gold | `#070605` | `#12100D` | `#E9C46A` | `#F2D488` | `#120E06` |
-| Obsidian & Ember | `#0A0807` | `#14100E` | `#FF6A3D` | `#FF8A66` | `#1A0A06` |
-| Mocha & Mint | `#0D0A08` | `#17120F` | `#5FE0B0` | `#86EAC4` | `#0D0A08` |
-| Cocoa & Rose Gold | `#120C0A` | `#1B1310` | `#E9A58C` | `#F2BCA8` | `#1E110D` |
-| Onyx & Violet | `#080706` | `#131010` | `#B48CFF` | `#C8A9FF` | `#120A1E` |
-| Roast & Lime | `#0C0A08` | `#16120E` | `#D9FF5A` | `#E6FF8A` | `#0C0A08` |
-
-- Every accent is at least 6.6 : 1 on its base and card, and button labels are at least 6.7 : 1.
-- All seven suit the dark 3D office as it is. The door lights and the 419M+ sign take the accent.
-
-Detailed tokens get written into `app/app.css` once a theme is picked.
+- All colours are solid, with no gradients.
+- The gold accent is reserved for one headline word, big numbers, the main button, arrows and small labels.
+- The full-colour logo sits in the same warm family.
+- The 3D office fits as it is (walnut and brass). Its brass, door glows and the 419M+ sign get tuned to
+  `#C99A45`.
+- The grey reference gradient isn't used, because it was built for the Obsidian palette. If the owner wants
+  that dark-to-light effect back, it can be redone warm: Background fading into Secondary, with the option
+  cards as the dark bar.
+- In code, these replace the colour tokens in `app/app.css` (`--color-ink`, `--color-coal`,
+  `--color-champagne`, `--color-gold`, …). Every component already reads from those tokens.
+- Previews, locked to Mughal Noir + Manrope / DM Sans:
+  https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg and https://claude.ai/artifact/KGoCj2bzW2rqa7wPjkASqe
 
 ## 12. Story flow: recommendation
 
@@ -323,7 +292,6 @@ Recall"* is one option.
 4. **Room name**: Our Story / About Us / The TBC Story (point 10)
 5. **Story flow**: approve the spine and the room re-order (point 12)
 6. **Big numbers**: one 2D and one 3D style code (point 11)
-7. **Theme**: the Obsidian palette with Electric Yellow, or monochrome (point 11)
 
 Phase 1 (the new headline, audio check, the 419M+ line, smaller titles, the rename) can start as soon as the room name is
 picked.
