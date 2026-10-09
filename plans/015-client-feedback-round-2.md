@@ -188,30 +188,35 @@ https://claude.ai/artifact/KGoCj2bzW2rqa7wPjkASqe (number styles).
 
 **Big numbers: DECIDE.** There are two treatments, a 2D one for the classic site and stat rows and a 3D one
 for hero moments and the 3D office. Pick one code from each: 2D-A to 2D-E and 3D-A to 3D-H in the number
-styles preview. None of the 3D options use the red-orange shadow.
+styles preview. On beige, the 2D options use espresso and burnt orange, with yellow as a highlighter;
+none of the 3D options use the red-orange shadow.
 
-**Palette** (accents sampled from `public/media/tbc-logo-color.png`)
+**Palette: DECIDED (2026-10-09), a beige background.** This replaces the earlier dark espresso /
+foam / yellow scheme. Pick the exact shade from the three in the preview.
 
 | Token | Hex | Role |
 |---|---|---|
-| `tbc-yellow` | `#FCBB17` | Main buttons, key numbers, highlights (11.1 : 1 on espresso) |
-| `tbc-orange` | `#F57A22` | Hover, arrows, door glow (6.9 : 1) |
-| `tbc-ember` | `#F15824` | The logo's letter shadow: offset shadows only |
+| `bg` | Sand `#F1E6D3` / **Oat `#E9DBC3`** (default) / Cappuccino `#DCC7A6` | Page background |
+| `surface` | Sand `#F8F1E5` / Oat `#F3EADB` / Cappuccino `#E8D9C1` | Cards, panels, header |
+| `ink` | `#22170F` | Headings, body text, numbers (12.9 : 1 on Oat) |
+| `ink-2` | `#5A4634` | Secondary text (6.5 : 1) |
+| `ink-3` | `#6E5A46` | Captions (use `ink-2` on Cappuccino) |
+| `accent-text` | `#94400B` (`#823808` on Cappuccino) | Accent text, arrows, links: the logo orange, deepened (5.1 : 1) |
+| `tbc-yellow` | `#FCBB17` | **Fill only**: main buttons, highlighter mark under one word per headline, hovers |
+| `tbc-orange` | `#F57A22` | **Fill only**: button hover, door glow |
+| `tbc-ember` | `#F15824` | Small details only |
 | `tbc-mustard` | `#E3AF0E` | Pressed state |
-| `espresso` | `#120D09` | Page background (replaces `ink`) |
-| `roast` | `#1C150F` | Raised panels, header |
-| `walnut` | `#2A1F16` | Cards, the speech bubble |
-| `foam` | `#F8F2E9` | Main text (16.9 : 1) |
-| `latte` | `#BFB2A0` | Secondary text |
-| `smoke` | `#8A7F72` | Captions (4.8 : 1) |
 
-- Use it 60 / 30 / 10: espresso, then walnut and text, then yellow and orange.
-- Always put dark text on yellow or orange. White on orange is only 2.7 : 1.
-- **Signature detail**: buttons get the speech-bubble corner (`14px 14px 14px 4px`). The red-orange offset
-  shadow is **not** used on the numbers (owner disliked it); whether it stays on buttons is open.
-- `.gold-text` becomes solid yellow, and the champagne and gold tokens are retired.
-- In the 3D lobby, the walnut stays. Brass warms toward yellow, and the door tints change from four golds to
-  yellow and orange (`app/components/three/doors.ts`, `materials.ts`).
+- The logo yellow and orange can't be used as text colours on beige: yellow is 1.3 : 1 and orange is
+  2.0 : 1. Use them as fills, with espresso text on top (10.2 : 1).
+- Buttons get the speech-bubble corner (`14px 14px 14px 4px`). The concierge bubble is espresso with
+  light text.
+- The red-orange offset shadow is not used.
+- **The whole site flips from dark to light.** Every token in `app/app.css` changes, along with the dark
+  gradients, scrims, `.velvet`, `.fluted`, `.grain` and the header blur.
+- **DECIDE: the 3D office.** It's a dark walnut room. Either keep it dark as a contrast to the beige pages
+  (cheap), or relight it with pale oak, plaster and daylight to match (a sizeable 3D job, touching
+  `materials.ts`, `LobbyScene.tsx`, `Rooms.tsx`, the HDRIs and the lighting in `OfficeCanvas.tsx`).
 
 ## 12. Story flow: recommendation
 
@@ -283,6 +288,7 @@ Recall"* is one option.
 4. **Room name**: Our Story / About Us / The TBC Story (point 10)
 5. **Story flow**: approve the spine and the room re-order (point 12)
 6. **Big numbers**: one 2D and one 3D style code (point 11)
+7. **Beige shade**: Sand / Oat / Cappuccino, and whether the **3D office** stays dark or is relit light (point 11)
 
 Phase 1 (the new headline, audio check, the 419M+ line, smaller titles, the rename) can start as soon as the room name is
 picked.
