@@ -68,6 +68,16 @@ server build, so it only applies if SSR is turned back on.)
 |---|---|
 | `JBN_CLAIMED` | How many JBN audits are claimed (drives the counter). Default `17`. With prerendering it's read **at build time** — rebuild to update it. |
 
+## Tests
+
+```bash
+npm test                      # design rules for the background gradients (palette, contrast, no gradient text/buttons)
+npm run build && npx serve build/client -l 4173 &   # any static server
+E2E_URL=http://localhost:4173 npm run test:e2e      # rendered check: every text over a gradient reads at 4.5 : 1
+```
+
+`test:e2e` uses Playwright's Chromium (`npx playwright install chromium` once, or set `CHROMIUM_PATH`).
+
 ## Editing content
 
 **Every word, number and link is in [`app/content/site.ts`](app/content/site.ts).** Nothing needs

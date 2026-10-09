@@ -11,7 +11,14 @@ export function CountUp({ value, suffix = "", duration = 2.2, className = "" }: 
   const [started, setStarted] = useState(false);
 
   useEffect(() => {
-    if (!inView || reduce) return;
+    // Reduced motion: show the final number at once. (Set in an effect, not during render, so it also
+    // updates the server-rendered page — React doesn't patch attributes it finds different on hydration.)
+    if (reduce) {
+      setDisplay(format(value));
+      setStarted(true);
+      return;
+    }
+    if (!inView) return;
     setStarted(true);
     const controls = animate(0, value, {
       duration,
@@ -23,7 +30,7 @@ export function CountUp({ value, suffix = "", duration = 2.2, className = "" }: 
 
   return (
     <span ref={ref} className={className} style={{ fontVariantNumeric: "lining-nums tabular-nums" }}>
-      <span style={{ opacity: started || reduce ? 1 : 0 }}>{display}</span>
+      <span style={{ opacity: started ? 1 : 0 }}>{display}</span>
       {suffix}
     </span>
   );

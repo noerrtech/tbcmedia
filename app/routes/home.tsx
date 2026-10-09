@@ -36,7 +36,7 @@ export default function Home() {
       <section id="growth" className="scroll-mt-24 pt-28 md:pt-36"><GrowthGrid /></section>
 
       {/* WHY TBC — what we believe */}
-      <section id="why" className="relative py-40">
+      <section id="why" className="bg-glow relative py-40">
         <div className="mx-auto max-w-[1200px] px-6 md:px-10">
           <Reveal><p className="eyebrow">Why TBC</p></Reveal>
           <ScrollHighlight text={beliefs.title} className="display title-xl mt-8" />
@@ -79,7 +79,7 @@ export default function Home() {
       <section className="py-32"><FounderNote /></section>
 
       {/* JBN */}
-      <section id="jbn" className="scroll-mt-10 border-y border-line bg-umber py-32">
+      <section id="jbn" className="bg-spot scroll-mt-10 border-y border-line py-32">
         <JbnOffer claimed={claimed} />
       </section>
 
@@ -87,7 +87,7 @@ export default function Home() {
       <section className="py-40"><Testimonials /></section>
 
       {/* CTA */}
-      <section id="contact" className="scroll-mt-10 border-t border-line pt-40 pb-32"><ActionRoom /></section>
+      <section id="contact" className="bg-glow scroll-mt-10 border-t border-line pt-40 pb-32"><ActionRoom /></section>
 
       <Footer />
     </div>

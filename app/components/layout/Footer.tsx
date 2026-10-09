@@ -4,7 +4,7 @@ import { LogoMark } from "~/components/ui/Logo";
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-line bg-coal">
+    <footer className="bg-sink relative border-t border-line">
       <div className="mx-auto grid max-w-[1600px] gap-14 px-6 py-20 md:grid-cols-12 md:px-10">
         <div className="md:col-span-5">
           <LogoMark className="w-40" alt={brand.name} />

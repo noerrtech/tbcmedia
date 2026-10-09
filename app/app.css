@@ -256,6 +256,15 @@
   }
 }
 
+/* @background-gradients:start */
+/* Background-only gradients, Mughal Noir colours only. tests/backgrounds.test.ts holds them to:
+   palette colours; Text and Muted text at 4.5 : 1 or better at their lightest point; and, on the
+   rendered page, every piece of text over them (tests/e2e/background-contrast.test.ts). */
+.bg-glow { background: radial-gradient(70% 60% at 50% 0%, rgb(217 185 138 / 0.14), transparent 70%), var(--color-ink); }
+.bg-sink { background: linear-gradient(180deg, var(--color-umber) 0%, var(--color-ink) 100%); }
+.bg-spot { background: radial-gradient(55% 60% at 50% 45%, rgb(201 154 69 / 0.16), transparent 70%), var(--color-ink); }
+/* @background-gradients:end */
+
 /* Film grain over everything — subtle, cinematic */
 .grain::after {
   content: "";
