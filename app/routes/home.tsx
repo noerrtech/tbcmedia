@@ -48,15 +48,15 @@ export default function Home() {
 
       {/* WHAT WE DO */}
       <section id="services" className="relative scroll-mt-10 py-24">
-        <ServicesShowroom quote={false} />
+        <ServicesShowroom />
       </section>
       <Capabilities />
 
       {/* INDUSTRIES */}
-      <section id="industries" className="scroll-mt-10 py-40"><Industries tagline={false} /></section>
+      <section id="industries" className="scroll-mt-10 py-40"><Industries /></section>
 
       {/* RESULTS */}
-      <section id="results" className="scroll-mt-10 border-t border-line py-40"><ImpactWall stats={false} /></section>
+      <section id="results" className="scroll-mt-10 border-t border-line py-40"><ImpactWall /></section>
 
       {/* WORK */}
       <section id="work" className="scroll-mt-10"><WorkGallery /></section>

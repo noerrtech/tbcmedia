@@ -1,7 +1,7 @@
-import { serviceLine, services } from "~/content/site";
+import { services } from "~/content/site";
 import { Reveal, RevealLines } from "~/components/ui/Reveal";
 
-/** "We specialise in growth problems" — the six services as a quiet grid, then the line on social. */
+/** "We specialise in growth problems" — the six services as a quiet grid. */
 export function GrowthGrid() {
   return (
     <div className="mx-auto max-w-[1100px] px-6">
@@ -18,14 +18,6 @@ export function GrowthGrid() {
           </Reveal>
         ))}
       </ul>
-
-      <div className="mt-10 border-y border-line py-16 text-center md:py-24">
-        <RevealLines
-          as="p"
-          lines={[serviceLine.lead, <span className="text-champagne">{serviceLine.follow}</span>]}
-          className="display title-lg mx-auto max-w-[24ch]"
-        />
-      </div>
     </div>
   );
 }
