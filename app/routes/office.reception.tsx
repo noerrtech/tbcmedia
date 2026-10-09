@@ -226,7 +226,7 @@ function ClassicLobby({ line, showOptions, leaving, choose }: { line: string; sh
         animate={{ opacity: 1, filter: "blur(0px)" }}
         transition={{ duration: 2, delay: 0.6, ease }}
       >
-        <LogoMark className="animate-flicker w-40 md:w-52" />
+        <LogoMark className="animate-flicker w-40 md:w-52" alt={brand.name} />
       </motion.div>
 
       {/* The desk & concierge */}

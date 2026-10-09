@@ -5,12 +5,12 @@ import { Link } from "react-router";
  * `tbc-logo-dark.png` is the same artwork with the black wordmark set in Text (#F3EAD8) so it reads on
  * the dark site; `tbc-logo.png` is the untouched original for light backgrounds.
  */
-export function LogoMark({ className = "", light = false }: { className?: string; light?: boolean }) {
+export function LogoMark({ className = "", light = false, alt = "" }: { className?: string; light?: boolean; alt?: string }) {
   return (
     <img
       src={light ? "/media/tbc-logo.png" : "/media/tbc-logo-dark.png"}
-      alt=""
-      aria-hidden
+      alt={alt}
+      aria-hidden={alt ? undefined : true}
       width={1202}
       height={943}
       className={`h-auto ${className}`}
