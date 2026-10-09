@@ -165,20 +165,30 @@ title), `home.tsx:37` ("Why TBC" eyebrow → "About us").
 
 ## 11. Fonts and colours
 
-**DECIDED (2026-10-09): Space Grotesk (headings) + Inter (body and UI), with colours taken from the
-logo.** Preview: https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg
+**DECIDED (2026-10-09): Manrope (headings and numbers) + DM Sans (body and UI), with colours taken
+from the logo.** This replaces an earlier pick of Space Grotesk + Inter.
+Previews: https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg (palette and type) and
+https://claude.ai/artifact/KGoCj2bzW2rqa7wPjkASqe (number styles).
 
 **Fonts**
-- Both are OFL. Self-host them with `@fontsource-variable/space-grotesk` and `@fontsource-variable/inter`
-  (`public/fonts/` + `app/app.css` `@font-face`), and remove Cormorant, Manrope and Pinyon Script.
-- Headings are Space Grotesk 600, tracking −0.02 to −0.03 em, **sentence case** (drop `text-transform` from
-  `.display`). Body is Inter 400 at 16–18 px. Labels and eyebrows are Inter 600, tracked caps.
-- Space Grotesk has no italics: quotes use Inter italic. The handwritten journey (`font-script`, 3 uses)
-  becomes Space Grotesk.
-- 3D: the door labels and desk text (`assets.fonts.sans`) switch to Inter. The extruded 419M+ is rebuilt
-  with `node scripts/make-typeface.mjs SpaceGrotesk.ttf …`.
-- Space Grotesk + Inter is a very common pairing, so the personality has to come from the logo colours and
-  the logo's offset letter shadow, used consistently.
+- Both are OFL. Manrope is already self-hosted in `public/fonts/`. Add DM Sans with
+  `@fontsource-variable/dm-sans`, and remove Cormorant Garamond and Pinyon Script.
+- Manrope and DM Sans are similar, so the contrast has to come from weight:
+  - headings are Manrope 700, tracking −0.02 to −0.03 em, **sentence case** (drop `text-transform` from
+    `.display`)
+  - big numbers are Manrope 800
+  - body is DM Sans 400 at 16–18 px
+  - eyebrows are DM Sans 600, tracked caps
+- **Labels next to big numbers are 1.5–2 rem** (`clamp(1.5rem, 1.1rem + 1vw, 2rem)`), DM Sans 500, in foam
+  with the rest of the line in latte.
+- Manrope has no italics, so quotes use DM Sans italic. The handwritten journey (`font-script`, 3 uses)
+  becomes Manrope.
+- 3D: the door labels and desk text (`assets.fonts.sans`) switch to DM Sans. The extruded 419M+ is rebuilt
+  with `node scripts/make-typeface.mjs Manrope-ExtraBold.ttf …`.
+
+**Big numbers: DECIDE.** There are two treatments, a 2D one for the classic site and stat rows and a 3D one
+for hero moments and the 3D office. Pick one code from each: 2D-A to 2D-E and 3D-A to 3D-H in the number
+styles preview. None of the 3D options use the red-orange shadow.
 
 **Palette** (accents sampled from `public/media/tbc-logo-color.png`)
 
@@ -197,9 +207,8 @@ logo.** Preview: https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg
 
 - Use it 60 / 30 / 10: espresso, then walnut and text, then yellow and orange.
 - Always put dark text on yellow or orange. White on orange is only 2.7 : 1.
-- **Signature detail**: the logo's red-orange offset shadow (`-4px 4px 0 tbc-ember`) on the main button,
-  on the 419M+ number and on one highlighted word per headline. Buttons get the speech-bubble corner
-  (`14px 14px 14px 4px`).
+- **Signature detail**: buttons get the speech-bubble corner (`14px 14px 14px 4px`). The red-orange offset
+  shadow is **not** used on the numbers (owner disliked it); whether it stays on buttons is open.
 - `.gold-text` becomes solid yellow, and the champagne and gold tokens are retired.
 - In the 3D lobby, the walnut stays. Brass warms toward yellow, and the door tints change from four golds to
   yellow and orange (`app/components/three/doors.ts`, `materials.ts`).
@@ -273,6 +282,7 @@ Recall"* is one option.
    shoot Riya or a team member? (point 6)
 4. **Room name**: Our Story / About Us / The TBC Story (point 10)
 5. **Story flow**: approve the spine and the room re-order (point 12)
+6. **Big numbers**: one 2D and one 3D style code (point 11)
 
 Phase 1 (the new headline, audio check, the 419M+ line, smaller titles, the rename) can start as soon as the room name is
 picked.
