@@ -199,63 +199,32 @@ The notes below were written for option A and get adjusted to whichever option i
 - 3D: the door labels and desk text (`assets.fonts.sans`) switch to DM Sans. The extruded 419M+ is rebuilt
   with `node scripts/make-typeface.mjs Manrope-ExtraBold.ttf …`.
 
-**Big numbers: DECIDE.** The 2D options and 3D-T follow the chosen theme's colours; the other 3D options use the logo colours and the picked one gets retuned to the theme. There are two treatments, a 2D one for the classic site and stat rows and a 3D one
+**Big numbers: DECIDE.** 2D-A to 2D-F and 3D-A to 3D-E take their colours from the chosen theme (including two growth-gradient styles, 2D-D and 3D-C); 3D-F keeps the logo yellow and orange. There are two treatments, a 2D one for the classic site and stat rows and a 3D one
 for hero moments and the 3D office. Pick one code from each: 2D-A to 2D-E and 3D-A to 3D-H in the number
 styles preview. On beige, the 2D options use espresso and burnt orange, with yellow as a highlighter;
 none of the 3D options use the red-orange shadow.
 
-**Theme: DECIDE.** The owner asked for something **fresh, with growth and strategy vibes, not tied to the logo
-colours**. There are five new themes. In each, the yellow and orange logo stays as it is and becomes the one
-warm spot on a calm page:
+**Theme: DECIDE.** The owner wants something **fresh, with growth and strategy vibes, not tied to the logo**.
+Midnight & Mint is kept. Every other light and logo-based scheme was rejected as boring and is dropped.
+There are six new themes in the same spirit: a deep, saturated background, one vivid accent, and a second
+colour the accent fades into (the "growth gradient").
 
-| Theme | Background | Text | Accent text | Button (label) | Highlighter |
+| Theme | Background | Text | Accent | Accent 2 (gradient end) | Button (label) |
 |---|---|---|---|---|---|
-| **Sage & Forest** (default) | `#EEF2EA` | `#10241A` | `#1D6B45` | `#1D6B45` (white) | `#BFE5A8` |
-| **Navy & Lime** | `#F3F4EE` | `#0F1B33` | `#2446B0` | `#C6F04F` (navy) | `#D9F78A` |
-| **Cobalt** | `#F4F6FA` | `#0B1220` | `#1E4FD6` | `#1E4FD6` (white) | `#C9DAFF` |
-| **Deep Teal** | `#E9F1EF` | `#0D2627` | `#0E6F68` | `#0E6F68` (white) | `#A8E3D5` |
-| **Midnight & Mint** (dark) | `#0F1A17` | `#EAF4EE` | `#5FE0A0` | `#5FE0A0` (dark) | `#1F5A41` |
+| **Midnight & Mint** (kept, default) | `#0F1A17` | `#EAF4EE` | `#5FE0A0` | `#B8F35A` | `#5FE0A0` (dark) |
+| Obsidian & Volt | `#0B0D0C` | `#F2F5F0` | `#D4FF3A` | `#6CF0A8` | `#D4FF3A` (dark) |
+| Ocean & Aqua | `#08131F` | `#EAF3FA` | `#3EE6D8` | `#4D8DFF` | `#3EE6D8` (dark) |
+| Forest & Gold | `#0D241B` | `#F3F1E6` | `#F2C14E` | `#9BE36E` | `#F2C14E` (dark) |
+| Indigo & Sunrise | `#12112E` | `#F1EFFA` | `#FF7A59` | `#FFB35C` | `#FF7A59` (dark) |
+| Aubergine & Lime | `#1A0F22` | `#F6F0F7` | `#B8F35A` | `#5FE0C8` | `#B8F35A` (dark) |
+| Electric Blue (colour block) | `#1736F0` | `#FFFFFF` | `#D7FF4F` | `#7CF5D3` | `#D7FF4F` (navy `#0B1450`) |
 
-Every text pairing is 4.5 : 1 or better. Midnight & Mint is the only theme that already suits the dark 3D
-office.
+- Every text pairing is 4.5 : 1 or better, and the logo reads clearly on all of them.
+- All seven are deep, so **the dark 3D office fits as it is**. Only the door glows and accent lights get
+  retinted to the theme accent.
+- The headline's highlighted word uses the growth gradient (gradient text), not a highlighter.
 
-The earlier logo-based light schemes are kept in the preview for comparison:
-
-| Scheme | Background | Text | Accent text | Button |
-|---|---|---|---|---|
-| Oat (default) | `#E9DBC3` | `#22170F` | `#94400B` | yellow `#FCBB17` |
-| Sand | `#F1E6D3` | `#22170F` | `#94400B` | yellow |
-| Cappuccino | `#DCC7A6` | `#22170F` | `#7A3407` | yellow |
-| Ivory & Ink | `#F7F2EA` | `#1A1714` | `#9A3F0A` | yellow |
-| Butter | `#F6E7B8` | `#22170F` | `#8E3A08` | orange `#F57A22` |
-| Latte & Terracotta | `#E8D5BE` | `#2A1A12` | `#9C3A12` | orange |
-| Stone & Charcoal | `#E5E0D8` | `#1F1D1B` | `#8F3D0C` | yellow |
-
-The token table below shows the Oat scheme.
-
-| Token | Hex | Role |
-|---|---|---|
-| `bg` | Sand `#F1E6D3` / **Oat `#E9DBC3`** (default) / Cappuccino `#DCC7A6` | Page background |
-| `surface` | Sand `#F8F1E5` / Oat `#F3EADB` / Cappuccino `#E8D9C1` | Cards, panels, header |
-| `ink` | `#22170F` | Headings, body text, numbers (12.9 : 1 on Oat) |
-| `ink-2` | `#5A4634` | Secondary text (6.5 : 1) |
-| `ink-3` | `#6E5A46` | Captions (use `ink-2` on Cappuccino) |
-| `accent-text` | `#94400B` (`#823808` on Cappuccino) | Accent text, arrows, links: the logo orange, deepened (5.1 : 1) |
-| `tbc-yellow` | `#FCBB17` | **Fill only**: main buttons, highlighter mark under one word per headline, hovers |
-| `tbc-orange` | `#F57A22` | **Fill only**: button hover, door glow |
-| `tbc-ember` | `#F15824` | Small details only |
-| `tbc-mustard` | `#E3AF0E` | Pressed state |
-
-- The logo yellow and orange can't be used as text colours on beige: yellow is 1.3 : 1 and orange is
-  2.0 : 1. Use them as fills, with espresso text on top (10.2 : 1).
-- Buttons get the speech-bubble corner (`14px 14px 14px 4px`). The concierge bubble is espresso with
-  light text.
-- The red-orange offset shadow is not used.
-- **The whole site flips from dark to light.** Every token in `app/app.css` changes, along with the dark
-  gradients, scrims, `.velvet`, `.fluted`, `.grain` and the header blur.
-- **DECIDE: the 3D office.** It's a dark walnut room. Either keep it dark as a contrast to the beige pages
-  (cheap), or relight it with pale oak, plaster and daylight to match (a sizeable 3D job, touching
-  `materials.ts`, `LobbyScene.tsx`, `Rooms.tsx`, the HDRIs and the lighting in `OfficeCanvas.tsx`).
+Detailed tokens get written into `app/app.css` once a theme is picked.
 
 ## 12. Story flow: recommendation
 
@@ -327,7 +296,7 @@ Recall"* is one option.
 4. **Room name**: Our Story / About Us / The TBC Story (point 10)
 5. **Story flow**: approve the spine and the room re-order (point 12)
 6. **Big numbers**: one 2D and one 3D style code (point 11)
-7. **Theme**: one of the five fresh themes (or an earlier logo-based scheme), and whether the **3D office** stays dark or is relit to match (point 11)
+7. **Theme**: Midnight & Mint or one of the six new bold themes (point 11)
 8. **Fonts**: A Manrope + DM Sans / B Helvetica Neue / C Didot + Helvetica Neue / D Helvetica Neue + Didot accents (point 11)
 
 Phase 1 (the new headline, audio check, the 419M+ line, smaller titles, the rename) can start as soon as the room name is
