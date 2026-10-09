@@ -145,7 +145,6 @@ export function FounderCabin({ p }: { p: Palette }) {
         <mesh material={p.brass} position={[0, 0.735, 0.452]}>
           <boxGeometry args={[2.6, 0.012, 0.012]} />
         </mesh>
-        <Model url={assets.furniture.books} position={[-1.1, 0.79, -0.2]} scale={0.8} />
         <Model url={assets.furniture.brassVase} position={[0.95, 0.79, -0.15]} scale={0.7} />
       </group>
       <Model url={assets.furniture.armchairModern} position={[4.7, 0, -16.85]} rotation-y={Math.PI} />

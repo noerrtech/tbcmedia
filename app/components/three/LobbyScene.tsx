@@ -7,8 +7,8 @@ import { assets } from "./assets";
 import { doors } from "./doors";
 import { ARCH_H, ARCH_W, Doorway } from "./Doorway";
 import { extrudedText, flutedGeometry, metricUVs, radialTexture } from "./geometry";
-import { DeskDressing, LampPendant, Lounge } from "./Furniture";
-import { cutMaterial, useFloorTextures, usePalette, useSculptureMaps, useVaseMap } from "./materials";
+import { LampPendant, Lounge } from "./Furniture";
+import { cutMaterial, useFloorTextures, usePalette } from "./materials";
 import { PausableReflectorMaterial } from "./PausableReflector";
 import { world } from "./world";
 
@@ -197,77 +197,6 @@ function Desk({ p }: { p: Palette }) {
 
 /* ------------------------------------------------------------------------- */
 
-function Plinth({ x, z, p, children }: { x: number; z: number; p: Palette; children: React.ReactNode }) {
-  const [target] = useState(() => new THREE.Object3D());
-  const top = 1.15;
-  return (
-    <group position={[x, 0, z]}>
-      <mesh material={p.walnut} position={[0, top / 2, 0]} castShadow receiveShadow>
-        <boxGeometry args={[0.52, top, 0.52]} />
-      </mesh>
-      <mesh material={p.brass} position={[0, top + 0.01, 0]}>
-        <boxGeometry args={[0.56, 0.02, 0.56]} />
-      </mesh>
-      <group position={[0, top + 0.02, 0]}>{children}</group>
-      <primitive object={target} position={[0, top + 0.2, 0]} />
-      <SpotLight
-        target={target}
-        position={[0, H - 0.2, 0.6]}
-        angle={0.2}
-        penumbra={0.7}
-        intensity={70}
-        distance={7}
-        decay={2}
-        color="#ffdcae"
-        attenuation={4.5}
-        anglePower={5}
-        radiusTop={0.04}
-        radiusBottom={0.75}
-        opacity={0.14}
-        castShadow
-        shadow-mapSize={[1024, 1024]}
-        shadow-bias={-0.0004}
-      />
-    </group>
-  );
-}
-
-function Vase() {
-  const { scene } = useGLTF(assets.vase.model);
-  const { map } = useVaseMap();
-  const obj = useMemo(() => {
-    const o = scene.clone(true);
-    o.traverse((m) => {
-      if (m instanceof THREE.Mesh) {
-        m.material = new THREE.MeshPhysicalMaterial({ map, roughness: 0.2, clearcoat: 0.8, clearcoatRoughness: 0.08, envMapIntensity: 1.2 }); // glazed porcelain
-        m.castShadow = true;
-      }
-    });
-    return o;
-  }, [scene, map]);
-  const s = 1.25;
-  return <primitive object={obj} scale={s} position-y={0.2155 * s} />;
-}
-
-function Sculpture() {
-  const { scene } = useGLTF(assets.sculpture.model);
-  const maps = useSculptureMaps();
-  const obj = useMemo(() => {
-    const o = scene.clone(true);
-    o.traverse((m) => {
-      if (m instanceof THREE.Mesh) {
-        m.material = new THREE.MeshStandardMaterial({ ...maps, roughness: 0.42, envMapIntensity: 1 }); // honed marble
-        m.castShadow = true;
-      }
-    });
-    return o;
-  }, [scene, maps]);
-  const s = 1.8;
-  return <primitive object={obj} scale={s} position-y={0.1513 * s} />;
-}
-
-/* ------------------------------------------------------------------------- */
-
 function WallWash() {
   const targets = useMemo(() => [-3, 3].map((x) => {
     const o = new THREE.Object3D();
@@ -293,18 +222,11 @@ export function LobbyScene({ p }: { p: Palette }) {
       <Walls p={p} />
       <Signage p={p} />
       <Desk p={p} />
-      <DeskDressing z={-4.6} top={1.135} />
       {[-1.7, 0, 1.7].map((x, i) => (
         <LampPendant key={x} x={x} z={-4.4} delay={0.2 + i * 0.25} p={p} ceiling={H} />
       ))}
       <Lounge side={-1} p={p} />
       <Lounge side={1} p={p} />
-      <Plinth x={-3.3} z={-5.9} p={p}>
-        <Vase />
-      </Plinth>
-      <Plinth x={3.3} z={-5.9} p={p}>
-        <Sculpture />
-      </Plinth>
       {doors.map((d) => (
         <Doorway key={d.key} p={p} id={d.key} pos={d.pos} normal={d.normal} tint={d.tint} label={d.label} />
       ))}
@@ -324,5 +246,3 @@ export function LobbyScene({ p }: { p: Palette }) {
   );
 }
 
-useGLTF.preload(assets.vase.model);
-useGLTF.preload(assets.sculpture.model);

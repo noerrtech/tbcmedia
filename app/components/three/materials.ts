@@ -69,17 +69,6 @@ export function useFloorTextures() {
   }, [t]);
 }
 
-/* Scanned museum objects: glTF UV convention, so no flipY. */
-export function useSculptureMaps() {
-  const t = useTexture({ map: assets.sculpture.map, normalMap: assets.sculpture.normalMap, aoMap: assets.sculpture.aoMap });
-  return useMemo(() => prep(t, { flipY: false }), [t]);
-}
-
-export function useVaseMap() {
-  const t = useTexture({ map: assets.vase.map });
-  return useMemo(() => prep(t, { flipY: false }), [t]);
-}
-
 /** An arched doorway cut through a wall: centred at `u` along the wall's axis, base on the floor. */
 export type Cut = { axis: "x" | "z"; u: number; width: number; height: number };
 

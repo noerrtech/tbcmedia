@@ -120,33 +120,10 @@ export function LampPendant({
   );
 }
 
-/** What sits on the concierge desk: lit candles one end, encyclopaedias and a vase the other. */
-export function DeskDressing({ z, top }: { z: number; top: number }) {
-  return (
-    <group position={[0, top, z]}>
-      <Model
-        url={assets.furniture.candleholders}
-        position={[-1.55, 0, -0.18]}
-        scale={0.62}
-        tweak={(mat) => {
-          if (isNamed(mat, "flame")) {
-            mat.emissive = new THREE.Color("#ffb45e");
-            mat.emissiveIntensity = 3;
-            mat.toneMapped = false;
-          }
-        }}
-      />
-      <Model url={assets.furniture.books} position={[1.15, 0, -0.28]} />
-      <Model url={assets.furniture.ceramicVase} position={[1.95, 0, -0.18]} />
-    </group>
-  );
-}
-
-/** A reading corner: armchair, walnut side table with an object on it, a plant behind. */
+/** A reading corner: armchair, walnut side table with a brass vase on it, a plant behind. */
 export function Lounge({ side, p }: { side: -1 | 1; p: Palette }) {
   const [target] = useState(() => new THREE.Object3D());
   const chair = side < 0 ? assets.furniture.armchairClassic : assets.furniture.armchairModern;
-  const object = side < 0 ? assets.furniture.brassVase : assets.furniture.ceramicVase;
   return (
     <group>
       <Model url={chair} position={[side * 5.2, 0, -2.4]} rotation-y={-side * 1.1} />
@@ -158,7 +135,7 @@ export function Lounge({ side, p }: { side: -1 | 1; p: Palette }) {
         <mesh material={p.stone} position={[0, 0.56, 0]} castShadow receiveShadow>
           <boxGeometry args={[0.5, 0.04, 0.5]} />
         </mesh>
-        <Model url={object} position={[0, 0.58, 0]} scale={side < 0 ? 0.85 : 1} />
+        <Model url={assets.furniture.brassVase} position={[0, 0.58, 0]} scale={0.85} />
       </group>
       <Model url={assets.furniture.plant} position={[side * 6.25, 0, -3.55]} rotation-y={side * 0.8} />
       {/* a soft pool of light over the corner */}

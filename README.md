@@ -39,7 +39,7 @@ in as it arrives. Doorways are real openings cut through the walls (`cutMaterial
 
 | Room | Where it is | 3D |
 |---|---|---|
-| Reception | the lobby | fluted walnut, brass sign, concierge desk, pendants, plinths, lounges |
+| Reception | the lobby | fluted walnut, brass sign, concierge desk, pendants, lounges |
 | Founder / Why TBC Exists | behind the back-right door | the cabin: desk, lamp, chairs, dusk window |
 | Strategy library | through the left wall | shelves of ~3,000 books, six floating panels |
 | The Work | behind the back-left door | velvet curtain (cloth shader) that parts on scroll, 419M+ in brass rising into the loft, then a corridor of screens you walk down on scroll |
@@ -120,9 +120,8 @@ textures, smaller HDRIs, Meshopt) comes later. The 3D lettering font is generate
 | Asset | Source | License |
 |---|---|---|
 | Walnut veneers, marble, HDRIs | Poly Haven | CC0 |
-| Armchairs, ceiling lamp, books, candleholders, vases, plant | Poly Haven (`.blend` → `.glb` via `scripts/blend-to-glb.py`) | CC0 |
+| Armchairs, ceiling lamp, brass vase, plant | Poly Haven (`.blend` → `.glb` via `scripts/blend-to-glb.py`) | CC0 |
 | Worn brass (roughness/normal only) | TextureCan — Metal 0065 | verify before launch |
-| Porcelain vase (F1980.194), marble sculpture (SAAM 1983.95.181) | Smithsonian Open Access | CC0 |
 | Manrope, DM Sans | Google Fonts / Fontsource | OFL (licences in `public/fonts`) |
 
 The `.blend` models are exported with Blender (`BLENDER=/path/to/Blender` to override the default

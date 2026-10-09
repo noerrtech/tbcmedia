@@ -4,7 +4,7 @@
 #
 #   SRC=~/Downloads bash scripts/prepare-assets.sh
 #
-# Needs: ffmpeg, sips (macOS), npx (for gltfpack).
+# Needs: ffmpeg, sips (macOS), node.
 set -euo pipefail
 
 SRC="${SRC:-$HOME/Downloads}"
@@ -61,26 +61,6 @@ for name in lythwood_lounge entrance_hall hotel_room; do
   ffmpeg -v error -y -i "$SRC/${name}_4k.exr" -vf "scale=2048:1024:flags=lanczos" -frames:v 1 "$HDRI/${name}_2k.hdr"
 done
 
-# --- museum objects (Smithsonian Open Access, CC0) --------------------------
-# gltfpack: OBJ -> geometry-only GLB, simplified. -si is the fraction of triangles kept.
-# Textures ship as separate files (loaded like every other surface), not embedded.
-pack() {
-  local dir="$1" obj="$2" out="$3" keep="$4"
-  local tmp; tmp="$(mktemp -d)"
-  cp "$dir"/*.obj "$tmp/"
-  for m in "$dir"/*.mtl; do grep -v "map_" "$m" > "$tmp/$(basename "$m")"; done
-  npx --yes gltfpack@1.3.0 -i "$tmp/$obj" -o "$out" -si "$keep" -sa -noq >/dev/null
-  rm -rf "$tmp"
-}
-pack "$SRC/f1980_194-full_resolution-obj" "f1980_194-full_resolution-obj.obj" "$MODELS/porcelain_vase.glb" 0.06
-color "$SRC/f1980_194-full_resolution-obj/f1980_194-full_resolution-obj.png" "$TEX/porcelain_vase_diff.jpg"
-pack "$SRC/saam_1983_95_181-waterson-polish-2026-150k-4096-obj_std" "saam_1983_95_181-waterson-polish-2026-150k.obj" "$MODELS/marble_sculpture.glb" 0.4
-d="$SRC/saam_1983_95_181-waterson-polish-2026-150k-4096-obj_std"
-color "$d/saam_1983_95_181-waterson-polish-2026-150k-4096-diffuse.jpg" "$TEX/marble_sculpture_diff.jpg"
-# the scan's baked detail maps aren't referenced by its .mtl — ship them alongside
-data "$d/saam_1983_95_181-waterson-polish-2026-150k-4096-normals.jpg" "$TEX/marble_sculpture_nor.png"
-data "$d/saam_1983_95_181-waterson-polish-2026-150k-4096-occlusion.jpg" "$TEX/marble_sculpture_ao.png"
-
 # --- furniture & objects (Poly Haven .blend, CC0) -> .glb via Blender --------
 BLENDER="${BLENDER:-/Applications/Blender.app/Contents/MacOS/Blender}"
 blend() { # <source folder name> <output name> [max texture size]
@@ -90,10 +70,7 @@ if [ -x "$BLENDER" ]; then
   blend ArmChair_01_4k armchair_classic
   blend modern_arm_chair_01_4k armchair_modern
   blend modern_ceiling_lamp_01_4k ceiling_lamp 1024
-  blend book_encyclopedia_set_01_4k books 1024
-  blend brass_candleholders_4k candleholders 1024
   blend brass_vase_02_4k brass_vase 1024
-  blend ceramic_vase_01_4k ceramic_vase 1024
   blend potted_plant_01_4k potted_plant 2048
 else
   echo "Blender not found at $BLENDER — skipping .blend models"
