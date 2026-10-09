@@ -39,6 +39,17 @@ last two (fonts, story flow) are recommendations rather than fixes.
   - Duplicates further down (stats, the industries tagline, the services quote) are hidden on the home page.
 - [x] Buttons are sentence case, as in the mockup.
 
+**Reception (later the same day):**
+- [x] The real logo is now the 3D wall sign.
+- [x] A laptop is on the desk.
+- [x] The lobby decor is removed: the plinth vase, the bust, the desk candles, and the books and vase.
+- [ ] **Receptionist: waiting on the owner.** The stylised placeholder was rejected and removed. The owner is
+  sourcing a real 3D person. When it arrives as `public/assets/models/receptionist.glb`:
+  - scale her to about 1.65 m and stand her behind the desk at about (0.6, 0, -5.38), facing +z
+  - put the laptop in front of her (it's now at (0.4, 1.135, -4.88))
+  - play an idle clip if the model is rigged
+  - add a matching cut-out to the CSS lobby
+
 **Not yet built:** 1 (the 3D lobby sign as the logo; needs the master file), 3, 4, 6, 9, 10, 12, and retinting
 the 3D materials beyond the colour swap (checking the look needs a GPU; the sandbox only has software
 rendering).
