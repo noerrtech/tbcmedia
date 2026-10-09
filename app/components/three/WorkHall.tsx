@@ -1,7 +1,8 @@
-import { Text } from "@react-three/drei";
-import { useFrame, useLoader } from "@react-three/fiber";
+import { Sparkles, Text, useGLTF } from "@react-three/drei";
+import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+import { Reflector } from "three/examples/jsm/objects/Reflector.js";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { work, type WorkCategory } from "~/content/site";
 import { assets } from "./assets";
@@ -9,7 +10,7 @@ import { trackedText, useCanvasTexture } from "./canvasTexture";
 import { extrudedText, flutedGeometry, metricUVs, radialTexture } from "./geometry";
 import { velvetMaterial, type usePalette } from "./materials";
 import { RoomShell, type Bounds } from "./Rooms";
-import { workHall, world } from "./world";
+import { workHall, world, type V3 } from "./world";
 
 type Palette = ReturnType<typeof usePalette>;
 
@@ -29,79 +30,144 @@ export const curtainOpen = () => smooth(0.06, 0.72, world.work.curtain);
 /*  The curtain                                                              */
 /* ------------------------------------------------------------------------- */
 
-/**
- * One half of a velvet stage curtain. The folds, the gathering toward the side and the
- * hem lifting as it opens all happen in the vertex shader, with matching normals so the
- * sheen runs down every fold.
- */
-function CurtainHalf({ side, width, height }: { side: -1 | 1; width: number; height: number }) {
-  const geometry = useMemo(() => {
-    const g = new THREE.PlaneGeometry(width, height, 160, 28);
-    g.translate(width / 2, height / 2, 0); // x: 0 at the outer edge … width at the centre
-    return g;
-  }, [width, height]);
+/** How deep the folds stand, relative to the half's width. */
+const FOLD_DEPTH = 1.1;
 
+/**
+ * Velvet for the stage curtain. The mesh (scripts/make-curtain.mjs) carries the curtain twice,
+ * hanging closed and gathered to the side; the vertex shader slides between the two with its real
+ * folds, the hem trailing the top a little, and lets it breathe.
+ */
+function useCurtainMaterial() {
   const material = useMemo(() => {
     const m = velvetMaterial();
-    const uniforms = { uOpen: { value: 0 }, uTime: { value: 0 }, uWidth: { value: width }, uHeight: { value: height } };
+    const uniforms = { uOpen: { value: 0 }, uTime: { value: 0 } };
     m.onBeforeCompile = (shader) => {
       Object.assign(shader.uniforms, uniforms);
       shader.vertexShader = shader.vertexShader
         .replace(
           "#include <common>",
           `#include <common>
-          uniform float uOpen, uTime, uWidth, uHeight;
-          float cFolds(float x) { return 6.2831853 * 11.0 / uWidth * x; }
-          float cAmp(float g) { return mix(0.055, 0.15, uOpen) * (0.75 + 0.25 * g); }`,
+          attribute vec3 _open_position;
+          attribute vec3 _open_normal;
+          uniform float uOpen, uTime;
+          // the hem (y 0) follows the top (y 1) a beat behind
+          float openAt(float yN) { return smoothstep(0.0, 1.0, clamp(uOpen * 1.25 - (1.0 - yN) * 0.25, 0.0, 1.0)); }`,
         )
         .replace(
           "#include <beginnormal_vertex>",
-          `float g = position.x / uWidth;            // 0 outer edge … 1 centre
-          float yN = position.y / uHeight;          // 0 hem … 1 top
-          float ph = cFolds(position.x);
-          float amp = cAmp(g);
-          float squash = mix(1.0, 0.2, uOpen);
-          float sway = sin(uTime * 0.7 + ph * 0.25) * 0.012 * (1.0 - yN);
-          float dz = cos(ph) * amp * cFolds(1.0) + cos(ph * 2.3 + 1.7) * amp * 0.25 * cFolds(2.3);
-          vec3 objectNormal = normalize(vec3(-dz / squash, 0.0, 1.0));
+          `float oa = openAt(position.y);
+          vec3 objectNormal = normalize(mix(normal, _open_normal, oa));
           #ifdef USE_TANGENT
           vec3 objectTangent = vec3(1.0, 0.0, 0.0);
           #endif`,
         )
         .replace(
           "#include <begin_vertex>",
-          `vec3 transformed = position;
-          transformed.x = position.x * squash;
-          transformed.z = sin(ph) * amp + sin(ph * 2.3 + 1.7) * amp * 0.25 + sway;
-          // tie-back: the inner hem lifts and swings out as it opens
-          float lift = uOpen * g * g * (1.0 - yN) * (1.0 - yN);
-          transformed.y += lift * 1.1;
-          transformed.x -= lift * 0.6;`,
+          `vec3 transformed = mix(position, _open_position, oa);
+          transformed.z += sin(uTime * 0.7 + transformed.x * 9.0) * 0.004 * (1.0 - transformed.y);`,
         );
       m.userData.uniforms = uniforms;
     };
-    m.customProgramCacheKey = () => "curtain";
+    m.customProgramCacheKey = () => "stage-curtain";
     return m;
-  }, [width, height]);
-  useLayoutEffect(() => () => (geometry.dispose(), material.dispose()), [geometry, material]);
-
+  }, []);
+  useLayoutEffect(() => () => material.dispose(), [material]);
   useFrame(({ clock }) => {
     const u = material.userData.uniforms;
     if (!u) return;
     u.uOpen.value = curtainOpen();
     u.uTime.value = clock.elapsedTime;
   });
+  return material;
+}
 
-  // left half hangs from the left jamb; the right half is its mirror image
+/** One half: hangs from its jamb (x 0 in the mesh) to the centre; the right half is the mirror image. */
+function CurtainHalf({ side, width, height, material }: { side: -1 | 1; width: number; height: number; material: THREE.Material }) {
+  const { scene } = useGLTF(assets.curtain);
+  const geometry = useMemo(() => (scene.getObjectByName("curtain") as THREE.Mesh).geometry, [scene]);
   return (
     <mesh
       geometry={geometry}
       material={material}
       position={[side < 0 ? X - HW : X + HW, 0, workHall.curtainZ]}
-      scale={[side < 0 ? 1 : -1, 1, 1]}
+      scale={[side < 0 ? width : -width, height, width * FOLD_DEPTH]}
       receiveShadow
     />
   );
+}
+useGLTF.preload(assets.curtain);
+
+/* ------------------------------------------------------------------------- */
+/*  The stage around it: lacquered floor, light beams, haze                  */
+/* ------------------------------------------------------------------------- */
+
+const FLOOR_FROM = workHall.curtainZ - 0.35;
+const FLOOR_DEPTH = STAGE.maxZ - FLOOR_FROM;
+
+/**
+ * Black lacquer stage boards: a mirror under a dark, glossy coat, so the curtain, the lights and the
+ * brass figure show faintly in the floor. The mirror only renders while it's on screen.
+ */
+function StageFloor() {
+  const mirror = useMemo(() => {
+    const r = new Reflector(new THREE.PlaneGeometry(HW * 2, FLOOR_DEPTH), { textureWidth: 1024, textureHeight: 512, color: 0x888888, clipBias: 0.003 });
+    r.rotation.x = -Math.PI / 2;
+    r.position.set(X, 0.002, FLOOR_FROM + FLOOR_DEPTH / 2);
+    return r;
+  }, []);
+  useLayoutEffect(
+    () => () => {
+      mirror.getRenderTarget().dispose();
+      mirror.geometry.dispose();
+      (mirror.material as THREE.Material).dispose();
+    },
+    [mirror],
+  );
+  return (
+    <>
+      <primitive object={mirror} />
+      <mesh rotation-x={-Math.PI / 2} position={[X, 0.004, FLOOR_FROM + FLOOR_DEPTH / 2]} receiveShadow>
+        <planeGeometry args={[HW * 2, FLOOR_DEPTH]} />
+        <meshStandardMaterial color="#150D09" roughness={0.28} metalness={0} transparent opacity={0.72} />
+      </mesh>
+    </>
+  );
+}
+
+/** A visible shaft of light: an open cone, brightest at the lamp, fading down and at its edges. */
+function Beam({ from, to, radius, opacity = 0.07 }: { from: V3; to: V3; radius: number; opacity?: number }) {
+  const { geometry, material, quaternion, length } = useMemo(() => {
+    const a = new THREE.Vector3(...from), b = new THREE.Vector3(...to);
+    const dir = b.clone().sub(a);
+    const length = dir.length();
+    const geometry = new THREE.ConeGeometry(radius, length, 40, 1, true).translate(0, -length / 2, 0).rotateY(Math.PI);
+    const material = new THREE.ShaderMaterial({
+      uniforms: { uColor: { value: new THREE.Color("#ffd9a8") }, uOpacity: { value: opacity }, uLen: { value: length } },
+      vertexShader: `uniform float uLen; varying float vY; varying vec3 vN; varying vec3 vView;
+        void main() {
+          vY = -position.y / uLen;
+          vN = normalize(normalMatrix * normal);
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          vView = normalize(-mv.xyz);
+          gl_Position = projectionMatrix * mv;
+        }`,
+      fragmentShader: `uniform vec3 uColor; uniform float uOpacity; varying float vY; varying vec3 vN; varying vec3 vView;
+        void main() {
+          float edge = pow(abs(dot(normalize(vN), normalize(vView))), 2.0);
+          float fall = pow(1.0 - vY, 1.6) * smoothstep(0.0, 0.06, vY);
+          gl_FragColor = vec4(uColor, uOpacity * edge * fall);
+        }`,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+    });
+    const quaternion = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, -1, 0), dir.normalize());
+    return { geometry, material, quaternion, length };
+  }, [from, to, radius, opacity]);
+  useLayoutEffect(() => () => (geometry.dispose(), material.dispose()), [geometry, material]);
+  return <mesh geometry={geometry} material={material} position={from} quaternion={quaternion} userData={{ length }} />;
 }
 
 /** "419M+" in brass hanging before the curtain; it rises into the fly loft as the curtain opens. */
@@ -117,9 +183,9 @@ function BrassFigure() {
   return (
     <group ref={group}>
       <group position={[X, 0, workHall.curtainZ + 0.45]}>
-        <mesh geometry={geometry} material={material} position-y={2.42} />
-        <Text font={assets.fonts.sans} fontSize={0.075} letterSpacing={0.55} anchorX="center" position={[0, 2.22, 0.05]}>
-          VIEWS · ZERO SPENT ON ADS
+        <mesh geometry={geometry} material={material} position-y={2.05} castShadow />
+        <Text font={assets.fonts.sans} fontSize={0.075} letterSpacing={0.55} anchorX="center" position={[0, 1.85, 0.05]}>
+          VIEWS · WITHOUT A RUPEE SPENT ON ADS
           <meshBasicMaterial color="#D9B98A" toneMapped={false} />
         </Text>
       </group>
@@ -127,15 +193,36 @@ function BrassFigure() {
   );
 }
 
+/** Where the lights hang: a key light from the front (it casts the figure's shadow on the curtain), two side spots. */
+const KEY: V3 = [X, 5.3, workHall.curtainZ + 3.6];
+const SIDES: { from: V3; to: V3 }[] = [-1, 1].map((k) => ({
+  from: [X + k * 2.1, 5.45, workHall.curtainZ + 1.5] as V3,
+  to: [X + k * 1.7, 0, workHall.curtainZ + 0.15] as V3,
+}));
+
 function Stage({ p }: { p: Palette }) {
-  const [target] = useState(() => new THREE.Object3D());
+  const [targets] = useState(() => [new THREE.Object3D(), new THREE.Object3D(), new THREE.Object3D()]);
   const pelmet = useMemo(() => velvetMaterial(), []);
+  const curtain = useCurtainMaterial();
   useLayoutEffect(() => () => pelmet.dispose(), [pelmet]);
+
+  // shadows are drawn once for the whole office; here they follow the curtain as it opens
+  const gl = useThree((s) => s.gl);
+  const last = useRef(-1);
+  useFrame(() => {
+    const c = world.work.curtain;
+    if (world.route === "work" && Math.abs(c - last.current) > 1e-4) {
+      last.current = c;
+      gl.shadowMap.needsUpdate = true;
+    }
+  });
+
   return (
     <group>
       <RoomShell b={STAGE} p={p} door={{ wall: "maxZ", u: X }} open={["minZ"]} />
-      <CurtainHalf side={-1} width={HW + 0.08} height={5.25} />
-      <CurtainHalf side={1} width={HW + 0.08} height={5.25} />
+      <StageFloor />
+      <CurtainHalf side={-1} width={HW + 0.08} height={5.25} material={curtain} />
+      <CurtainHalf side={1} width={HW + 0.08} height={5.25} material={curtain} />
       {/* pelmet with a brass fringe line */}
       <mesh material={pelmet} position={[X, 5.35, workHall.curtainZ + 0.12]}>
         <boxGeometry args={[HW * 2, 0.5, 0.2]} />
@@ -150,8 +237,40 @@ function Stage({ p }: { p: Palette }) {
         </mesh>
       ))}
       <BrassFigure />
-      <primitive object={target} position={[X, 2.4, workHall.curtainZ]} />
-      <spotLight target={target} position={[X, 5.4, -9.0]} angle={0.62} penumbra={0.9} intensity={95} distance={12} decay={2} color="#ffcf9a" />
+
+      {/* light */}
+      <primitive object={targets[0]} position={[X, 2.1, workHall.curtainZ]} />
+      <spotLight
+        target={targets[0]}
+        position={KEY}
+        angle={0.5}
+        penumbra={0.75}
+        intensity={120}
+        distance={14}
+        decay={2}
+        color="#ffcf9a"
+        castShadow
+        shadow-mapSize={[1024, 1024]}
+        shadow-bias={-0.0004}
+        shadow-normalBias={0.02}
+        shadow-camera-near={1}
+        shadow-camera-far={12}
+      />
+      {SIDES.map((s, i) => (
+        <group key={i}>
+          <primitive object={targets[i + 1]} position={s.to} />
+          <spotLight target={targets[i + 1]} position={s.from} angle={0.36} penumbra={0.9} intensity={45} distance={9} decay={2} color="#ffd9a8" />
+          <Beam from={s.from} to={s.to} radius={1.05} />
+        </group>
+      ))}
+      <Beam from={KEY} to={[X, 0, workHall.curtainZ + 0.6]} radius={1.6} opacity={0.035} />
+
+      {/* haze: dust in the light, and a low warm mist along the boards */}
+      <Sparkles count={70} scale={[HW * 2 - 0.4, 4.4, 2.6]} position={[X, 2.5, workHall.curtainZ + 1.5]} size={1.6} speed={0.18} opacity={0.4} noise={0.6} color="#D9B98A" />
+      <mesh position={[X, 0.9, workHall.curtainZ + 1.1]}>
+        <planeGeometry args={[HW * 2, 2.2]} />
+        <meshBasicMaterial map={radialTexture()} color="#8A6A35" transparent opacity={0.22} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
+      </mesh>
     </group>
   );
 }

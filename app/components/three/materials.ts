@@ -120,10 +120,10 @@ export function cutMaterial<T extends THREE.MeshStandardMaterial>(base: T, cuts:
 /** Deep velvet, with sheen — the curtain and the stage drapes. */
 export function velvetMaterial() {
   return new THREE.MeshPhysicalMaterial({
-    color: "#4a0f0b",
+    color: "#200a08", // oxblood: the Mughal Noir browns, with enough red to read as velvet
     roughness: 0.85,
     sheen: 1,
-    sheenColor: new THREE.Color("#d2553f"),
+    sheenColor: new THREE.Color("#733c2c"),
     sheenRoughness: 0.42,
     envMapIntensity: 0.6,
     side: THREE.DoubleSide,

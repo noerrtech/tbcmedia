@@ -25,6 +25,8 @@ export const assets = {
     brassVase: "/assets/models/brass_vase.glb",
     plant: "/assets/models/potted_plant.glb",
   },
+  /** The Work room's stage curtain, closed and gathered — scripts/make-curtain.mjs (CC BY 4.0, RomanSn) */
+  curtain: "/assets/models/stage_curtain.glb",
   hdri: "/assets/hdri/lythwood_lounge_2k.hdr",
   /** The logo lock-up, dark-background version (wordmark in Text colour). */
   logo: "/media/tbc-logo-dark.png",

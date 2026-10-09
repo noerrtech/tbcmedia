@@ -40,8 +40,9 @@ function workPose(pos: THREE.Vector3, look: THREE.Vector3) {
   const { curtain, corridor } = world.work;
   const X = workHall.x;
   const dolly = smooth(0.45, 1, curtain);
-  pos.set(X, THREE.MathUtils.lerp(1.7, 1.65, dolly), THREE.MathUtils.lerp(stations.work.pos[2], workHall.camStart, dolly));
-  look.set(X, THREE.MathUtils.lerp(2.35, 1.72, dolly), THREE.MathUtils.lerp(-12.2, -30, dolly));
+  const { pos: from, look: at } = stations.work;
+  pos.set(X, THREE.MathUtils.lerp(from[1], 1.65, dolly), THREE.MathUtils.lerp(from[2], workHall.camStart, dolly));
+  look.set(X, THREE.MathUtils.lerp(at[1], 1.72, dolly), THREE.MathUtils.lerp(at[2], -30, dolly));
   if (corridor <= 0) return;
   const endZ = workHall.start - workHall.length(work.length) + 6.5;
   const z = THREE.MathUtils.lerp(workHall.camStart, endZ, corridor);

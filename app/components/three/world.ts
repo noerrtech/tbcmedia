@@ -36,7 +36,8 @@ export const stations: Record<StationKey, Station> = {
   story: { pos: [3.4, 1.6, -13.2], look: [7.4, 1.8, -15.4], route: [[4.7, 1.6, -5.4], [4.7, 1.6, -9.4]] },
   services: { pos: [-8.4, 1.62, -4.9], look: [-15, 1.75, -4.9], route: [[-4.4, 1.6, -5.4], [-7.8, 1.6, -5.2]] },
   jbn: { pos: [8.4, 1.62, -4.9], look: [15, 1.85, -4.9], route: [[4.4, 1.6, -5.4], [7.8, 1.6, -5.2]] },
-  work: { pos: [-4.7, 1.7, -9.0], look: [-4.7, 2.35, -12.2], route: [[-4.7, 1.6, -5.4], [-4.7, 1.6, -8.5]] },
+  // back by the door and a little high, so the stage boards show under the curtain
+  work: { pos: [-4.7, 1.9, -8.15], look: [-4.7, 1.5, -12.2], route: [[-4.7, 1.6, -5.4], [-4.7, 1.75, -7.7]] },
   next: { pos: [0, 1.62, 13.2], look: [0, 2.15, 20], route: [[0, 1.6, 9.6], [0, 1.6, 12.6]] },
 };
 

@@ -368,3 +368,13 @@ along the line, tunnel before Growth, route map clickable. Reduced motion and sc
 same content as a timetable. The office room `/tbc/services` rides the same line (h1 there); the old
 card showroom is gone. The right side is a carriage wall: luggage rack, reading lamp, mounted display,
 thick screwed window frame with a divider, blind, ledge, heater cladding and the edge of a seat.
+
+## The Work room stage (3D)
+
+The procedural curtain is replaced by the owner's model ("Curtain Cortina 3.0 NEW", RomanSn, CC BY 4.0 —
+credited in README). It ships the curtain twice, vertex for vertex, closed and gathered; `scripts/make-curtain.mjs`
+keeps both shapes in one 2.3 MB mesh (`public/assets/models/stage_curtain.glb`, from 7.6 MB) and the shader
+slides between them, hem trailing. Oxblood velvet in the Mughal Noir browns. Around it: lacquered stage boards
+over a mirror (renders only while on screen), a front key light whose shadow puts 419M+ on the folds, two side
+spots with faint beams, dust and low haze. Camera moved back to the door and up so the boards show. The curtain
+opens on a click anywhere on the stage (3D and classic), as well as the button.

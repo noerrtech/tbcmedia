@@ -131,8 +131,11 @@ textures, smaller HDRIs, Meshopt) comes later. The 3D lettering font is generate
 |---|---|---|
 | Walnut veneers, marble, HDRIs | Poly Haven | CC0 |
 | Armchairs, ceiling lamp, brass vase, plant | Poly Haven (`.blend` → `.glb` via `scripts/blend-to-glb.py`) | CC0 |
+| Stage curtain (Work room) | "Curtain Cortina 3.0 NEW" by [RomanSn](https://sketchfab.com/romansn) on [Sketchfab](https://sketchfab.com/3d-models/curtain-cortina-30-new-23a77fa61ca0499cbf940aa0f33b06b4), rebuilt by `scripts/make-curtain.mjs` (closed + gathered shapes, recoloured) | **CC BY 4.0 — credit required** |
 | Worn brass (roughness/normal only) | TextureCan — Metal 0065 | verify before launch |
 | Manrope, DM Sans | Google Fonts / Fontsource | OFL (licences in `public/fonts`) |
+
+The curtain is rebuilt from the Sketchfab download with `node scripts/make-curtain.mjs <curtain.glb>`.
 
 The `.blend` models are exported with Blender (`BLENDER=/path/to/Blender` to override the default
 `/Applications/Blender.app`).

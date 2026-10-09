@@ -67,6 +67,11 @@ export function WorkRoom3D() {
     const el = curtain.current;
     if (el) scrollTo(el.offsetTop + el.offsetHeight - window.innerHeight, 2.4);
   };
+  // a click anywhere on the stage opens it too (the button stays, for keyboards)
+  const onStageClick = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest("a, button") || world.work.curtain > 0.6) return;
+    openCurtain();
+  };
 
   const goTo = (i: number) => {
     const el = corridor.current;
@@ -81,7 +86,7 @@ export function WorkRoom3D() {
     <>
       {/* the curtain: scroll to open it */}
       <ScrimZone value={0}>
-        <section ref={curtain} className="relative h-[150vh]" aria-label="The work — the curtain">
+        <section ref={curtain} onClick={onStageClick} className="relative h-[150vh] cursor-pointer" aria-label="The work — the curtain">
           <div className="sticky top-0 h-screen">
             <div ref={curtainCopy} className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-6 px-6 pb-16 text-center">
               <p className="eyebrow">Room 04 — The work</p>
@@ -90,6 +95,7 @@ export function WorkRoom3D() {
               <button type="button" onClick={openCurtain} className="btn bg-ink/40 backdrop-blur-sm">
                 Open the curtain ↓
               </button>
+              <p className="text-[0.65rem] tracking-[0.28em] text-mist uppercase">or click anywhere on the stage</p>
             </div>
           </div>
         </section>

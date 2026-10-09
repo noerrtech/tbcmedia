@@ -77,9 +77,15 @@ export function Curtain() {
     const target = el.offsetTop + el.offsetHeight - window.innerHeight;
     lenis ? lenis.scrollTo(target, { duration: 2.4 }) : window.scrollTo({ top: target, behavior: "smooth" });
   };
+  // a click anywhere on the curtain opens it (the button stays, for keyboards)
+  const onStageClick = (e: React.MouseEvent) => {
+    const el = wrap.current;
+    if (!el || (e.target as HTMLElement).closest("a, button") || window.scrollY > el.offsetTop + el.offsetHeight * 0.3) return;
+    open();
+  };
 
   return (
-    <section ref={wrap} className="relative h-[220vh]">
+    <section ref={wrap} onClick={onStageClick} className="relative h-[220vh] cursor-pointer">
       <div className="sticky top-0 h-screen overflow-hidden">
         {/* Behind the curtain: the stage */}
         <div data-stage className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
@@ -114,6 +120,7 @@ export function Curtain() {
           <button type="button" onClick={open} className="btn pointer-events-auto mt-12">
             Open the curtain ↓
           </button>
+          <p className="mt-4 text-[0.65rem] tracking-[0.28em] text-mist uppercase">or click anywhere</p>
         </div>
       </div>
     </section>
