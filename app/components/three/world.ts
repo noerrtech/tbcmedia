@@ -43,16 +43,16 @@ export const stations: Record<StationKey, Station> = {
 
 /* ---- the Work room's layout, shared by the scene and the page that scrolls it ---- */
 export const workHall = {
-  x: -4.7, // corridor centre line
+  x: -4.7, // the room's centre line
   halfWidth: 3,
   curtainZ: -12.2,
-  start: -12.6, // corridor begins just behind the curtain
-  firstScreen: 6, // metres in from the start
-  gap: 7, // between categories
-  camStart: -11.4,
-  /** z of category i's left-wall screen */
-  screenZ: (i: number) => -12.6 - 6 - i * 7,
-  length: (n: number) => 6 + (n - 1) * 7 + 3.5 + 9,
+  start: -12.6, // backstage begins just behind the curtain
+  depth: 9, // how far back backstage goes
+  /** where the act screens hang: right of centre, so the case study can sit on the left */
+  screen: { x: 0.75, y: 2.3, z: -17.6, w: 3.4, h: 2.13 },
+  camStart: -11.5, // through the proscenium once the curtain is open
+  camEnd: -12.0, // a slow push in over the five acts
+  camX: -0.85, // and a step to the left, looking straight ahead: the screen lands right of the words
 };
 
 /* ---- store -------------------------------------------------------------- */
@@ -77,8 +77,8 @@ export const world = {
   hovered: null as DoorKey | null,
   /** Where the camera is right now — written by the canvas each frame. */
   camera: [...stations.reception.pos] as V3,
-  /** Work room scroll: curtain 0 → 1 (closed → open), corridor 0 → 1 (start → end). */
-  work: { curtain: 0, corridor: 0 },
+  /** Work room scroll: curtain 0 → 1 (closed → open), acts 0 → 1 (first act → last). */
+  work: { curtain: 0, acts: 0 },
   /** Page scroll, in viewport heights — rooms dolly forward a little as you read. */
   scroll: 0,
   /** A section asking for its own darkness over the 3D (see ScrimZone); null = the default. */

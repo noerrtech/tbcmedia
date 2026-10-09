@@ -207,15 +207,37 @@ export const industries = [
 ];
 
 export type WorkItem = { client: string; summary: string; result?: string; image?: string };
-export type WorkCategory = { id: string; title: string; subtitle: string; body: string; items: WorkItem[] };
+export type WorkMetric = { value: string; label: string };
+/**
+ * One act of the Work room: a growth problem and the case study that shows it solved.
+ * The story beats (problem → what we did → what changed) are what the page lays out.
+ */
+export type WorkCategory = {
+  id: string;
+  title: string;
+  subtitle: string;
+  body: string;
+  problem: string;
+  approach: string;
+  change: string;
+  metrics?: WorkMetric[];
+  services: string[];
+  items: WorkItem[];
+};
 
-// Placeholders until real case studies come in.
+// TODO(confirm): placeholders until the real case studies come in — swap in the client, the
+// problem in their words, what TBC did and the measured result. Numbers here are TBC's real
+// totals (419M+ views, the 51,000+ / 44+ country community), not a single client's.
 export const work: WorkCategory[] = [
   {
     id: "zero",
     title: "Built from zero",
     subtitle: "Brand launches & new businesses",
     body: "Name, story, identity and launch — for brands that didn't exist yesterday.",
+    problem: "A new business with a product and a plan — but no name, no story and no face the market would remember.",
+    approach: "Named it, wrote the story, built the identity and planned the launch as a sequence, not a single post.",
+    change: "A brand that walked into its market with a clear promise from day one.",
+    services: ["Naming", "Brand identity", "Launch roadmap"],
     items: [{ client: "Case study", summary: "A brand launched from a blank page." }],
   },
   {
@@ -223,13 +245,22 @@ export const work: WorkCategory[] = [
     title: "Repositioned",
     subtitle: "Brands that needed a sharper market position",
     body: "Good businesses the market had misread — re-framed so the right customers finally saw them.",
+    problem: "A good business filed on the wrong shelf — compared on price, not on what it did best.",
+    approach: "Mapped the category and the competition, found the space only it could own and rebuilt the messaging around it.",
+    change: "The right customers finally saw it for what it was.",
+    services: ["Market mapping", "Positioning", "Messaging"],
     items: [{ client: "Case study", summary: "A home-grown brand repositioned to lead its category." }],
   },
   {
     id: "visible",
     title: "Made visible",
     subtitle: "Social, content & awareness",
-    body: "Content systems that put brands in front of millions — 419M+ views without a rupee spent on ads.",
+    body: "Content systems that put brands in front of millions — without buying the attention.",
+    problem: "A strong product nobody was seeing — and no budget to buy the attention.",
+    approach: "A strategy-led content system: reels, creators and formats built from the brand outward, not from trends inward.",
+    change: "Reach in the hundreds of millions, earned rather than bought.",
+    metrics: [{ value: "419M+", label: "views, without a rupee spent on ads" }],
+    services: ["Content strategy", "Reels & production", "Creators & UGC"],
     items: [{ client: "Case study", summary: "Organic reach built through strategy-led content." }],
   },
   {
@@ -237,6 +268,10 @@ export const work: WorkCategory[] = [
     title: "Made desirable",
     subtitle: "Creative, campaigns & brand identity",
     body: "Campaigns with recall. Identities people want to be seen with.",
+    problem: "A brand people knew of — but didn't want to be seen with.",
+    approach: "Campaign ideas with recall, an identity worth wearing and experiences people talked about.",
+    change: "A brand people chose to share, not just scroll past.",
+    services: ["Campaigns", "Brand identity", "Experiential"],
     items: [{ client: "Case study", summary: "A campaign remembered long after it ran." }],
   },
   {
@@ -244,6 +279,14 @@ export const work: WorkCategory[] = [
     title: "Made to grow",
     subtitle: "Growth strategy & marketing systems",
     body: "Communities, performance and automation that turn attention into business.",
+    problem: "Plenty of attention — that wasn't turning into business.",
+    approach: "Community, performance marketing and automation, built to work as one growth engine.",
+    change: "A community and growth engine that runs across continents.",
+    metrics: [
+      { value: "51,000+", label: "professionals in the community" },
+      { value: "44+", label: "countries" },
+    ],
+    services: ["Community", "Performance marketing", "AI automation"],
     items: [{ client: "Case study", summary: "A community and growth engine across 44+ countries." }],
   },
 ];

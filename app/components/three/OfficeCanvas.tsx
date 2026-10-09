@@ -5,7 +5,6 @@ import { useReducedMotion } from "framer-motion";
 import { ToneMappingMode } from "postprocessing";
 import { Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { work } from "~/content/site";
 import { assets } from "./assets";
 import { doors } from "./doors";
 import { LobbyScene } from "./LobbyScene";
@@ -35,27 +34,20 @@ function lerpYaw(a: number, b: number, t: number) {
   return a + d * t;
 }
 
-/** Where the Work room's camera is for a given curtain / corridor scroll. */
+/**
+ * Where the Work room's camera is. The curtain parts and it steps through the proscenium; then
+ * it holds on the act screens — straight on, no turning — with a slow push in across the acts.
+ */
 function workPose(pos: THREE.Vector3, look: THREE.Vector3) {
-  const { curtain, corridor } = world.work;
+  const { curtain, acts } = world.work;
   const X = workHall.x;
-  const dolly = smooth(0.45, 1, curtain);
   const { pos: from, look: at } = stations.work;
-  pos.set(X, THREE.MathUtils.lerp(from[1], 1.65, dolly), THREE.MathUtils.lerp(from[2], workHall.camStart, dolly));
-  look.set(X, THREE.MathUtils.lerp(at[1], 1.72, dolly), THREE.MathUtils.lerp(at[2], -30, dolly));
-  if (corridor <= 0) return;
-  const endZ = workHall.start - workHall.length(work.length) + 6.5;
-  const z = THREE.MathUtils.lerp(workHall.camStart, endZ, corridor);
-  // turn a little toward whichever screen you're passing
-  let lean = 0;
-  for (let i = 0; i < work.length; i++) {
-    const left = workHall.screenZ(i) + 2.2;
-    const right = workHall.screenZ(i) - workHall.gap / 2 + 2.2;
-    lean -= Math.exp(-((z - left) ** 2) / 5);
-    lean += Math.exp(-((z - right) ** 2) / 5);
-  }
-  pos.set(X + lean * 0.25, 1.65, z);
-  look.set(X + lean * 1.6, 1.85, z - 6);
+  const S = workHall.screen;
+  const dolly = smooth(0.45, 1, curtain);
+  const z = THREE.MathUtils.lerp(workHall.camStart, workHall.camEnd, smooth(0, 1, acts));
+  const x = X + workHall.camX * smooth(0.6, 1, curtain);
+  pos.set(x, THREE.MathUtils.lerp(from[1], 1.75, dolly), THREE.MathUtils.lerp(from[2], z, dolly));
+  look.set(x, THREE.MathUtils.lerp(at[1], S.y - 0.05, dolly), THREE.MathUtils.lerp(at[2], S.z, dolly));
 }
 
 /**

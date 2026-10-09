@@ -1,4 +1,5 @@
-import { Corridor, CorridorIntro, Curtain, WorkGallery, useMediaQuery } from "~/components/sections/Work";
+import { Curtain } from "~/components/sections/Work";
+import { CaseStudiesFlat, WorkIntro } from "~/components/sections/CaseStudies";
 import { WorkRoom3D } from "~/components/sections/WorkRoom3D";
 import { ImpactWall } from "~/components/sections/Impact";
 import { RoomFooter } from "~/components/office/RoomFooter";
@@ -9,10 +10,9 @@ import type { Route } from "./+types/office.work";
 export const meta: Route.MetaFunction = () => [{ title: "The Work — The Brand Cappuccino" }];
 
 export default function WorkRoom() {
-  const desktop = useMediaQuery("(min-width: 768px)");
   const { mode } = useOffice();
 
-  // the 3D office: the curtain and corridor are real, in the world behind the page
+  // the 3D office: the curtain and the acts play on the stage behind the page
   if (mode === "3d") {
     return (
       <>
@@ -28,14 +28,8 @@ export default function WorkRoom() {
     <>
       <Curtain />
       <section className="py-32"><ImpactWall /></section>
-      {desktop ? (
-        <>
-          <CorridorIntro />
-          <Corridor />
-        </>
-      ) : (
-        <WorkGallery />
-      )}
+      <WorkIntro />
+      <CaseStudiesFlat />
       <RoomFooter />
     </>
   );

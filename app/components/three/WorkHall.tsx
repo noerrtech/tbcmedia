@@ -2,7 +2,6 @@ import { Sparkles, Text, useGLTF } from "@react-three/drei";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import { Reflector } from "three/examples/jsm/objects/Reflector.js";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { work, type WorkCategory } from "~/content/site";
 import { assets } from "./assets";
@@ -11,15 +10,13 @@ import { extrudedText, flutedGeometry, metricUVs, radialTexture } from "./geomet
 import { velvetMaterial, type usePalette } from "./materials";
 import { RoomShell, type Bounds } from "./Rooms";
 import { workHall, world, type V3 } from "./world";
+import { ACTS, fly } from "~/lib/acts";
 
 type Palette = ReturnType<typeof usePalette>;
 
 const X = workHall.x;
 const HW = workHall.halfWidth;
 const STAGE: Bounds = { minX: X - HW, maxX: X + HW, minZ: workHall.start, maxZ: -8.05, h: 5.6 };
-const CORRIDOR_H = 4.6;
-const LEN = workHall.length(work.length);
-const END = workHall.start - LEN;
 
 const smooth = (a: number, b: number, v: number) => THREE.MathUtils.smoothstep(v, a, b);
 
@@ -106,32 +103,16 @@ const FLOOR_FROM = workHall.curtainZ - 0.35;
 const FLOOR_DEPTH = STAGE.maxZ - FLOOR_FROM;
 
 /**
- * Black lacquer stage boards: a mirror under a dark, glossy coat, so the curtain, the lights and the
- * brass figure show faintly in the floor. The mirror only renders while it's on screen.
+ * Black lacquer stage boards: glossy enough to catch the footlights and the spots. (A true mirror
+ * would show little more from the stalls, and its extra render inside the effects pass blanked the
+ * whole frame on some GPUs.)
  */
 function StageFloor() {
-  const mirror = useMemo(() => {
-    const r = new Reflector(new THREE.PlaneGeometry(HW * 2, FLOOR_DEPTH), { textureWidth: 1024, textureHeight: 512, color: 0x888888, clipBias: 0.003 });
-    r.rotation.x = -Math.PI / 2;
-    r.position.set(X, 0.002, FLOOR_FROM + FLOOR_DEPTH / 2);
-    return r;
-  }, []);
-  useLayoutEffect(
-    () => () => {
-      mirror.getRenderTarget().dispose();
-      mirror.geometry.dispose();
-      (mirror.material as THREE.Material).dispose();
-    },
-    [mirror],
-  );
   return (
-    <>
-      <primitive object={mirror} />
-      <mesh rotation-x={-Math.PI / 2} position={[X, 0.004, FLOOR_FROM + FLOOR_DEPTH / 2]} receiveShadow>
-        <planeGeometry args={[HW * 2, FLOOR_DEPTH]} />
-        <meshStandardMaterial color="#150D09" roughness={0.28} metalness={0} transparent opacity={0.72} />
-      </mesh>
-    </>
+    <mesh rotation-x={-Math.PI / 2} position={[X, 0.004, FLOOR_FROM + FLOOR_DEPTH / 2]} receiveShadow>
+      <planeGeometry args={[HW * 2, FLOOR_DEPTH]} />
+      <meshStandardMaterial color="#150D09" roughness={0.22} metalness={0.15} envMapIntensity={0.9} />
+    </mesh>
   );
 }
 
@@ -276,9 +257,13 @@ function Stage({ p }: { p: Palette }) {
 }
 
 /* ------------------------------------------------------------------------- */
-/*  The corridor                                                             */
+/*  Backstage: the case studies, played as acts                              */
 /* ------------------------------------------------------------------------- */
 
+const BACK_END = workHall.start - workHall.depth;
+const SCREEN = workHall.screen;
+
+/** Each act's light — the wash on the walls takes the colour of the act on stage. */
 const palettes = [
   ["#6b4a2b", "#23170f", "#0b0806"],
   ["#4b2a2f", "#1c1012", "#090606"],
@@ -287,163 +272,133 @@ const palettes = [
   ["#3d4a37", "#161b14", "#070806"],
 ];
 
-/** A lit screen: the title card on the left wall, the client's words on the right. */
-function Screen({ c, i, variant, pos, rotY }: { c: WorkCategory; i: number; variant: "title" | "detail"; pos: [number, number, number]; rotY: number }) {
-  const texture = useCanvasTexture(
-    (ctx, w, h) => {
-      const [a, b, d] = palettes[i % palettes.length];
-      const g = ctx.createRadialGradient(w * (variant === "title" ? 0.3 : 0.7), h * 0.25, 0, w * 0.5, h * 0.5, w * 0.8);
-      g.addColorStop(0, a);
-      g.addColorStop(0.55, b);
-      g.addColorStop(1, d);
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, w, h);
-      const shade = ctx.createLinearGradient(0, h * 0.4, 0, h);
-      shade.addColorStop(0, "rgba(0,0,0,0)");
-      shade.addColorStop(1, "rgba(0,0,0,0.7)");
-      ctx.fillStyle = shade;
-      ctx.fillRect(0, 0, w, h);
-      const pad = w * 0.06;
-      if (variant === "title") {
-        ctx.fillStyle = "#C99A45";
-        ctx.font = '600 20px "Manrope", sans-serif';
-        trackedText(ctx, `NO. 0${i + 1}`, pad, h - pad - 150, 6);
-        ctx.fillStyle = "#F3EAD8";
-        ctx.font = '700 80px "Manrope", sans-serif';
-        ctx.fillText(c.title.toUpperCase(), pad, h - pad - 52);
-        ctx.fillStyle = "rgba(244,237,225,0.7)";
-        ctx.font = '500 20px "Manrope", sans-serif';
-        trackedText(ctx, c.subtitle.toUpperCase(), pad, h - pad, 3.5);
-      } else {
-        ctx.fillStyle = "rgba(244,237,225,0.92)";
-        ctx.font = 'italic 400 40px "DM Sans", sans-serif';
-        // wrap the line
-        const words = `“${c.body}”`.split(" ");
-        const lines: string[] = [];
-        let line = "";
-        for (const wd of words) {
-          const t = line ? `${line} ${wd}` : wd;
-          if (ctx.measureText(t).width > w - pad * 2) {
-            lines.push(line);
-            line = wd;
-          } else line = t;
-        }
-        lines.push(line);
-        const y0 = h - pad - 60 - (lines.length - 1) * 54;
-        lines.forEach((l, k) => ctx.fillText(l, pad, y0 + k * 54));
-        ctx.fillStyle = "#C99A45";
-        ctx.font = '600 20px "Manrope", sans-serif';
-        trackedText(ctx, (c.items[0]?.client ?? "").toUpperCase(), pad, h - pad, 6);
-      }
-      ctx.fillStyle = "rgba(0,0,0,0.22)";
-      for (let y = 0; y < h; y += 4) ctx.fillRect(0, y, w, 1);
-    },
-    1024,
-    640,
-    `${c.id}-${variant}`,
-  );
+/** The act's title card, painted for reading head-on: act number, title, what kind of problem. */
+function paintCard(c: WorkCategory, i: number) {
+  return (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+    const [a, b, d] = palettes[i % palettes.length];
+    const g = ctx.createRadialGradient(w * 0.72, h * 0.28, 0, w * 0.5, h * 0.5, w * 0.85);
+    g.addColorStop(0, a);
+    g.addColorStop(0.55, b);
+    g.addColorStop(1, d);
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+    const shade = ctx.createLinearGradient(0, h * 0.35, 0, h);
+    shade.addColorStop(0, "rgba(0,0,0,0)");
+    shade.addColorStop(1, "rgba(0,0,0,0.72)");
+    ctx.fillStyle = shade;
+    ctx.fillRect(0, 0, w, h);
+    const pad = w * 0.07;
+    // a large, faint act numeral as the backdrop
+    ctx.fillStyle = "rgba(243,234,216,0.07)";
+    ctx.font = '800 420px "Manrope", sans-serif';
+    ctx.textAlign = "right";
+    ctx.fillText(String(i + 1).padStart(2, "0"), w - pad * 0.6, h * 0.62);
+    ctx.textAlign = "left";
+    ctx.fillStyle = "#C99A45";
+    ctx.font = '600 24px "Manrope", sans-serif';
+    trackedText(ctx, `ACT ${String(i + 1).padStart(2, "0")}`, pad, h - pad - 170, 7);
+    ctx.fillStyle = "#F3EAD8";
+    ctx.font = '700 104px "Manrope", sans-serif';
+    ctx.fillText(c.title, pad, h - pad - 70);
+    ctx.fillStyle = "rgba(243,234,216,0.75)";
+    ctx.font = '500 24px "Manrope", sans-serif';
+    trackedText(ctx, c.subtitle.toUpperCase(), pad, h - pad, 3);
+    ctx.fillStyle = "rgba(0,0,0,0.18)";
+    for (let y = 0; y < h; y += 4) ctx.fillRect(0, y, w, 1);
+  };
+}
 
+/**
+ * One act's screen, hung from the fly loft on its own batten. It lowers in as its act begins
+ * and flies out as the next comes down (the timing is shared with the page: ~/lib/acts).
+ */
+function ActScreen({ c, i, brass }: { c: WorkCategory; i: number; brass: THREE.Material }) {
+  const texture = useCanvasTexture(paintCard(c, i), 1024, 640, `act-${c.id}`);
+  const group = useRef<THREE.Group>(null);
+  // each act hangs on the batten behind the last, so the new screen comes down behind the old one
+  // as it lifts away; scaled up a touch to make up for the depth, so every act reads the same size
+  const z = SCREEN.z - i * 0.3;
+  const scale = (workHall.camEnd - z) / (workHall.camEnd - SCREEN.z);
+  useFrame(() => {
+    const g = group.current;
+    if (!g) return;
+    const f = fly(i, world.work.acts * ACTS);
+    g.visible = f.visible;
+    g.position.y = SCREEN.y + f.up * 3.8;
+    g.rotation.z = f.up * (i % 2 ? 0.03 : -0.03); // a slight swing on the lines
+  });
+  const { w, h } = SCREEN;
   return (
-    <group position={pos} rotation-y={rotY}>
+    <group ref={group} position={[X + SCREEN.x, SCREEN.y, z]} scale={scale} visible={i === 0}>
       <mesh>
-        <planeGeometry args={[3.2, 2]} />
-        {/* a lit display, not a print: lifted above 1 so it glows a little */}
-        <meshBasicMaterial map={texture} color={[1.7, 1.7, 1.7]} toneMapped={false} />
+        <planeGeometry args={[w, h]} />
+        <meshBasicMaterial map={texture} color={[1.55, 1.55, 1.55]} toneMapped={false} />
       </mesh>
       {[
-        [0, 1.03, 3.32, 0.06],
-        [0, -1.03, 3.32, 0.06],
-        [-1.63, 0, 0.06, 2.12],
-        [1.63, 0, 0.06, 2.12],
-      ].map(([x, y, w, h], k) => (
-        <mesh key={k} position={[x, y, 0.01]}>
-          <boxGeometry args={[w, h, 0.04]} />
-          <meshStandardMaterial color="#C99A45" metalness={1} roughness={0.35} />
+        [0, h / 2 + 0.03, w + 0.12, 0.06],
+        [0, -h / 2 - 0.03, w + 0.12, 0.06],
+        [-w / 2 - 0.03, 0, 0.06, h + 0.12],
+        [w / 2 + 0.03, 0, 0.06, h + 0.12],
+      ].map(([x, y, bw, bh], k) => (
+        <mesh key={k} material={brass} position={[x, y, 0.01]}>
+          <boxGeometry args={[bw, bh, 0.05]} />
         </mesh>
       ))}
-      {/* the screen's light on the floor */}
-      <mesh rotation-x={-Math.PI / 2} position={[0, -2.17, 1.2]}>
-        <planeGeometry args={[3.6, 2.4]} />
-        <meshBasicMaterial map={radialTexture()} color={palettes[i % palettes.length][0]} transparent opacity={0.5} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
-      </mesh>
+      {/* the lines it hangs from */}
+      {[-w * 0.32, w * 0.32].map((x) => (
+        <mesh key={x} position={[x, h / 2 + 3.2, 0]}>
+          <cylinderGeometry args={[0.006, 0.006, 6.4, 6]} />
+          <meshBasicMaterial color="#8A6A35" />
+        </mesh>
+      ))}
     </group>
   );
 }
 
-function EndWall({ p }: { p: Palette }) {
-  const font = useLoader(FontLoader, assets.fonts.displayTypeface);
-  const geometry = useMemo(() => extrudedText(font, "419M+", { size: 1.25, depth: 0.08, tracking: -0.02, bevel: 0.014 }), [font]);
-  const material = useMemo(() => new THREE.MeshStandardMaterial({ color: "#d9b77e", metalness: 1, roughness: 0.25, envMapIntensity: 1.8 }), []);
-  useLayoutEffect(() => () => (geometry.dispose(), material.dispose()), [geometry, material]);
-  return (
-    <group position={[X, 0, END + 0.05]}>
-      <mesh position={[0, 2.3, 0.01]}>
-        <planeGeometry args={[HW * 2, CORRIDOR_H]} />
-        <meshBasicMaterial map={radialTexture()} color="#C99A45" transparent opacity={0.55} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
-      </mesh>
-      <Text font={assets.fonts.sans} fontSize={0.12} letterSpacing={0.55} anchorX="center" position={[0, 3.45, 0.05]}>
-        AND COUNTING
-        <meshBasicMaterial color="#C99A45" toneMapped={false} />
-      </Text>
-      <mesh geometry={geometry} material={material} position={[0, 2.0, 0.08]} />
-      <Text font={assets.fonts.sans} fontSize={0.13} letterSpacing={0.55} anchorX="center" position={[0, 1.55, 0.05]}>
-        VIEWS · WITHOUT A RUPEE ON ADS
-        <meshBasicMaterial color="#D9B98A" toneMapped={false} />
-      </Text>
-      <mesh material={p.brass} position={[0, 0.06, 0.02]}>
-        <boxGeometry args={[HW * 2, 0.12, 0.02]} />
-      </mesh>
-    </group>
-  );
-}
+/** The space behind the curtain: fluted walnut, a dark fly loft, a warm floor, the act's light. */
+function Backstage({ p }: { p: Palette }) {
+  const H = STAGE.h;
+  const wall = useMemo(() => flutedGeometry(workHall.depth, H), [H]);
+  const back = useMemo(() => metricUVs(new THREE.PlaneGeometry(HW * 2, H), 1.6), [H]);
+  const midZ = workHall.start - workHall.depth / 2;
+  const brass = useMemo(() => new THREE.MeshStandardMaterial({ color: "#C99A45", metalness: 1, roughness: 0.35 }), []);
+  useLayoutEffect(() => () => brass.dispose(), [brass]);
 
-function Corridor({ p }: { p: Palette }) {
-  const wall = useMemo(() => flutedGeometry(LEN, CORRIDOR_H), []);
-  const endWall = useMemo(() => metricUVs(new THREE.PlaneGeometry(HW * 2, CORRIDOR_H), 1.6), []);
-  const header = useMemo(() => metricUVs(new THREE.PlaneGeometry(HW * 2, STAGE.h - CORRIDOR_H), 1.6), []);
-  const midZ = workHall.start - LEN / 2;
-  const inlays = useMemo(() => {
-    const zs: number[] = [];
-    for (let z = workHall.start - 1.2; z > END; z -= 2.4) zs.push(z);
-    return zs;
-  }, []);
+  // the wash takes the colour of the act on stage, blending as the scenery changes
+  const wash = useRef<THREE.PointLight>(null);
+  const from = useMemo(() => new THREE.Color(), []);
+  const to = useMemo(() => new THREE.Color(), []);
+  useFrame(() => {
+    const l = wash.current;
+    if (!l) return;
+    const pp = Math.min(ACTS - 1, Math.max(0, world.work.acts * ACTS - 0.5));
+    const k = Math.floor(pp);
+    from.set(palettes[k % palettes.length][0]);
+    to.set(palettes[Math.min(ACTS - 1, k + 1) % palettes.length][0]);
+    l.color.copy(from).lerp(to, smooth(0, 1, pp - k)).multiplyScalar(1.6);
+  });
 
   return (
     <group>
-      {/* fluted walnut walls, both sides */}
-      <mesh geometry={wall} material={p.walnut} position={[X - HW, CORRIDOR_H / 2, midZ]} rotation-y={Math.PI / 2} receiveShadow />
-      <mesh geometry={wall} material={p.walnut} position={[X + HW, CORRIDOR_H / 2, midZ]} rotation-y={-Math.PI / 2} receiveShadow />
-      <mesh geometry={endWall} material={p.walnut} position={[X, CORRIDOR_H / 2, END]} />
-      {/* proscenium header between the tall stage and the corridor */}
-      <mesh geometry={header} material={p.walnut} position={[X, CORRIDOR_H + (STAGE.h - CORRIDOR_H) / 2, workHall.start]} />
-      {/* polished floor with brass inlays */}
+      <mesh geometry={wall} material={p.walnut} position={[X - HW, H / 2, midZ]} rotation-y={Math.PI / 2} receiveShadow />
+      <mesh geometry={wall} material={p.walnut} position={[X + HW, H / 2, midZ]} rotation-y={-Math.PI / 2} receiveShadow />
+      <mesh geometry={back} material={p.walnut} position={[X, H / 2, BACK_END]} />
       <mesh rotation-x={-Math.PI / 2} position={[X, 0, midZ]} material={p.floor} receiveShadow>
-        <planeGeometry args={[HW * 2, LEN]} />
+        <planeGeometry args={[HW * 2, workHall.depth]} />
       </mesh>
-      {inlays.map((z) => (
-        <mesh key={z} material={p.brass} position={[X, 0.003, z]}>
-          <boxGeometry args={[HW * 2, 0.004, 0.025]} />
-        </mesh>
-      ))}
-      {/* ceiling with a light strip down the middle */}
-      <mesh rotation-x={Math.PI / 2} position={[X, CORRIDOR_H, midZ]} material={p.plaster}>
-        <planeGeometry args={[HW * 2, LEN]} />
+      {/* the fly loft: dark, so the screens vanish up into it */}
+      <mesh rotation-x={Math.PI / 2} position={[X, H, midZ]}>
+        <planeGeometry args={[HW * 2, workHall.depth]} />
+        <meshBasicMaterial color="#0b0705" />
       </mesh>
-      <mesh material={p.glow} position={[X, CORRIDOR_H - 0.02, midZ]}>
-        <boxGeometry args={[0.06, 0.01, LEN - 0.4]} />
+      {work.map((c, i) => <ActScreen key={c.id} c={c} i={i} brass={brass} />)}
+      {/* the screen's glow on the floor */}
+      <mesh rotation-x={-Math.PI / 2} position={[X + SCREEN.x, 0.01, SCREEN.z + 1.3]}>
+        <planeGeometry args={[SCREEN.w * 1.3, 2.6]} />
+        <meshBasicMaterial map={radialTexture()} color="#C99A45" transparent opacity={0.35} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
       </mesh>
-      {work.map((c, i) => {
-        const z = workHall.screenZ(i);
-        return (
-          <group key={c.id}>
-            <Screen c={c} i={i} variant="title" pos={[X - HW + 0.03, 2.2, z]} rotY={Math.PI / 2} />
-            <Screen c={c} i={i} variant="detail" pos={[X + HW - 0.03, 2.2, z - workHall.gap / 2]} rotY={-Math.PI / 2} />
-          </group>
-        );
-      })}
-      <EndWall p={p} />
-      <pointLight position={[X, 3.9, workHall.start - LEN * 0.3]} color="#ffd29a" intensity={22} distance={18} decay={2} />
-      <pointLight position={[X, 3.9, workHall.start - LEN * 0.78]} color="#ffd29a" intensity={22} distance={18} decay={2} />
+      <pointLight ref={wash} position={[X, 4.2, SCREEN.z + 2.5]} intensity={18} distance={12} decay={2} />
+      <pointLight position={[X - 1.6, 3.2, workHall.start - 1.2]} color="#ffd29a" intensity={6} distance={7} decay={2} />
     </group>
   );
 }
@@ -452,7 +407,7 @@ export function WorkHall({ p }: { p: Palette }) {
   return (
     <group>
       <Stage p={p} />
-      <Corridor p={p} />
+      <Backstage p={p} />
     </group>
   );
 }

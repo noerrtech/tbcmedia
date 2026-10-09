@@ -301,15 +301,15 @@
 .animate-flicker { animation: flicker 6s ease-in-out infinite; }
 .animate-drift { animation: drift 5s ease-in-out infinite alternate; }
 
-/* The TBC Growth Line (What we do): station panels swap in as the train arrives */
-.gl-panel { pointer-events: none; }
-.gl-panel[data-active="true"] { pointer-events: auto; }
-.gl-panel > * {
+/* Panels that swap in place (Growth Line stations, Work room acts): the active one staggers in */
+.swap-panel { pointer-events: none; }
+.swap-panel[data-active="true"] { pointer-events: auto; }
+.swap-panel > * {
   opacity: 0;
   transform: translateY(14px);
   transition: opacity 280ms var(--ease-out), transform 280ms var(--ease-out);
 }
-.gl-panel[data-active="true"] > * {
+.swap-panel[data-active="true"] > * {
   opacity: 1;
   transform: none;
   transition: opacity 600ms var(--ease-out), transform 700ms var(--ease-out);

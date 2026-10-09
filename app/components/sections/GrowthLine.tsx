@@ -171,7 +171,7 @@ function Stagger({ i, children, className = "" }: { i: number; children: ReactNo
 function StopPanel({ i, active }: { i: number; active: boolean }) {
   if (i === 0)
     return (
-      <div className="gl-panel [grid-area:1/1]" data-active={active}>
+      <div className="swap-panel [grid-area:1/1]" data-active={active}>
         <Stagger i={0}><p className="eyebrow">What we do</p></Stagger>
         <Stagger i={1}><p className="display title-lg mt-5 text-ivory">Six stations. One route to growth.</p></Stagger>
         <Stagger i={2}><p className="mt-5 max-w-md text-mist">Strategy, creativity and growth systems for ambitious brands. Every stop is a question we answer for you.</p></Stagger>
@@ -180,7 +180,7 @@ function StopPanel({ i, active }: { i: number; active: boolean }) {
     );
   const s = services[i - 1];
   return (
-    <div className="gl-panel [grid-area:1/1]" data-active={active}>
+    <div className="swap-panel [grid-area:1/1]" data-active={active}>
       <Stagger i={0}><p className="eyebrow">Station {s.no} <span className="text-mist">/ 0{services.length}</span></p></Stagger>
       <Stagger i={1}><p className="display title-lg mt-4 text-ivory">{s.title}</p></Stagger>
       <Stagger i={2}><p className="mt-3 font-sans text-xl text-champagne italic md:text-2xl">{s.question}</p></Stagger>

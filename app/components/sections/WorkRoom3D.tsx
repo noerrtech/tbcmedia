@@ -1,32 +1,29 @@
-import { AnimatePresence, motion } from "framer-motion";
 import { useRef, useState } from "react";
 import { work } from "~/content/site";
 import { ScrimZone } from "~/components/office/ScrimZone";
-import { workHall, world } from "~/components/three/world";
+import { world } from "~/components/three/world";
 import { ImpactWall } from "~/components/sections/Impact";
-import { CorridorIntro } from "~/components/sections/Work";
-import { ScrollTrigger, useGSAP } from "~/lib/gsap";
+import { ActBar, CaseStudyPanel, WorkIntro, scrollToAct } from "~/components/sections/CaseStudies";
+import { ACTS, actAt } from "~/lib/acts";
+import { gsap, ScrollTrigger, useGSAP } from "~/lib/gsap";
 import { useLenis } from "~/lib/smooth-scroll";
 
 /**
- * The Work room in the 3D office. The page is a set of scroll tracks; the curtain and the
- * corridor themselves are in the world behind it (WorkHall), driven by these tracks.
+ * The Work room in the 3D office. The page is a set of scroll tracks; the stage behind it
+ * (WorkHall) plays them: the curtain parts, then the case studies play as five acts — each act's
+ * screen flown in on the stage, its story laid out here beside it.
  */
 export function WorkRoom3D() {
   const curtain = useRef<HTMLElement>(null);
-  const corridor = useRef<HTMLElement>(null);
+  const acts = useRef<HTMLElement>(null);
   const curtainCopy = useRef<HTMLDivElement>(null);
+  const fill = useRef<HTMLSpanElement | null>(null);
   const [active, setActive] = useState(0);
   const lenis = useLenis();
 
-  // The camera's z along the corridor for a scroll progress — and back.
-  const endZ = workHall.start - workHall.length(work.length) + 6.5;
-  const zAt = (k: number) => workHall.camStart + (endZ - workHall.camStart) * k;
-  const kFor = (i: number) => (workHall.screenZ(i) + 2.6 - workHall.camStart) / (endZ - workHall.camStart);
-
   useGSAP(() => {
     world.work.curtain = 0;
-    world.work.corridor = 0;
+    world.work.acts = 0;
     // only while this is the room — the exit transition scrolls the page back to the top
     const here = () => world.route === "work";
     const a = ScrollTrigger.create({
@@ -39,24 +36,25 @@ export function WorkRoom3D() {
         if (curtainCopy.current) curtainCopy.current.style.opacity = String(Math.max(0, 1 - self.progress * 5));
       },
     });
-    const b = ScrollTrigger.create({
-      trigger: corridor.current,
-      start: "top top",
-      end: "bottom bottom",
-      onUpdate: (self) => {
+    // the acts follow the scroll a beat behind, so the scenery moves smoothly however you scroll
+    let last = -1;
+    const proxy = { p: 0 };
+    const t = gsap.to(proxy, {
+      p: 1,
+      ease: "none",
+      scrollTrigger: { trigger: acts.current, start: "top top", end: "bottom bottom", scrub: 0.9 },
+      onUpdate: () => {
         if (!here()) return;
-        world.work.corridor = self.progress;
-        const z = zAt(self.progress);
-        let best = 0;
-        for (let i = 1; i < work.length; i++) {
-          if (Math.abs(workHall.screenZ(i) + 1 - z) < Math.abs(workHall.screenZ(best) + 1 - z)) best = i;
-        }
-        setActive((prev) => (prev === best ? prev : best));
+        world.work.acts = proxy.p;
+        if (fill.current) fill.current.style.transform = `scaleX(${proxy.p})`;
+        const i = actAt(proxy.p);
+        if (i !== last) setActive((last = i));
       },
     });
     return () => {
       a.kill();
-      b.kill();
+      t.scrollTrigger?.kill();
+      t.kill();
     };
   });
 
@@ -73,18 +71,9 @@ export function WorkRoom3D() {
     openCurtain();
   };
 
-  const goTo = (i: number) => {
-    const el = corridor.current;
-    if (!el) return;
-    const k = Math.min(1, Math.max(0, kFor(i)));
-    scrollTo(el.offsetTop + k * (el.offsetHeight - window.innerHeight), 1.8);
-  };
-
-  const c = work[active];
-
   return (
     <>
-      {/* the curtain: scroll to open it */}
+      {/* the curtain: scroll, or click anywhere, to open it */}
       <ScrimZone value={0}>
         <section ref={curtain} onClick={onStageClick} className="relative h-[150vh] cursor-pointer" aria-label="The work — the curtain">
           <div className="sticky top-0 h-screen">
@@ -101,53 +90,25 @@ export function WorkRoom3D() {
         </section>
       </ScrimZone>
 
-      {/* the numbers, before the corridor */}
+      {/* the numbers, then the line before the acts */}
       <ScrimZone value={0.86}>
         <section className="py-32">
           <ImpactWall />
         </section>
-        <CorridorIntro />
+        <WorkIntro />
       </ScrimZone>
 
-      {/* the corridor: scroll to walk it */}
-      <ScrimZone value={0.08}>
-        <section ref={corridor} className="relative" style={{ height: `${work.length * 70 + 60}vh` }} aria-label="The work, organised by business problem">
+      {/* the acts: the stage plays the screens, the story sits on the left */}
+      <ScrimZone value={0.12}>
+        <section ref={acts} className="relative" style={{ height: `${ACTS * 130}vh` }} aria-label="Case studies">
           <div className="sticky top-0 h-screen">
-            <div className="pointer-events-none absolute inset-x-0 top-24 flex justify-center px-6">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={c.id}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -12 }}
-                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  className="max-w-xl text-center [text-shadow:0_2px_24px_rgb(0_0_0/0.8)]"
-                >
-                  <p className="eyebrow">
-                    0{active + 1} / 0{work.length}
-                  </p>
-                  <p className="display title-lg mt-3">{c.title}</p>
-                  <p className="mt-3 text-sm text-ivory/80">{c.body}</p>
-                </motion.div>
-              </AnimatePresence>
+            <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-[56%] bg-[linear-gradient(90deg,rgb(21_13_9/0.94)_0%,rgb(21_13_9/0.8)_60%,transparent)]" />
+            <div className="relative mx-auto flex h-full max-w-[1400px] items-center px-8 pt-24 pb-24 md:px-12">
+              <div className="grid w-full max-w-[34rem]">
+                {work.map((c, i) => <CaseStudyPanel key={c.id} c={c} i={i} active={i === active} />)}
+              </div>
             </div>
-            <nav className="absolute inset-x-0 bottom-0 border-t border-line bg-ink/60 backdrop-blur-md" aria-label="Work categories">
-              <ul className="mx-auto flex max-w-6xl overflow-x-auto">
-                {work.map((w, i) => (
-                  <li key={w.id} className="flex-1">
-                    <button
-                      type="button"
-                      onClick={() => goTo(i)}
-                      aria-current={i === active ? "true" : undefined}
-                      className={`relative w-full min-w-32 px-3 py-5 text-[0.6rem] tracking-[0.24em] uppercase transition-colors duration-200 ${i === active ? "text-champagne" : "text-mist hover:text-ivory"}`}
-                    >
-                      {w.title}
-                      {i === active && <motion.span layoutId="corridor3d-active" className="absolute inset-x-6 top-0 h-px bg-champagne" />}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+            <ActBar active={active} onGo={(i) => scrollToAct(acts.current, i, lenis)} fill={(el) => (fill.current = el)} />
           </div>
         </section>
       </ScrimZone>
