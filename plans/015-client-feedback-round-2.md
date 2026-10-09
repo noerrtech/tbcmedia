@@ -215,6 +215,24 @@ https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg and https://claude.ai/artifact
 - Electric Yellow is cooler than the logo's golden `#FCBB17`. Keep it sparse, or go monochrome so the logo
   is the only warm colour on the page.
 
+**Background: the owner's reference gradient (2026-10-09), for full-screen scenes.** Sampled from the
+reference image, top to bottom:
+`#161A1C` → `#1F2427` → `#33393C` → `#495052` → `#60686A` → `#777F81` → `#899293` → `#A8AEB0` → `#C9CDD0` →
+`#D3D6D9`, light mist from about 65% down, with a fine grain.
+- It goes on full-screen scenes only: the reception (`/tbc`) and each room's opening screen. It mirrors the
+  reference:
+  - the headline and 419M+ sit in the dark top third
+  - the option cards become the **black bar** (`#0B0C0D`) with a soft shadow falling onto the light floor
+  - the floor holds dark buttons and links (Obsidian `#111315` on mist, about 12 : 1)
+- Long reading sections stay solid Obsidian, because Cloud White text fails on the light lower half.
+- Accents, numbers and buttons stay solid colours.
+- In code:
+  - a `--stage-bg` token used by the reception and room hero sections
+  - `--shelf` for the option bar
+  - `--floor-ink` for text on the light floor
+  - the 3D lobby's backdrop and fog would be tuned to the same top-to-bottom values
+- Preview: https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg (opens on this scene).
+
 **Theme: DECIDE.** The client wants **dark, between black and brown**. After seeing gradients, the owner asked
 for **solid colours only**: no gradient text, buttons or edges, and no background glows. A very fine grain
 remains and can be removed. Each theme is a dark base, a slightly lighter card colour, warm white text and
