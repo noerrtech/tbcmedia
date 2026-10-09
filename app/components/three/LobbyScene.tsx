@@ -2,12 +2,11 @@ import { SpotLight, Text, useGLTF } from "@react-three/drei";
 import { useFrame, useLoader } from "@react-three/fiber";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { assets } from "./assets";
 import { doors } from "./doors";
 import { ARCH_H, ARCH_W, Doorway } from "./Doorway";
-import { extrudedText, flutedGeometry, metricUVs, radialTexture } from "./geometry";
-import { LampPendant, Lounge } from "./Furniture";
+import { flutedGeometry, metricUVs, radialTexture } from "./geometry";
+import { Laptop, LampPendant, Lounge } from "./Furniture";
 import { cutMaterial, useFloorTextures, usePalette } from "./materials";
 import { PausableReflectorMaterial } from "./PausableReflector";
 import { world } from "./world";
@@ -123,16 +122,39 @@ function Walls({ p }: { p: Palette }) {
 
 /* ------------------------------------------------------------------------- */
 
-/** "TBC" in solid polished brass: extruded, bevelled, tracked tight like the monogram. */
-function SignLetters() {
-  const font = useLoader(FontLoader, assets.fonts.displayTypeface);
-  const geometry = useMemo(() => extrudedText(font, "TBC", { size: 1.6, depth: 0.07, tracking: -0.07, bevel: 0.016 }), [font]);
-  const material = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: "#d9b77e", metalness: 1, roughness: 0.26, envMapIntensity: 1.7 }),
-    [],
+/**
+ * The real TBC logo as a lit sign standing off the fluted wall: the full-colour face, a few dark
+ * layers behind it for thickness, and a soft shadow on the wall.
+ */
+function LogoSign() {
+  const map = useLoader(THREE.TextureLoader, assets.logo);
+  const { face, edge, shadow } = useMemo(() => {
+    map.colorSpace = THREE.SRGBColorSpace;
+    map.anisotropy = 8;
+    return {
+      face: new THREE.MeshBasicMaterial({ map, transparent: true, alphaTest: 0.45, toneMapped: false }),
+      edge: new THREE.MeshBasicMaterial({ map, color: "#24170e", transparent: true, alphaTest: 0.45 }),
+      shadow: new THREE.MeshBasicMaterial({ map, color: "#000000", transparent: true, opacity: 0.45, depthWrite: false }),
+    };
+  }, [map]);
+  useLayoutEffect(() => () => (face.dispose(), edge.dispose(), shadow.dispose()), [face, edge, shadow]);
+  const h = 1.65;
+  const w = (h * 512) / 389;
+  return (
+    <group position={[0, 4.58, 0.1]}>
+      <mesh material={shadow} position={[0.05, -0.07, -0.085]} scale={[w * 1.02, h * 1.02, 1]}>
+        <planeGeometry />
+      </mesh>
+      {[0.06, 0.045, 0.03, 0.015].map((d) => (
+        <mesh key={d} material={edge} position-z={-d} scale={[w, h, 1]}>
+          <planeGeometry />
+        </mesh>
+      ))}
+      <mesh material={face} scale={[w, h, 1]}>
+        <planeGeometry />
+      </mesh>
+    </group>
   );
-  useLayoutEffect(() => () => (geometry.dispose(), material.dispose()), [geometry, material]);
-  return <mesh geometry={geometry} material={material} position={[0, 3.98, 0.1]} castShadow />;
 }
 
 function Signage({ p }: { p: Palette }) {
@@ -151,7 +173,7 @@ function Signage({ p }: { p: Palette }) {
           toneMapped={false}
         />
       </mesh>
-      <SignLetters />
+      <LogoSign />
       <Text
         font={assets.fonts.sans}
         fontSize={0.13}
@@ -161,7 +183,7 @@ function Signage({ p }: { p: Palette }) {
         position={[0, 3.45, 0.12]}
       >
         THE BRAND CAPPUCCINO
-        <meshBasicMaterial color="#b9ab95" toneMapped={false} />
+        <meshBasicMaterial color="#B7A58A" toneMapped={false} />
       </Text>
     </group>
   );
@@ -222,6 +244,8 @@ export function LobbyScene({ p }: { p: Palette }) {
       <Walls p={p} />
       <Signage p={p} />
       <Desk p={p} />
+      {/* the receptionist's laptop: lid towards the visitor, screen towards the chair behind the desk */}
+      <Laptop position={[0.55, 1.135, -4.82]} rotation-y={Math.PI - 0.22} />
       {[-1.7, 0, 1.7].map((x, i) => (
         <LampPendant key={x} x={x} z={-4.4} delay={0.2 + i * 0.25} p={p} ceiling={H} />
       ))}

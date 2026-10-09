@@ -1,5 +1,5 @@
 import { useGLTF } from "@react-three/drei";
-import { useFrame, type ThreeElements } from "@react-three/fiber";
+import { useFrame, useLoader, type ThreeElements } from "@react-three/fiber";
 import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { assets } from "./assets";
@@ -116,6 +116,57 @@ export function LampPendant({
         distance={9}
         decay={2}
       />
+    </group>
+  );
+}
+
+/**
+ * An open laptop, built from boxes: aluminium body, black bezel, a softly lit screen and the TBC
+ * logo on the lid. Local frame: hinge at the back (-z), screen facing +z — rotate it to face its user.
+ */
+export function Laptop(props: ThreeElements["group"]) {
+  const logo = useLoader(THREE.TextureLoader, assets.logo);
+  const mats = useMemo(() => {
+    logo.colorSpace = THREE.SRGBColorSpace;
+    return {
+      body: new THREE.MeshStandardMaterial({ color: "#3d3f42", metalness: 0.85, roughness: 0.32 }),
+      bezel: new THREE.MeshStandardMaterial({ color: "#0d0d0e", roughness: 0.4 }),
+      keys: new THREE.MeshStandardMaterial({ color: "#151516", roughness: 0.8 }),
+      screen: new THREE.MeshBasicMaterial({ color: "#F3EAD8", toneMapped: false }),
+      badge: new THREE.MeshBasicMaterial({ map: logo, transparent: true, alphaTest: 0.45, toneMapped: false }),
+    };
+  }, [logo]);
+  const W = 0.34;
+  const D = 0.235;
+  const lid = 0.225;
+  const tilt = 0.29; // lid leans back from upright, radians (opened about 107°)
+  return (
+    <group {...props}>
+      {/* base */}
+      <mesh material={mats.body} position={[0, 0.0075, 0]} castShadow receiveShadow>
+        <boxGeometry args={[W, 0.015, D]} />
+      </mesh>
+      <mesh material={mats.keys} position={[0, 0.0152, -0.02]} rotation-x={-Math.PI / 2}>
+        <planeGeometry args={[W * 0.86, D * 0.42]} />
+      </mesh>
+      {/* lid, hinged at the back edge */}
+      <group position={[0, 0.015, -D / 2]} rotation-x={-tilt}>
+        <mesh material={mats.body} position={[0, lid / 2, -0.004]} castShadow>
+          <boxGeometry args={[W, lid, 0.007]} />
+        </mesh>
+        <mesh material={mats.bezel} position={[0, lid / 2, 0.0002]}>
+          <planeGeometry args={[W * 0.97, lid * 0.96]} />
+        </mesh>
+        <mesh material={mats.screen} position={[0, lid / 2 + 0.004, 0.0006]}>
+          <planeGeometry args={[W * 0.9, lid * 0.82]} />
+        </mesh>
+        {/* logo on the back of the lid */}
+        <mesh material={mats.badge} position={[0, lid / 2, -0.0082]} rotation-y={Math.PI}>
+          <planeGeometry args={[0.07, 0.07 * (389 / 512)]} />
+        </mesh>
+      </group>
+      {/* a little screen light on whoever sits at it */}
+      <pointLight position={[0, 0.2, 0.25]} intensity={0.5} distance={1.2} decay={2} color="#f6ead2" />
     </group>
   );
 }
