@@ -192,7 +192,8 @@ export default function Office() {
   const shift = (d: Direction, entering: boolean) => (still ? 0 : entering ? (d === "back" ? -16 : 16) : d === "back" ? 8 : -8);
   const page: Variants = {
     initial: (d: Direction) => ({ opacity: 0, transform: `translateY(${shift(d, true)}px)` }),
-    enter: { opacity: 1, transform: "translateY(0px)", transition: { duration: dur.page, ease: ease.out, delay: three ? 0 : 0.45 } },
+    // transform cleared once in: a leftover transform would break pinned (position: fixed) sections
+    enter: { opacity: 1, transform: "translateY(0px)", transition: { duration: dur.page, ease: ease.out, delay: three ? 0 : 0.45 }, transitionEnd: { transform: "none" } },
     exit: (d: Direction) => ({ opacity: 0, transform: `translateY(${shift(d, false)}px)`, transition: { duration: dur.exit, ease: ease.out } }),
   };
 

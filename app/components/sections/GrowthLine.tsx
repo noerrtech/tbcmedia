@@ -11,12 +11,17 @@ import { useLenis } from "~/lib/smooth-scroll";
  * station's sign stands in the window and the panel beside it says what TBC does there, then it pulls
  * away. The night lifts as it goes — fog at departure, a tunnel before Growth, first light at the end.
  *
- * Layers: interior (window frame, blind, sill) · exterior (sky, hills, city, fog, track side, stations)
+ * Layers: interior (carriage wall, luggage rack, reading lamp, thick window frame and divider, blind,
+ *   ledge, cladding, seat edge) · exterior (sky, hills, city, fog, track side, stations)
  * · route map · content · atmosphere (glass sheen, tunnel reflections, motion blur, sway).
  * Under reduced motion the ride is replaced by a timetable of the same content.
  */
 
 const n = line.stops.length;
+/** carriage materials, in the Mughal Noir browns */
+const WALL = "linear-gradient(180deg, rgb(0 0 0 / 0.15), transparent 35%, rgb(0 0 0 / 0.3)), repeating-linear-gradient(90deg, #221710 0 3px, #1f150f 3px 7px)";
+const FRAME = "linear-gradient(180deg, #3B2A1E, #2a1d14)";
+const SKY = "linear-gradient(180deg, #0b0705 0%, #150D09 40%, #2c1f16 72%, #3B2A1E 80%, #150D09 100%)";
 const SCROLL_PER_UNIT = 0.75; // viewport heights of scroll per timeline unit
 
 /* ---------------------------------------------------------------- scenery */
@@ -203,12 +208,12 @@ function StopPanel({ i, active }: { i: number; active: boolean }) {
 }
 
 /** The same content as a plain timetable: what screen readers read, and what reduced motion shows. */
-function Timetable() {
+function Timetable({ Heading }: { Heading: "h1" | "h2" }) {
   return (
     <div className="sr-only motion-reduce:not-sr-only motion-reduce:block motion-reduce:py-28">
       <div className="mx-auto max-w-[1100px] px-6 md:px-10">
         <p className="eyebrow">The TBC Growth Line</p>
-        <h2 className="display title-lg mt-5">What we do</h2>
+        <Heading className="display title-lg mt-5">What we do</Heading>
         <p className="mt-5 max-w-xl text-mist">Strategy, creativity and growth systems for ambitious brands. Six stations, one route to growth.</p>
         <ol className="mt-14 border-l border-line">
           {services.map((s) => (
@@ -230,7 +235,8 @@ function Timetable() {
 
 /* ---------------------------------------------------------------- the ride */
 
-export function GrowthLine() {
+/** `heading` is h1 where the ride is the page (the office room), h2 on the home page. */
+export function GrowthLine({ heading = "h2" }: { heading?: "h1" | "h2" }) {
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<ScrollTrigger | null>(null);
   const lenis = useLenis();
@@ -323,7 +329,7 @@ export function GrowthLine() {
 
   return (
     <>
-      <Timetable />
+      <Timetable Heading={heading} />
       <div ref={root} aria-hidden className="relative h-[100svh] min-h-[600px] overflow-hidden bg-ink motion-reduce:hidden">
         <div className="mx-auto flex h-full max-w-[1500px] flex-col px-5 pt-24 pb-5 md:px-10 lg:pt-28 lg:pb-8">
           <div className="grid min-h-0 flex-1 content-center items-center gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-14">
@@ -332,20 +338,46 @@ export function GrowthLine() {
               {line.stops.map((_, i) => <StopPanel key={i} i={i} active={i === at} />)}
             </div>
 
-            {/* the carriage window */}
-            <div data-carriage className="order-1 mx-auto w-full max-w-[min(100%,calc(54svh*1.6))] lg:order-2">
-              {/* passenger information display */}
-              <div className="mb-3 flex items-center justify-between gap-4 border border-line px-4 py-2" style={{ background: "#0f0906" }}>
-                <p className="flex min-w-0 items-baseline gap-3 font-display text-[0.7rem] tracking-[0.22em] uppercase">
-                  <span className="shrink-0 text-mist">{status.label}</span>
-                  <span key={status.name + status.label} className="gl-ticker truncate font-semibold text-champagne">{status.name}</span>
-                </p>
-                <p className="shrink-0 font-display text-[0.7rem] tracking-[0.22em] text-mist uppercase">{String(at).padStart(2, "0")} / 0{n - 1}</p>
-              </div>
+            {/* the carriage: a stretch of wall with its window, seen from your seat */}
+            <div data-carriage className="order-1 mx-auto w-full max-w-[min(100%,86svh)] lg:order-2">
+              <div className="relative overflow-hidden rounded-md border border-line shadow-[0_50px_100px_-40px_rgb(0_0_0/0.9)]" style={{ background: WALL }}>
+                {/* side panel seams */}
+                <span aria-hidden className="absolute inset-y-0 left-[5.5%] w-px bg-ink/70 shadow-[1px_0_0_rgb(217_185_138/0.07)] max-md:hidden" />
+                <span aria-hidden className="absolute inset-y-0 right-[5.5%] w-px bg-ink/70 shadow-[1px_0_0_rgb(217_185_138/0.07)] max-md:hidden" />
 
-              {/* frame */}
-              <div className="rounded-[30px] border border-champagne/25 p-2.5 shadow-[0_50px_100px_-40px_rgb(0_0_0/0.9)] md:p-3.5" style={{ background: "#221710" }}>
-                <div className="relative aspect-[16/10] overflow-hidden rounded-[22px]" style={{ containerType: "inline-size", background: "linear-gradient(180deg, #0b0705 0%, #150D09 40%, #2c1f16 72%, #3B2A1E 80%, #150D09 100%)" }}>
+                {/* luggage rack: two brass rails on brackets, the shelf's shadow beneath */}
+                <div className="relative h-8 md:h-12">
+                  <div className="absolute inset-x-0 top-0 h-[55%]" style={{ background: "#120b07", boxShadow: "0 8px 14px rgb(0 0 0 / 0.55)" }} />
+                  <span className="absolute inset-x-[3%] top-[30%] h-[2px] rounded-full bg-champagne/45" />
+                  <span className="absolute inset-x-[3%] top-[50%] h-[2px] rounded-full bg-champagne/30" />
+                  {[0.1, 0.5, 0.9].map((c) => (
+                    <span key={c} className="absolute top-0 h-[60%] w-[3px] -translate-x-1/2 bg-bronze" style={{ left: `${c * 100}%` }} />
+                  ))}
+                </div>
+
+                {/* reading lamp on the left panel, throwing warm light down the wall */}
+                <div aria-hidden className="absolute top-12 left-[2.75%] -translate-x-1/2 max-md:hidden md:top-16">
+                  <span className="block h-2.5 w-5 rounded-t-full bg-bronze shadow-[inset_0_1px_0_rgb(243_234_216/0.35)]" />
+                  <span className="mx-auto block h-1 w-3 rounded-b-sm bg-champagne shadow-[0_0_14px_4px_rgb(217_185_138/0.45)]" />
+                </div>
+                <div aria-hidden className="pointer-events-none absolute top-14 -left-[6%] h-[55%] w-[22%] max-md:hidden" style={{ background: "radial-gradient(50% 60% at 50% 0%, rgb(217 185 138 / 0.16), transparent 75%)" }} />
+
+                {/* passenger information display, mounted above the window */}
+                <div className="mx-[3%] mt-3 flex items-center justify-between gap-4 rounded-sm border border-line px-4 py-2 md:mx-[8.5%]" style={{ background: "#0b0705", boxShadow: "inset 0 1px 6px rgb(0 0 0 / 0.8)" }}>
+                  <p className="flex min-w-0 items-baseline gap-3 font-display text-[0.65rem] tracking-[0.22em] uppercase md:text-[0.7rem]">
+                    <span className="shrink-0 text-mist">{status.label}</span>
+                    <span key={status.name + status.label} className="gl-ticker truncate font-semibold text-champagne">{status.name}</span>
+                  </p>
+                  <p className="shrink-0 font-display text-[0.65rem] tracking-[0.22em] text-mist uppercase md:text-[0.7rem]">{String(at).padStart(2, "0")} / 0{n - 1}</p>
+                </div>
+
+                {/* the window: a thick, inset frame with screws, a rubber seal, then the glass */}
+                <div className="relative mx-[3%] mt-3 rounded-[24px] p-2 md:mx-[8.5%] md:mt-4 md:p-3" style={{ background: FRAME, boxShadow: "inset 0 1px 0 rgb(217 185 138 / 0.28), inset 0 -3px 6px rgb(0 0 0 / 0.6), 0 0 0 1px #0b0705, 0 0 0 4px rgb(59 42 30 / 0.6)" }}>
+                  {[["top-1.5", "left-1.5"], ["top-1.5", "right-1.5"], ["bottom-1.5", "left-1.5"], ["bottom-1.5", "right-1.5"]].map(([v, h]) => (
+                    <span key={v + h} aria-hidden className={`absolute ${v} ${h} h-1.5 w-1.5 rounded-full bg-champagne/45 shadow-[inset_0_-1px_0_rgb(0_0_0/0.5)] max-md:hidden`} />
+                  ))}
+                  <div className="rounded-[17px] p-[3px]" style={{ background: "#0b0705" }}>
+                    <div className="relative aspect-[16/10] overflow-hidden rounded-[14px]" style={{ containerType: "inline-size", background: SKY }}>
                   <div data-stars className="absolute inset-0">
                     <Stars />
                     <span className="absolute top-[22%] left-[18%] h-[4.5cqw] w-[4.5cqw] rounded-full bg-ivory/85 shadow-[0_0_6cqw_1.5cqw_rgb(243_234_216/0.18)]" />
@@ -367,17 +399,36 @@ export function GrowthLine() {
                   </div>
                   {/* the overhead wire, which never moves */}
                   <div className="absolute inset-x-0 top-[13%] h-px" style={{ background: "#0b0705" }} />
-                  {/* atmosphere: tunnel darkness, glass reflections, vignette, the blind */}
-                  <div data-dark className="absolute inset-0 bg-ink opacity-0" />
-                  <div data-reflect className="pointer-events-none absolute inset-0 opacity-35" style={{ background: "linear-gradient(112deg, transparent 22%, rgb(243 234 216 / 0.09) 34%, transparent 46%), radial-gradient(40% 35% at 12% 95%, rgb(201 154 69 / 0.22), transparent 70%)" }} />
-                  <div className="pointer-events-none absolute inset-0 rounded-[22px] shadow-[inset_0_0_70px_rgb(0_0_0/0.75)]" />
-                  <div className="absolute inset-x-0 top-0 h-[9%] border-b border-champagne/20" style={{ background: "repeating-linear-gradient(180deg, #221710 0 5px, #1B120D 5px 7px)" }}>
-                    <span className="absolute -bottom-[7px] left-1/2 h-3 w-8 -translate-x-1/2 rounded-b-md bg-bronze" />
+                      {/* atmosphere: tunnel darkness, the carriage reflected in the glass, vignette */}
+                      <div data-dark className="absolute inset-0 bg-ink opacity-0" />
+                      <div data-reflect className="pointer-events-none absolute inset-0 opacity-35" style={{ background: "linear-gradient(112deg, transparent 22%, rgb(243 234 216 / 0.09) 34%, transparent 46%), radial-gradient(28% 30% at 4% 6%, rgb(217 185 138 / 0.22), transparent 70%), radial-gradient(30% 45% at 98% 100%, rgb(59 42 30 / 0.7), transparent 70%)" }} />
+                      <div className="pointer-events-none absolute inset-0 shadow-[inset_0_0_60px_rgb(0_0_0/0.75),inset_0_10px_18px_rgb(0_0_0/0.6)]" />
+                      {/* the blind, half an inch down, with its brass pull */}
+                      <div className="absolute inset-x-0 top-0 h-[8%] border-b border-champagne/20" style={{ background: "repeating-linear-gradient(180deg, #221710 0 5px, #1B120D 5px 7px)" }}>
+                        <span className="absolute -bottom-[7px] left-1/2 h-3 w-8 -translate-x-1/2 rounded-b-md bg-bronze" />
+                      </div>
+                      {/* the vertical divider of the narrow top-light pane */}
+                      <div className="absolute inset-y-0 left-[82%] w-[1.4cqw]" style={{ background: FRAME, boxShadow: "inset 1px 0 0 rgb(217 185 138 / 0.25), -6px 0 12px rgb(0 0 0 / 0.45), 6px 0 12px rgb(0 0 0 / 0.45)" }}>
+                        <span className="absolute top-[22%] left-1/2 h-[0.5cqw] w-[0.5cqw] -translate-x-1/2 rounded-full bg-champagne/45" />
+                        <span className="absolute bottom-[22%] left-1/2 h-[0.5cqw] w-[0.5cqw] -translate-x-1/2 rounded-full bg-champagne/45" />
+                      </div>
+                    </div>
                   </div>
                 </div>
+
+                {/* the ledge under the window: a narrow table */}
+                <div className="relative z-10 mx-[1.5%] mt-3 h-3 rounded-[3px] md:mx-[6.5%] md:h-4" style={{ background: "#3B2A1E", boxShadow: "inset 0 1px 0 rgb(217 185 138 / 0.4), inset 0 -2px 0 #221710, 0 12px 18px rgb(0 0 0 / 0.65)" }} />
+
+                {/* lower wall cladding, with the heater grille */}
+                <div className="relative mt-3 h-10 border-t border-ink/70 md:mt-4 md:h-16" style={{ background: "linear-gradient(180deg, rgb(0 0 0 / 0.25), rgb(0 0 0 / 0.45)), #1B120D" }}>
+                  <span className="absolute inset-x-[22%] top-1/2 h-[42%] -translate-y-1/2 rounded-sm border border-line" style={{ background: "repeating-linear-gradient(180deg, #0b0705 0 2px, #221710 2px 5px)" }} />
+                </div>
+
+                {/* the edge of your seat, lower right */}
+                <div aria-hidden className="absolute -right-[3%] bottom-0 z-20 h-[30%] w-[15%] rounded-tl-[44px] rounded-tr-[14px] md:h-[34%]" style={{ background: "repeating-linear-gradient(90deg, #3B2A1E 0 12px, #33241a 12px 14px)", boxShadow: "inset 0 2px 0 rgb(217 185 138 / 0.25), -14px 0 26px rgb(0 0 0 / 0.6)" }}>
+                  <span className="absolute inset-x-[14%] top-[10%] h-[20%] rounded-t-[18px] bg-ivory/10 max-md:hidden" />
+                </div>
               </div>
-              {/* sill */}
-              <div className="mx-4 h-2.5 rounded-b-md border-t border-champagne/30" style={{ background: "#1B120D" }} />
             </div>
           </div>
 

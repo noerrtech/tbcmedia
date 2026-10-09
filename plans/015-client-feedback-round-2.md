@@ -365,4 +365,6 @@ The six service cards are replaced on the classic home by a scroll-driven train 
 each station and its sign stands in the window while the panel shows the question, detail, outcomes
 (plus 419M+ at Growth, the "Social media isn't the strategy" line at Social & Content). Night to dawn
 along the line, tunnel before Growth, route map clickable. Reduced motion and screen readers get the
-same content as a timetable. The office room `/tbc/services` still uses the card showroom.
+same content as a timetable. The office room `/tbc/services` rides the same line (h1 there); the old
+card showroom is gone. The right side is a carriage wall: luggage rack, reading lamp, mounted display,
+thick screwed window frame with a divider, blind, ledge, heater cladding and the edge of a seat.
