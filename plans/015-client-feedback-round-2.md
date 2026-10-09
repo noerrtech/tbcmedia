@@ -194,6 +194,27 @@ https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg and https://claude.ai/artifact
   card-colour sides, outlined letters on an accent block, logo yellow with orange sides.
 - Every 3D style has one solid side colour, with no shading. All but the last take the theme accent.
 
+**Theme: owner's recommended palette (2026-10-09), now the default in the previews.**
+
+| Name | Hex | Role in the build |
+|---|---|---|
+| Obsidian | `#111315` | Page background |
+| Graphite | `#292C2F` | Cards, panels, header |
+| Steel Grey | `#64696B` | Borders, dividers, icons. **Not text**: 3.4 : 1 on Obsidian, 2.5 : 1 on Graphite |
+| Mist Grey | `#D0D2D1` | Secondary text (12.3 : 1) |
+| Cloud White | `#F4F4F1` | Headings and body text (16.9 : 1) |
+| Electric Yellow | `#FFE95A` | Optional accent, about 5%: highlighted word, big numbers, main button (15.1 : 1; Obsidian text on it 15.1 : 1) |
+
+- Proportions: about 70% dark neutrals, 25% light grey and white, 5% accent.
+- Two variants are in the preview:
+  - **Obsidian & Electric Yellow**
+  - **Obsidian Monochrome**, where Cloud White replaces the yellow as the accent and Mist Grey is the button
+    hover
+- One addition, for captions only: Steel Grey lifted to `#8E9395`, which passes 4.5 : 1 on Graphite.
+  The original Steel Grey stays for lines.
+- Electric Yellow is cooler than the logo's golden `#FCBB17`. Keep it sparse, or go monochrome so the logo
+  is the only warm colour on the page.
+
 **Theme: DECIDE.** The client wants **dark, between black and brown**. After seeing gradients, the owner asked
 for **solid colours only**: no gradient text, buttons or edges, and no background glows. A very fine grain
 remains and can be removed. Each theme is a dark base, a slightly lighter card colour, warm white text and
@@ -284,7 +305,7 @@ Recall"* is one option.
 4. **Room name**: Our Story / About Us / The TBC Story (point 10)
 5. **Story flow**: approve the spine and the room re-order (point 12)
 6. **Big numbers**: one 2D and one 3D style code (point 11)
-7. **Theme**: the owner is coming back with a colour direction; the seven dark solid-colour themes are the current options (point 11)
+7. **Theme**: the Obsidian palette with Electric Yellow, or monochrome (point 11)
 
 Phase 1 (the new headline, audio check, the 419M+ line, smaller titles, the rename) can start as soon as the room name is
 picked.
