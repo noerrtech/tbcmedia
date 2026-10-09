@@ -6,7 +6,7 @@ import { assets } from "./assets";
 import { doors } from "./doors";
 import { ARCH_H, ARCH_W, Doorway } from "./Doorway";
 import { flutedGeometry, metricUVs, radialTexture } from "./geometry";
-import { Laptop, LampPendant, Lounge } from "./Furniture";
+import { Laptop, LampPendant, Lounge, Receptionist } from "./Furniture";
 import { cutMaterial, useFloorTextures, usePalette } from "./materials";
 import { PausableReflectorMaterial } from "./PausableReflector";
 import { world } from "./world";
@@ -245,7 +245,9 @@ export function LobbyScene({ p }: { p: Palette }) {
       <Signage p={p} />
       <Desk p={p} />
       {/* the receptionist's laptop: lid towards the visitor, screen towards the chair behind the desk */}
-      <Laptop position={[0.55, 1.135, -4.82]} rotation-y={Math.PI - 0.22} />
+      <Laptop position={[0.4, 1.135, -4.88]} rotation-y={Math.PI - 0.36} />
+      {/* the receptionist, standing behind the desk at the laptop */}
+      <Receptionist position={[0.6, 0, -5.38]} rotation-y={-0.1} />
       {[-1.7, 0, 1.7].map((x, i) => (
         <LampPendant key={x} x={x} z={-4.4} delay={0.2 + i * 0.25} p={p} ceiling={H} />
       ))}
