@@ -5,7 +5,8 @@ import { Footer } from "~/components/layout/Footer";
 import { Entrance } from "~/components/home/Entrance";
 import { GrowthGrid } from "~/components/home/GrowthGrid";
 import { ScrollHighlight } from "~/components/home/ScrollHighlight";
-import { Capabilities, ServicesShowroom } from "~/components/sections/Services";
+import { Capabilities } from "~/components/sections/Services";
+import { GrowthLine } from "~/components/sections/GrowthLine";
 import { Industries } from "~/components/sections/Industries";
 import { ImpactWall } from "~/components/sections/Impact";
 import { WorkGallery } from "~/components/sections/Work";
@@ -46,9 +47,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* WHAT WE DO */}
-      <section id="services" className="relative scroll-mt-10 py-24">
-        <ServicesShowroom />
+      {/* WHAT WE DO — a train ride down the TBC Growth Line, one station per service */}
+      <section id="services" className="relative" aria-label="What we do">
+        <GrowthLine />
       </section>
       <Capabilities />
 

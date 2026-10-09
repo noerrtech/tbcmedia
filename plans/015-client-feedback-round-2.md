@@ -356,3 +356,13 @@ Recall"* is one option.
 
 Phase 1 (the new headline, audio check, the 419M+ line, smaller titles, the rename) can start as soon as the room name is
 picked.
+
+## What we do → the TBC Growth Line
+
+The six service cards are replaced on the classic home by a scroll-driven train ride
+(`app/components/sections/GrowthLine.tsx`, maths in `app/lib/growth-line.ts`, tested in
+`tests/growth-line.test.ts`). Departure at TBC Central, one station per service; the train slows into
+each station and its sign stands in the window while the panel shows the question, detail, outcomes
+(plus 419M+ at Growth, the "Social media isn't the strategy" line at Social & Content). Night to dawn
+along the line, tunnel before Growth, route map clickable. Reduced motion and screen readers get the
+same content as a timetable. The office room `/tbc/services` still uses the card showroom.

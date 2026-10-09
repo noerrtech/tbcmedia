@@ -301,6 +301,27 @@
 .animate-flicker { animation: flicker 6s ease-in-out infinite; }
 .animate-drift { animation: drift 5s ease-in-out infinite alternate; }
 
+/* The TBC Growth Line (What we do): station panels swap in as the train arrives */
+.gl-panel { pointer-events: none; }
+.gl-panel[data-active="true"] { pointer-events: auto; }
+.gl-panel > * {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 280ms var(--ease-out), transform 280ms var(--ease-out);
+}
+.gl-panel[data-active="true"] > * {
+  opacity: 1;
+  transform: none;
+  transition: opacity 600ms var(--ease-out), transform 700ms var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 70ms + 160ms);
+}
+.gl-ticker { animation: gl-ticker 500ms var(--ease-out); }
+@keyframes gl-ticker { from { opacity: 0; transform: translateY(6px); } }
+.gl-fog { animation: gl-fog 18s ease-in-out infinite alternate; }
+@keyframes gl-fog { from { transform: translateX(-6%); } to { transform: translateX(6%); } }
+.gl-nudge { display: inline-block; animation: gl-nudge 2s ease-in-out infinite; }
+@keyframes gl-nudge { 50% { transform: translateY(5px); } }
+
 /* Lenis */
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }

@@ -71,7 +71,7 @@ server build, so it only applies if SSR is turned back on.)
 ## Tests
 
 ```bash
-npm test                      # design rules for the background gradients (palette, contrast, no gradient text/buttons)
+npm test                      # gradient design rules + the Growth Line station maths
 npm run build && npx serve build/client -l 4173 &   # any static server
 E2E_URL=http://localhost:4173 npm run test:e2e      # rendered check: every text over a gradient reads at 4.5 : 1
 ```
