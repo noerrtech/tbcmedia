@@ -39,13 +39,8 @@ That isn't the logo.
 background. Ideally also a **version for dark backgrounds** (white wordmark). The file in the repo
 (`public/media/tbc-logo-color.png`) is only 512 px and has no wordmark.
 
-**DECIDE: colour treatment.** The logo is bright yellow / orange. The site is dark walnut and champagne
-gold. Options:
-- **A (recommended)**: full-colour logo, and bring its yellow (#FBBC19) and orange (#F37C22) into the
-  site as accent colours (buttons, door glow, highlights), so the logo looks like it belongs rather than
-  pasted on.
-- B: full-colour logo only; the rest of the palette stays as is. Quickest, but it will clash.
-- C: exact logo *shape*, but in brass / single colour on the wall; full colour only in the header.
+**DECIDED (2026-10-09): colours come from the logo.** The logo goes in full colour, and the site
+palette is rebuilt from it (see *Palette* under point 11).
 
 ## 2. The logo in the header
 
@@ -168,31 +163,46 @@ title), `home.tsx:37` ("Why TBC" eyebrow → "About us").
 
 **DECIDE**: "Our Story" (recommended, because it's a story-led room), "About Us", or "The TBC Story".
 
-## 11. Fonts: recommendation
+## 11. Fonts and colours
 
-**Today**: Cormorant Garamond (headlines, mostly Light and all-caps) + Manrope (body) + Pinyon Script
-(the handwritten journey).
+**DECIDED (2026-10-09): Space Grotesk (headings) + Inter (body and UI), with colours taken from the
+logo.** Preview: https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg
 
-**The problem**:
-- Cormorant is very thin and only works at huge sizes. Once titles shrink (point 5) it gets spindly and hard
-  to read on screens.
-- Pinyon is wedding-invitation calligraphy.
-- Neither matches the logo, which is a round, friendly geometric sans (the wordmark looks like Poppins) with
-  speech bubbles. The current type says "private bank", while the logo says "friendly conversation over
-  coffee".
+**Fonts**
+- Both are OFL. Self-host them with `@fontsource-variable/space-grotesk` and `@fontsource-variable/inter`
+  (`public/fonts/` + `app/app.css` `@font-face`), and remove Cormorant, Manrope and Pinyon Script.
+- Headings are Space Grotesk 600, tracking −0.02 to −0.03 em, **sentence case** (drop `text-transform` from
+  `.display`). Body is Inter 400 at 16–18 px. Labels and eyebrows are Inter 600, tracked caps.
+- Space Grotesk has no italics: quotes use Inter italic. The handwritten journey (`font-script`, 3 uses)
+  becomes Space Grotesk.
+- 3D: the door labels and desk text (`assets.fonts.sans`) switch to Inter. The extruded 419M+ is rebuilt
+  with `node scripts/make-typeface.mjs SpaceGrotesk.ttf …`.
+- Space Grotesk + Inter is a very common pairing, so the personality has to come from the logo colours and
+  the logo's offset letter shadow, used consistently.
 
-**Options** (all free, Google Fonts / Fontshare, self-hostable like today):
+**Palette** (accents sampled from `public/media/tbc-logo-color.png`)
 
-| | Headlines | Body / UI | Feel | Fit with the logo |
-|---|---|---|---|---|
-| **A (recommended)** | **Fraunces**, variable, *Soft* axis ~50 | **Manrope** (keep) | Warm, editorial, a little playful. Its soft round terminals echo the bubble logo | ★★★ |
-| B | Fraunces | **Poppins** | Closest tie to the wordmark, more casual | ★★★ (Poppins is overused for long text) |
-| C | **Instrument Serif** | **Inter Tight** | Modern, minimal, quieter luxury | ★★ |
+| Token | Hex | Role |
+|---|---|---|
+| `tbc-yellow` | `#FCBB17` | Main buttons, key numbers, highlights (11.1 : 1 on espresso) |
+| `tbc-orange` | `#F57A22` | Hover, arrows, door glow (6.9 : 1) |
+| `tbc-ember` | `#F15824` | The logo's letter shadow: offset shadows only |
+| `tbc-mustard` | `#E3AF0E` | Pressed state |
+| `espresso` | `#120D09` | Page background (replaces `ink`) |
+| `roast` | `#1C150F` | Raised panels, header |
+| `walnut` | `#2A1F16` | Cards, the speech bubble |
+| `foam` | `#F8F2E9` | Main text (16.9 : 1) |
+| `latte` | `#BFB2A0` | Secondary text |
+| `smoke` | `#8A7F72` | Captions (4.8 : 1) |
 
-- For the handwritten journey, replace Pinyon with **Caveat** (real handwriting, not calligraphy), or just use
-  Fraunces italic.
-- The 3D sign letters are generated from the headline font (`scripts/make-typeface.mjs`), so they follow
-  whichever option you pick.
+- Use it 60 / 30 / 10: espresso, then walnut and text, then yellow and orange.
+- Always put dark text on yellow or orange. White on orange is only 2.7 : 1.
+- **Signature detail**: the logo's red-orange offset shadow (`-4px 4px 0 tbc-ember`) on the main button,
+  on the 419M+ number and on one highlighted word per headline. Buttons get the speech-bubble corner
+  (`14px 14px 14px 4px`).
+- `.gold-text` becomes solid yellow, and the champagne and gold tokens are retired.
+- In the 3D lobby, the walnut stays. Brass warms toward yellow, and the door tints change from four golds to
+  yellow and orange (`app/components/three/doors.ts`, `materials.ts`).
 
 ## 12. Story flow: recommendation
 
@@ -258,13 +268,11 @@ Recall"* is one option.
 ## What we need from you to start
 
 1. **Logo files**: SVG / AI / PDF, plus a dark-background version (points 1, 2)
-2. **Logo colours**: A / B / C (point 1)
-3. **Booking backend**: Firestore / WhatsApp pre-fill / Cal.com (point 4), and the **list of JBN chapters**
-4. **"One lady"**: a receptionist at the desk, or a photo on the home page? If the receptionist, can we
+2. **Booking backend**: Firestore / WhatsApp pre-fill / Cal.com (point 4), and the **list of JBN chapters**
+3. **"One lady"**: a receptionist at the desk, or a photo on the home page? If the receptionist, can we
    shoot Riya or a team member? (point 6)
-5. **Room name**: Our Story / About Us / The TBC Story (point 10)
-6. **Fonts**: A / B / C (point 11)
-7. **Story flow**: approve the spine and the room re-order (point 12)
+4. **Room name**: Our Story / About Us / The TBC Story (point 10)
+5. **Story flow**: approve the spine and the room re-order (point 12)
 
 Phase 1 (the new headline, audio check, the 419M+ line, smaller titles, the rename) can start as soon as the room name is
 picked.
