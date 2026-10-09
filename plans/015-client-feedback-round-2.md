@@ -165,23 +165,22 @@ title), `home.tsx:37` ("Why TBC" eyebrow → "About us").
 
 ## 11. Fonts and colours
 
-**Fonts: DECIDE between four options.** Manrope + DM Sans was picked, then Helvetica Neue / Arial,
-Didot + Helvetica Neue, and Helvetica Neue with Didot accents were added as alternatives. The previews switch between all three live:
-https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg (colours, fonts, lobby) and
-https://claude.ai/artifact/KGoCj2bzW2rqa7wPjkASqe (number styles).
+**Fonts: DECIDE.** The latest request is a three-tier combo, which the previews now open with:
 
-| Option | Headings / numbers | Body | Weights | Licence |
-|---|---|---|---|---|
-| A | Manrope | DM Sans | 700 / 800, body 400 | Free (OFL), self-hosted |
-| B | Helvetica Neue → Arial | same | Medium 500 / Bold 700, body 400 | Paid. Built into Apple devices; Windows/Android get Arial (no Medium) |
-| C | Didot → Bodoni Moda | Helvetica Neue → Arial | Regular 400, numbers 500 | Didot paid, Apple-only built in; Bodoni Moda free (OFL) |
-| D | Helvetica Neue → Arial; **Didot** only for big numbers, quotes and one italic word per headline | Helvetica Neue → Arial | Medium 500, Didot 500 / italic 400 | As B + C |
+| Tier | Used for | Font | Preview stand-in |
+|---|---|---|---|
+| Big | Hero headline, page titles, big numbers | **Denton** (Peregrin Studio, paid, 70s-flavoured display serif) | Fraunces, SOFT 70 |
+| Medium | Section titles, card titles, the concierge bubble, quotes | **a serif**: Instrument Serif (free) | (the real thing) |
+| Regular | Body text, labels, buttons | **Gilroy** (Radomir Tinkov, paid) | Outfit |
 
-- Options B and C only look the same on every device if TBC buys web licences (Monotype / Linotype).
-  Otherwise Windows and Android visitors see the fallbacks.
-- Didot's hairlines get fragile at small sizes and in the 3D extruded lettering.
+- The other options are still in the switcher: Manrope + DM Sans, Helvetica Neue / Arial,
+  Didot + Helvetica Neue, Helvetica Neue + Didot accents, and Denton + DM Sans.
+- Denton and Gilroy need web licences before launch. Helvetica Neue and Didot only show on Apple devices
+  without a licence.
+- In code this adds a third role next to `--font-display` and `--font-sans`: a medium-size serif for `h2`,
+  card titles and quotes.
 
-The notes below were written for option A and get adjusted to whichever option is picked.
+Previews: https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg and https://claude.ai/artifact/KGoCj2bzW2rqa7wPjkASqe
 
 **Fonts**
 - Both are OFL. Manrope is already self-hosted in `public/fonts/`. Add DM Sans with
@@ -199,32 +198,36 @@ The notes below were written for option A and get adjusted to whichever option i
 - 3D: the door labels and desk text (`assets.fonts.sans`) switch to DM Sans. The extruded 419M+ is rebuilt
   with `node scripts/make-typeface.mjs Manrope-ExtraBold.ttf …`.
 
-**Big numbers: DECIDE.** There are two treatments: a 2D one for the classic site and stat rows, and a 3D one
-for hero moments and the 3D office. Pick one of each from the number styles preview: 2D-A to 2D-F and
-3D-A to 3D-F.
-- All but 3D-F take their colours from the chosen theme. Two of them use the growth gradient: 2D-D and 3D-C.
-- 3D-F keeps the logo yellow and orange.
-- None use the red-orange shadow.
+**Big numbers: DECIDE.** Pick one 2D and one 3D style from the number styles preview.
+- 2D: full gradient, gradient with glow, white with a gradient suffix, silver to white, gradient outline, white
+  with a glowing gradient underline.
+- 3D: gradient face, metallic, white face with gradient sides, neon sign, chrome, and logo yellow with orange
+  sides.
+- All but the last one take the theme gradient.
 
-**Theme: DECIDE.** The owner wants something **fresh, with growth and strategy vibes, not tied to the logo**.
-Midnight & Mint is kept. Every other light and logo-based scheme was rejected as boring and is dropped.
-There are six new themes in the same spirit: a deep, saturated background, one vivid accent, and a second
-colour the accent fades into (the "growth gradient").
+**Theme: DECIDE.** The client wants **dark, between black and brown, with gradients rather than flat colour**.
+Every earlier scheme was dropped, including Midnight & Mint, which is green-black. There are seven new themes:
 
-| Theme | Background | Text | Accent | Accent 2 (gradient end) | Button (label) |
-|---|---|---|---|---|---|
-| **Midnight & Mint** (kept, default) | `#0F1A17` | `#EAF4EE` | `#5FE0A0` | `#B8F35A` | `#5FE0A0` (dark) |
-| Obsidian & Volt | `#0B0D0C` | `#F2F5F0` | `#D4FF3A` | `#6CF0A8` | `#D4FF3A` (dark) |
-| Ocean & Aqua | `#08131F` | `#EAF3FA` | `#3EE6D8` | `#4D8DFF` | `#3EE6D8` (dark) |
-| Forest & Gold | `#0D241B` | `#F3F1E6` | `#F2C14E` | `#9BE36E` | `#F2C14E` (dark) |
-| Indigo & Sunrise | `#12112E` | `#F1EFFA` | `#FF7A59` | `#FFB35C` | `#FF7A59` (dark) |
-| Aubergine & Lime | `#1A0F22` | `#F6F0F7` | `#B8F35A` | `#5FE0C8` | `#B8F35A` (dark) |
-| Electric Blue (colour block) | `#1736F0` | `#FFFFFF` | `#D7FF4F` | `#7CF5D3` | `#D7FF4F` (navy `#0B1450`) |
+| Theme | Base | Gradient |
+|---|---|---|
+| **Espresso Noir** (default) | `#0E0A07` | copper `#C8733A` → gold `#F2B35A` → champagne `#FFE1A1` |
+| Black & Liquid Gold | `#070605` | metallic gold `#8A6A2F` → `#E9C46A` → `#FFF1C1` → `#D4A94C` |
+| Obsidian Ember | `#0A0807` | `#FF8A3D` → `#FF4D4D` → `#FF2E7E` |
+| Mocha Aurora | `#0D0A08` | teal `#3EE6B5` → lime `#9BE36E` → gold `#F2C14E` |
+| Cocoa & Rose Gold | `#120C0A` | `#C9826B` → `#F0B8A0` → `#FFE3D3` |
+| Onyx Sunset | `#080706` | amber `#FFB347` → coral `#FF6B6B` → violet `#A66CFF` |
+| Dark Roast & Lime | `#0C0A08` | lime `#D9FF5A` → mint `#7CF2A0` → teal `#3ED1C9` |
 
-- Every text pairing is 4.5 : 1 or better, and the logo reads clearly on all of them.
-- All seven are deep, so **the dark 3D office fits as it is**. Only the door glows and accent lights get
-  retinted to the theme accent.
-- The headline's highlighted word uses the growth gradient (gradient text), not a highlighter.
+What makes them not flat:
+- The page background is a top-lit gradient with three soft glows in the theme colours. They drift slowly,
+  which is off for reduced motion, and a fine grain sits on top.
+- Cards are glass panels with gradient edges.
+- Buttons are gradient pills with a glow that shifts on hover.
+- The highlighted headline word, big numbers and eyebrow labels use the gradient.
+- Body text stays solid. Every text pairing is 4.5 : 1 or better, and gradient ends are checked as large text.
+
+All seven suit the dark 3D office as it is. The door glows, pendants and the 419M+ sign take the gradient
+colours.
 
 Detailed tokens get written into `app/app.css` once a theme is picked.
 
@@ -298,8 +301,8 @@ Recall"* is one option.
 4. **Room name**: Our Story / About Us / The TBC Story (point 10)
 5. **Story flow**: approve the spine and the room re-order (point 12)
 6. **Big numbers**: one 2D and one 3D style code (point 11)
-7. **Theme**: Midnight & Mint or one of the six new bold themes (point 11)
-8. **Fonts**: A Manrope + DM Sans / B Helvetica Neue / C Didot + Helvetica Neue / D Helvetica Neue + Didot accents (point 11)
+7. **Theme**: one of the seven dark gradient themes (point 11)
+8. **Fonts**: the Denton + serif + Gilroy trio or another option, plus the licences that go with it (point 11)
 
 Phase 1 (the new headline, audio check, the 419M+ line, smaller titles, the rename) can start as soon as the room name is
 picked.
