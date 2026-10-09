@@ -165,8 +165,8 @@ title), `home.tsx:37` ("Why TBC" eyebrow → "About us").
 
 ## 11. Fonts and colours
 
-**Fonts: DECIDE between three options.** Manrope + DM Sans was picked, then Helvetica Neue / Arial and
-Didot / Bodoni were added as alternatives. The previews switch between all three live:
+**Fonts: DECIDE between four options.** Manrope + DM Sans was picked, then Helvetica Neue / Arial,
+Didot + Helvetica Neue, and Helvetica Neue with Didot accents were added as alternatives. The previews switch between all three live:
 https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg (colours, fonts, lobby) and
 https://claude.ai/artifact/KGoCj2bzW2rqa7wPjkASqe (number styles).
 
@@ -174,7 +174,8 @@ https://claude.ai/artifact/KGoCj2bzW2rqa7wPjkASqe (number styles).
 |---|---|---|---|---|
 | A | Manrope | DM Sans | 700 / 800, body 400 | Free (OFL), self-hosted |
 | B | Helvetica Neue → Arial | same | Medium 500 / Bold 700, body 400 | Paid. Built into Apple devices; Windows/Android get Arial (no Medium) |
-| C | Didot → Bodoni Moda | Helvetica Neue → Arial | Regular 400 throughout | Didot paid, Apple-only built in; Bodoni Moda free (OFL) |
+| C | Didot → Bodoni Moda | Helvetica Neue → Arial | Regular 400, numbers 500 | Didot paid, Apple-only built in; Bodoni Moda free (OFL) |
+| D | Helvetica Neue → Arial; **Didot** only for big numbers, quotes and one italic word per headline | Helvetica Neue → Arial | Medium 500, Didot 500 / italic 400 | As B + C |
 
 - Options B and C only look the same on every device if TBC buys web licences (Monotype / Linotype).
   Otherwise Windows and Android visitors see the fallbacks.
@@ -198,14 +199,27 @@ The notes below were written for option A and get adjusted to whichever option i
 - 3D: the door labels and desk text (`assets.fonts.sans`) switch to DM Sans. The extruded 419M+ is rebuilt
   with `node scripts/make-typeface.mjs Manrope-ExtraBold.ttf …`.
 
-**Big numbers: DECIDE.** There are two treatments, a 2D one for the classic site and stat rows and a 3D one
+**Big numbers: DECIDE.** The 2D options and 3D-T follow the chosen theme's colours; the other 3D options use the logo colours and the picked one gets retuned to the theme. There are two treatments, a 2D one for the classic site and stat rows and a 3D one
 for hero moments and the 3D office. Pick one code from each: 2D-A to 2D-E and 3D-A to 3D-H in the number
 styles preview. On beige, the 2D options use espresso and burnt orange, with yellow as a highlighter;
 none of the 3D options use the red-orange shadow.
 
-**Palette: DECIDED (2026-10-09), a light background.** This replaces the earlier dark espresso / foam /
-yellow scheme. There are seven light schemes in the preview, all built from the logo, with every text pairing
-at 4.5 : 1 or better:
+**Theme: DECIDE.** The owner asked for something **fresh, with growth and strategy vibes, not tied to the logo
+colours**. There are five new themes. In each, the yellow and orange logo stays as it is and becomes the one
+warm spot on a calm page:
+
+| Theme | Background | Text | Accent text | Button (label) | Highlighter |
+|---|---|---|---|---|---|
+| **Sage & Forest** (default) | `#EEF2EA` | `#10241A` | `#1D6B45` | `#1D6B45` (white) | `#BFE5A8` |
+| **Navy & Lime** | `#F3F4EE` | `#0F1B33` | `#2446B0` | `#C6F04F` (navy) | `#D9F78A` |
+| **Cobalt** | `#F4F6FA` | `#0B1220` | `#1E4FD6` | `#1E4FD6` (white) | `#C9DAFF` |
+| **Deep Teal** | `#E9F1EF` | `#0D2627` | `#0E6F68` | `#0E6F68` (white) | `#A8E3D5` |
+| **Midnight & Mint** (dark) | `#0F1A17` | `#EAF4EE` | `#5FE0A0` | `#5FE0A0` (dark) | `#1F5A41` |
+
+Every text pairing is 4.5 : 1 or better. Midnight & Mint is the only theme that already suits the dark 3D
+office.
+
+The earlier logo-based light schemes are kept in the preview for comparison:
 
 | Scheme | Background | Text | Accent text | Button |
 |---|---|---|---|---|
@@ -313,8 +327,8 @@ Recall"* is one option.
 4. **Room name**: Our Story / About Us / The TBC Story (point 10)
 5. **Story flow**: approve the spine and the room re-order (point 12)
 6. **Big numbers**: one 2D and one 3D style code (point 11)
-7. **Colour scheme**: one of the seven, and whether the **3D office** stays dark or is relit light (point 11)
-8. **Fonts**: Manrope + DM Sans / Helvetica Neue / Didot–Bodoni (point 11)
+7. **Theme**: one of the five fresh themes (or an earlier logo-based scheme), and whether the **3D office** stays dark or is relit to match (point 11)
+8. **Fonts**: A Manrope + DM Sans / B Helvetica Neue / C Didot + Helvetica Neue / D Helvetica Neue + Didot accents (point 11)
 
 Phase 1 (the new headline, audio check, the 419M+ line, smaller titles, the rename) can start as soon as the room name is
 picked.
