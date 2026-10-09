@@ -194,33 +194,42 @@ https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg and https://claude.ai/artifact
   card-colour sides, outlined letters on an accent block, logo yellow with orange sides.
 - Every 3D style has one solid side colour, with no shading. All but the last take the theme accent.
 
-**Theme: DECIDED (owner, 2026-10-09): Mughal Noir.** This replaces every earlier option: the Obsidian
-palette, the grey reference gradient and the brown-black, bold and light schemes.
+**Theme: DECIDED (owner, 2026-10-09): Mughal Noir, built exactly to the owner's mockup.** The mockup is the
+reference design for colours, layout and type. It's rebuilt 1:1 as a live page:
+https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg
 
-| Role | Token | Hex | Contrast |
-|---|---|---|---|
-| Background | `bg` | `#150D09` | — |
-| Surface | `surface` | `#221710` | — |
-| Text | `ink` | `#F3EAD8` | 16.1 : 1 on Background, 14.7 : 1 on Surface |
-| Secondary | `ink-2` | `#D9B98A` | 10.3 : 1 / 9.4 : 1 |
-| Accent | `accent` | `#C99A45` | 7.5 : 1 / 6.8 : 1 |
-| *Caption (derived)* | `ink-3` | `#A88A63` | 5.9 : 1 / 5.4 : 1 |
-| *Accent hover (derived)* | `accent-hover` | `#D6AB5C` | Background text on it: 9.0 : 1 |
-| *Text on accent* | `on-accent` | `#150D09` (= Background) | 7.5 : 1 |
-| *Lines* | `line` | `rgb(217 185 138 / 0.18)` (Secondary at 18%) | — |
+The mockup is the classic home page with:
+- a header with the logo, links and an outlined "Book a consultation" button
+- a centred hero: italic serif eyebrow, large serif headline, sans sub-line, a gold "Enter TBC" button and an
+  underlined "Take the traditional route" link
+- a stats panel on Surface
+- a "We specialise in growth problems" heading with a 3 × 2 service grid
+- a centred italic quote between rules
+- a palette strip
 
-- All colours are solid, with no gradients.
-- The gold accent is reserved for one headline word, big numbers, the main button, arrows and small labels.
-- The full-colour logo sits in the same warm family.
-- The 3D office fits as it is (walnut and brass). Its brass, door glows and the 419M+ sign get tuned to
-  `#C99A45`.
-- The grey reference gradient isn't used, because it was built for the Obsidian palette. If the owner wants
-  that dark-to-light effect back, it can be redone warm: Background fading into Secondary, with the option
-  cards as the dark bar.
-- In code, these replace the colour tokens in `app/app.css` (`--color-ink`, `--color-coal`,
-  `--color-champagne`, `--color-gold`, …). Every component already reads from those tokens.
-- Previews, locked to Mughal Noir + Manrope / DM Sans:
-  https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg and https://claude.ai/artifact/KGoCj2bzW2rqa7wPjkASqe
+| Name | Hex | Use |
+|---|---|---|
+| Background | `#150D09` | **The base, everywhere** |
+| Surface | `#221710` | Lighter brown: panels and highlighted areas (stats box, cards) |
+| Line | `#3B2A1E` | Borders and rules only |
+| Text | `#F3EAD8` | Headings and body (16.1 : 1) |
+| Muted text | `#B7A58A` | Supporting text, labels (8.0 : 1; 7.3 : 1 on Surface) |
+| Secondary | `#D9B98A` | Light brown highlights: numbers, eyebrow, outlined button (10.3 : 1) |
+| Accent | `#C99A45` | Gold, **only where needed**: the main button (Background text on it, 7.5 : 1) |
+
+- Owner direction: dark brown is the base, lighter brown highlights where required, and gold only if
+  required.
+- **Background options (DECIDE):** solid (as the mockup), brown → black (Surface at the top fading to
+  `#050302`), or a brown glow (a soft brown light at the top fading to near-black). Text passes on all three.
+  Switchable in the preview.
+- **Fonts: DECIDE.** The mockup's headings are a serif: Cormorant Garamond, the site's current heading font,
+  with oldstyle figures. Body is DM Sans. This conflicts with the earlier Manrope + DM Sans lock, so the
+  preview defaults to the mockup serif and has a Manrope toggle.
+- Copy uses the agreed lines rather than the mockup's: "We make brands that people remember." and
+  "419M+ views. Without a rupee spent on ads".
+- The mockup's stat labels are about 0.8 rem, not the 1.5–2 rem asked for earlier. To confirm.
+- The mockup's stats answer the number-style question: a 2D serif number in Secondary, close to 2D-A in the
+  number styles preview.
 
 ## 12. Story flow: recommendation
 
@@ -291,7 +300,8 @@ Recall"* is one option.
    shoot Riya or a team member? (point 6)
 4. **Room name**: Our Story / About Us / The TBC Story (point 10)
 5. **Story flow**: approve the spine and the room re-order (point 12)
-6. **Big numbers**: one 2D and one 3D style code (point 11)
+6. **Big numbers**: the mockup's 2D serif style in Secondary, and whether a 3D style is wanted for the 3D office (point 11)
+7. **Background**: solid / brown → black / brown glow; **fonts**: mockup serif or Manrope; **stat label size**: mockup or 1.5–2 rem (point 11)
 
 Phase 1 (the new headline, audio check, the 419M+ line, smaller titles, the rename) can start as soon as the room name is
 picked.
