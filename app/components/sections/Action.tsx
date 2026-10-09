@@ -50,13 +50,20 @@ export function ActionRoom({ immediate = false }: { immediate?: boolean }) {
         ))}
       </ul>
 
-      <div className="mt-28 flex flex-col items-center gap-8 text-center">
+      <div className="mt-28 flex flex-col items-center text-center">
         <RevealLines lines={["Let's build what's next."]} className="display gold-text title-lg" />
-        <Reveal delay={0.2} className="flex flex-wrap items-center justify-center gap-5">
-          <a href={bookingLink()} target="_blank" rel="noreferrer" className="btn btn-solid">
-            Book a consultation with TBC <Arrow />
+        <Reveal delay={0.15} className="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <a href={bookingLink()} target="_blank" rel="noreferrer" className="btn-cta">
+            Book a consultation
+            <span className="chip"><Arrow /></span>
           </a>
-          <a href={contact.phoneHref} className="text-sm text-mist link-underline">or call {contact.phone}</a>
+          <a href={whatsappLink("Hi TBC — I'd like to talk about my brand.")} target="_blank" rel="noreferrer" className="btn py-[1.1rem]">
+            Message us on WhatsApp
+          </a>
+        </Reveal>
+        <Reveal delay={0.25} as="p" className="mt-6 text-sm text-mist">
+          We confirm every slot on WhatsApp. Prefer to talk?{" "}
+          <a href={contact.phoneHref} className="text-ivory link-underline">{contact.phone}</a>
         </Reveal>
       </div>
     </div>

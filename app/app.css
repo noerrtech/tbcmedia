@@ -150,6 +150,32 @@
     transition: transform var(--dur-hover) var(--ease-out);
   }
 
+  /* The closing call to action: gold, with a dark arrow chip that slides on hover */
+  .btn-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0.4rem 0.4rem 0.4rem 1.75rem;
+    background: var(--color-gold);
+    color: var(--color-ink);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    transition: background-color var(--dur-fill) var(--ease-out), transform 160ms var(--ease-out);
+  }
+  .btn-cta .chip {
+    display: grid;
+    place-items: center;
+    width: 2.9rem;
+    height: 2.9rem;
+    background: var(--color-ink);
+    color: var(--color-gold);
+    transition: background-color var(--dur-fill) var(--ease-out);
+  }
+  .btn-cta .arrow { transition: transform var(--dur-hover) var(--ease-out); }
+  .btn-cta:active { transform: scale(0.98); }
+  .btn-cta:focus-visible { outline: 2px solid var(--color-champagne); outline-offset: 4px; }
+
   .link-underline {
     background-image: linear-gradient(currentColor, currentColor);
     background-size: 0% 1px;
@@ -165,6 +191,8 @@
     .btn:hover::before { transform: scaleX(1); transform-origin: left; }
     .btn:hover .arrow { transform: translateX(4px); }
     .link-underline:hover { background-size: 100% 1px; }
+    .btn-cta:hover { background: var(--color-gold-hover); }
+    .btn-cta:hover .arrow { transform: translateX(4px); }
   }
   /* keyboard users get the same state */
   .btn:focus-visible { color: var(--color-ink); border-color: var(--color-champagne); }
