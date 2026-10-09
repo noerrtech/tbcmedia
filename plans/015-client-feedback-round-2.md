@@ -219,17 +219,19 @@ The mockup is the classic home page with:
 
 - Owner direction: dark brown is the base, lighter brown highlights where required, and gold only if
   required.
-- **Background options (DECIDE):** solid (as the mockup), brown → black (Surface at the top fading to
-  `#050302`), or a brown glow (a soft brown light at the top fading to near-black). Text passes on all three.
-  Switchable in the preview.
-- **Fonts: DECIDE.** The mockup's headings are a serif: Cormorant Garamond, the site's current heading font,
-  with oldstyle figures. Body is DM Sans. This conflicts with the earlier Manrope + DM Sans lock, so the
-  preview defaults to the mockup serif and has a Manrope toggle.
-- Copy uses the agreed lines rather than the mockup's: "We make brands that people remember." and
-  "419M+ views. Without a rupee spent on ads".
-- The mockup's stat labels are about 0.8 rem, not the 1.5–2 rem asked for earlier. To confirm.
-- The mockup's stats answer the number-style question: a 2D serif number in Secondary, close to 2D-A in the
-  number styles preview.
+- **Background: DECIDED, solid** `#150D09`. No gradients.
+- **Fonts: DECIDED, Manrope + DM Sans.** Manrope 700–800 for headings and big numbers, DM Sans for text.
+  - This replaces the mockup's serif. Manrope has no italic, so the mockup's italic eyebrow and quote are set
+    in Manrope, and the quote's second sentence is in Secondary instead of italic.
+  - Cormorant Garamond and Pinyon Script get removed from the build.
+- **Number labels: DECIDED, 1.5–2 rem where needed** (`clamp(1.5rem, 1.1rem + 0.8vw, 2rem)`). This applies
+  to labels next to big numbers. Service descriptions stay at body size.
+- The stats panel is a 2 × 2 grid on desktop (one column on phones), so the larger labels don't wrap into
+  thin columns.
+- Big numbers are 2D Manrope 800 in Secondary `#D9B98A`. 3D is only needed for the sign in the 3D office.
+- Copy uses the agreed lines: "We make brands that people remember." and "419M+ views. Without a rupee
+  spent on ads."
+- Locked preview: https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg
 
 ## 12. Story flow: recommendation
 
@@ -300,8 +302,7 @@ Recall"* is one option.
    shoot Riya or a team member? (point 6)
 4. **Room name**: Our Story / About Us / The TBC Story (point 10)
 5. **Story flow**: approve the spine and the room re-order (point 12)
-6. **Big numbers**: the mockup's 2D serif style in Secondary, and whether a 3D style is wanted for the 3D office (point 11)
-7. **Background**: solid / brown → black / brown glow; **fonts**: mockup serif or Manrope; **stat label size**: mockup or 1.5–2 rem (point 11)
+6. **3D office sign**: which 3D style for the 419M+ sign in the office (number styles preview), or keep it 2D (point 11)
 
 Phase 1 (the new headline, audio check, the 419M+ line, smaller titles, the rename) can start as soon as the room name is
 picked.
