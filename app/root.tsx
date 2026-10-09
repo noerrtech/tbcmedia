@@ -21,7 +21,7 @@ export const meta: Route.MetaFunction = () => [
   { name: "theme-color", content: "#150D09" },
   { property: "og:title", content: "The Brand Cappuccino — We make brands that people remember." },
   { property: "og:description", content: "Brand strategy. Positioning. Growth. Creative execution." },
-  { property: "og:image", content: "/media/tbc-logo-color.png" },
+  { property: "og:image", content: "/media/tbc-logo.png" },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {

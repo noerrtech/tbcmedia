@@ -26,8 +26,8 @@ export const assets = {
     plant: "/assets/models/potted_plant.glb",
   },
   hdri: "/assets/hdri/lythwood_lounge_2k.hdr",
-  /** The colour logo (512px working copy — swap for the master file when it arrives). */
-  logo: "/media/tbc-logo-color.png",
+  /** The logo lock-up, dark-background version (wordmark in Text colour). */
+  logo: "/media/tbc-logo-dark.png",
   fonts: {
     display: "/fonts/manrope-latin-700-normal.woff",
     /** three.js typeface for extruded lettering — scripts/make-typeface.mjs */

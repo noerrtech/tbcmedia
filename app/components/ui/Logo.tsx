@@ -1,19 +1,28 @@
 import { Link } from "react-router";
 
 /**
- * The TBC logo: the full-colour speech-bubble mark. `public/media/tbc-logo-color.png` is a 512px working
- * copy — swap in the master file (SVG preferred) when it arrives; nothing else needs to change.
+ * The TBC logo — the full lock-up, exactly as supplied: both speech bubbles and THE BRAND CAPPUCCINO.
+ * `tbc-logo-dark.png` is the same artwork with the black wordmark set in Text (#F3EAD8) so it reads on
+ * the dark site; `tbc-logo.png` is the untouched original for light backgrounds.
  */
-export function LogoMark({ className = "" }: { className?: string }) {
-  return <img src="/media/tbc-logo-color.png" alt="" aria-hidden width={512} height={389} className={`h-auto ${className}`} />;
+export function LogoMark({ className = "", light = false }: { className?: string; light?: boolean }) {
+  return (
+    <img
+      src={light ? "/media/tbc-logo.png" : "/media/tbc-logo-dark.png"}
+      alt=""
+      aria-hidden
+      width={1202}
+      height={943}
+      className={`h-auto ${className}`}
+    />
+  );
 }
 
-/** Header lock-up, as in the mockup: the mark with the name set small beneath it. */
+/** Header lock-up, as in the mockup. */
 export function Logo({ to = "/", className = "" }: { to?: string; className?: string }) {
   return (
-    <Link to={to} aria-label="The Brand Cappuccino — home" className={`group inline-flex flex-col items-start gap-1 ${className}`}>
-      <LogoMark className="w-11" />
-      <span className="text-[0.45rem] leading-none font-bold tracking-[0.12em] text-ivory uppercase">The Brand Cappuccino</span>
+    <Link to={to} aria-label="The Brand Cappuccino — home" className={`inline-flex ${className}`}>
+      <LogoMark className="w-[4.5rem]" />
     </Link>
   );
 }

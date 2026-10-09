@@ -134,15 +134,15 @@ function LogoSign() {
     return {
       face: new THREE.MeshBasicMaterial({ map, transparent: true, alphaTest: 0.45, toneMapped: false }),
       edge: new THREE.MeshBasicMaterial({ map, color: "#24170e", transparent: true, alphaTest: 0.45 }),
-      shadow: new THREE.MeshBasicMaterial({ map, color: "#000000", transparent: true, opacity: 0.45, depthWrite: false }),
+      shadow: new THREE.MeshBasicMaterial({ map, color: "#000000", transparent: true, opacity: 0.35, depthWrite: false }),
     };
   }, [map]);
   useLayoutEffect(() => () => (face.dispose(), edge.dispose(), shadow.dispose()), [face, edge, shadow]);
-  const h = 1.65;
-  const w = (h * 512) / 389;
+  const h = 2.15;
+  const w = (h * 1202) / 943;
   return (
-    <group position={[0, 4.58, 0.1]}>
-      <mesh material={shadow} position={[0.05, -0.07, -0.085]} scale={[w * 1.02, h * 1.02, 1]}>
+    <group position={[0, 4.45, 0.1]}>
+      <mesh material={shadow} position={[0.022, -0.03, -0.085]} scale={[w * 1.005, h * 1.005, 1]}>
         <planeGeometry />
       </mesh>
       {[0.06, 0.045, 0.03, 0.015].map((d) => (
@@ -174,17 +174,6 @@ function Signage({ p }: { p: Palette }) {
         />
       </mesh>
       <LogoSign />
-      <Text
-        font={assets.fonts.sans}
-        fontSize={0.13}
-        letterSpacing={0.55}
-        anchorX="center"
-        anchorY="middle"
-        position={[0, 3.45, 0.12]}
-      >
-        THE BRAND CAPPUCCINO
-        <meshBasicMaterial color="#B7A58A" toneMapped={false} />
-      </Text>
     </group>
   );
 }

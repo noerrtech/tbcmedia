@@ -162,7 +162,7 @@ export function Laptop(props: ThreeElements["group"]) {
         </mesh>
         {/* logo on the back of the lid */}
         <mesh material={mats.badge} position={[0, lid / 2, -0.0082]} rotation-y={Math.PI}>
-          <planeGeometry args={[0.07, 0.07 * (389 / 512)]} />
+          <planeGeometry args={[0.09, 0.09 * (943 / 1202)]} />
         </mesh>
       </group>
       {/* a little screen light on whoever sits at it */}

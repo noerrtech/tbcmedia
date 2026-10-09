@@ -31,7 +31,7 @@ class SceneBoundary extends Component<{ onError: () => void; children: ReactNode
 export function LightsComingOn() {
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 bg-ink">
-      <LogoMark className="animate-flicker w-24" />
+      <LogoMark className="animate-flicker w-32" />
       <p className="eyebrow">The lights are coming on</p>
     </div>
   );
