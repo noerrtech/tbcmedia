@@ -165,10 +165,22 @@ title), `home.tsx:37` ("Why TBC" eyebrow → "About us").
 
 ## 11. Fonts and colours
 
-**DECIDED (2026-10-09): Manrope (headings and numbers) + DM Sans (body and UI), with colours taken
-from the logo.** This replaces an earlier pick of Space Grotesk + Inter.
-Previews: https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg (palette and type) and
+**Fonts: DECIDE between three options.** Manrope + DM Sans was picked, then Helvetica Neue / Arial and
+Didot / Bodoni were added as alternatives. The previews switch between all three live:
+https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg (colours, fonts, lobby) and
 https://claude.ai/artifact/KGoCj2bzW2rqa7wPjkASqe (number styles).
+
+| Option | Headings / numbers | Body | Weights | Licence |
+|---|---|---|---|---|
+| A | Manrope | DM Sans | 700 / 800, body 400 | Free (OFL), self-hosted |
+| B | Helvetica Neue → Arial | same | Medium 500 / Bold 700, body 400 | Paid. Built into Apple devices; Windows/Android get Arial (no Medium) |
+| C | Didot → Bodoni Moda | Helvetica Neue → Arial | Regular 400 throughout | Didot paid, Apple-only built in; Bodoni Moda free (OFL) |
+
+- Options B and C only look the same on every device if TBC buys web licences (Monotype / Linotype).
+  Otherwise Windows and Android visitors see the fallbacks.
+- Didot's hairlines get fragile at small sizes and in the 3D extruded lettering.
+
+The notes below were written for option A and get adjusted to whichever option is picked.
 
 **Fonts**
 - Both are OFL. Manrope is already self-hosted in `public/fonts/`. Add DM Sans with
@@ -191,8 +203,21 @@ for hero moments and the 3D office. Pick one code from each: 2D-A to 2D-E and 3D
 styles preview. On beige, the 2D options use espresso and burnt orange, with yellow as a highlighter;
 none of the 3D options use the red-orange shadow.
 
-**Palette: DECIDED (2026-10-09), a beige background.** This replaces the earlier dark espresso /
-foam / yellow scheme. Pick the exact shade from the three in the preview.
+**Palette: DECIDED (2026-10-09), a light background.** This replaces the earlier dark espresso / foam /
+yellow scheme. There are seven light schemes in the preview, all built from the logo, with every text pairing
+at 4.5 : 1 or better:
+
+| Scheme | Background | Text | Accent text | Button |
+|---|---|---|---|---|
+| Oat (default) | `#E9DBC3` | `#22170F` | `#94400B` | yellow `#FCBB17` |
+| Sand | `#F1E6D3` | `#22170F` | `#94400B` | yellow |
+| Cappuccino | `#DCC7A6` | `#22170F` | `#7A3407` | yellow |
+| Ivory & Ink | `#F7F2EA` | `#1A1714` | `#9A3F0A` | yellow |
+| Butter | `#F6E7B8` | `#22170F` | `#8E3A08` | orange `#F57A22` |
+| Latte & Terracotta | `#E8D5BE` | `#2A1A12` | `#9C3A12` | orange |
+| Stone & Charcoal | `#E5E0D8` | `#1F1D1B` | `#8F3D0C` | yellow |
+
+The token table below shows the Oat scheme.
 
 | Token | Hex | Role |
 |---|---|---|
@@ -288,7 +313,8 @@ Recall"* is one option.
 4. **Room name**: Our Story / About Us / The TBC Story (point 10)
 5. **Story flow**: approve the spine and the room re-order (point 12)
 6. **Big numbers**: one 2D and one 3D style code (point 11)
-7. **Beige shade**: Sand / Oat / Cappuccino, and whether the **3D office** stays dark or is relit light (point 11)
+7. **Colour scheme**: one of the seven, and whether the **3D office** stays dark or is relit light (point 11)
+8. **Fonts**: Manrope + DM Sans / Helvetica Neue / Didot–Bodoni (point 11)
 
 Phase 1 (the new headline, audio check, the 419M+ line, smaller titles, the rename) can start as soon as the room name is
 picked.
