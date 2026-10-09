@@ -165,22 +165,11 @@ title), `home.tsx:37` ("Why TBC" eyebrow → "About us").
 
 ## 11. Fonts and colours
 
-**Fonts: DECIDE.** The latest request is a three-tier combo, which the previews now open with:
-
-| Tier | Used for | Font | Preview stand-in |
-|---|---|---|---|
-| Big | Hero headline, page titles, big numbers | **Denton** (Peregrin Studio, paid, 70s-flavoured display serif) | Fraunces, SOFT 70 |
-| Medium | Section titles, card titles, the concierge bubble, quotes | **a serif**: Instrument Serif (free) | (the real thing) |
-| Regular | Body text, labels, buttons | **Gilroy** (Radomir Tinkov, paid) | Outfit |
-
-- The other options are still in the switcher: Manrope + DM Sans, Helvetica Neue / Arial,
-  Didot + Helvetica Neue, Helvetica Neue + Didot accents, and Denton + DM Sans.
-- Denton and Gilroy need web licences before launch. Helvetica Neue and Didot only show on Apple devices
-  without a licence.
-- In code this adds a third role next to `--font-display` and `--font-sans`: a medium-size serif for `h2`,
-  card titles and quotes.
-
-Previews: https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg and https://claude.ai/artifact/KGoCj2bzW2rqa7wPjkASqe
+**Fonts: DECIDED (owner, 2026-10-09): Manrope + DM Sans.** The other options (Helvetica Neue, Didot,
+Denton, the Denton + serif + Gilroy trio) have been reviewed and dropped. Both fonts are free (OFL) and
+self-hosted, so there are no licences to buy, and every visitor sees the same thing. The previews now use
+only these:
+https://claude.ai/artifact/Gb9LoxfooZfhRUqr4DL9Eg and https://claude.ai/artifact/KGoCj2bzW2rqa7wPjkASqe
 
 **Fonts**
 - Both are OFL. Manrope is already self-hosted in `public/fonts/`. Add DM Sans with
@@ -295,8 +284,7 @@ Recall"* is one option.
 4. **Room name**: Our Story / About Us / The TBC Story (point 10)
 5. **Story flow**: approve the spine and the room re-order (point 12)
 6. **Big numbers**: one 2D and one 3D style code (point 11)
-7. **Theme**: one of the seven dark solid-colour themes (point 11)
-8. **Fonts**: the Denton + serif + Gilroy trio or another option, plus the licences that go with it (point 11)
+7. **Theme**: the owner is coming back with a colour direction; the seven dark solid-colour themes are the current options (point 11)
 
 Phase 1 (the new headline, audio check, the 419M+ line, smaller titles, the rename) can start as soon as the room name is
 picked.
