@@ -91,7 +91,7 @@ export default function Reception() {
             <SpeechBubble text={line} />
           </div>
 
-          <div className="absolute inset-x-0 bottom-0 px-6 pb-8 md:px-10">
+          <div className="absolute inset-x-0 bottom-0 px-4 pb-5 md:px-10 md:pb-8">
             <Options
               show={showOptions}
               leaving={Boolean(leaving)}
@@ -135,7 +135,7 @@ function Options({
     <AnimatePresence>
       {show && (
         <motion.ul
-          className={bar ? "mx-auto grid max-w-[1400px] gap-3 md:grid-cols-5" : "grid gap-3 md:grid-cols-2"}
+          className={bar ? "mx-auto grid max-w-[1400px] grid-cols-2 gap-2 md:grid-cols-5 md:gap-3" : "grid gap-3 md:grid-cols-2"}
           initial="hidden"
           animate={leaving ? "leave" : "show"}
           variants={{ show: { transition: { staggerChildren: 0.06 } }, leave: { transition: { staggerChildren: 0.03 } } }}
@@ -144,7 +144,8 @@ function Options({
           {receptionOptions.map((o, i) => (
             <motion.li
               key={o.to}
-              className={!bar && i === receptionOptions.length - 1 ? "md:col-span-2" : ""}
+              // phones: two compact columns over the lobby, the last one across both
+              className={!bar && i === receptionOptions.length - 1 ? "md:col-span-2" : bar && i === receptionOptions.length - 1 ? "col-span-2 md:col-span-1" : ""}
               variants={{
                 hidden: { opacity: 0, y: 20 },
                 show: { opacity: 1, y: 0, transition: { duration: 0.6, ease } },
@@ -159,17 +160,17 @@ function Options({
                 onFocus={() => onHover?.(o.to)}
                 onBlur={() => onHover?.(null)}
                 className={`panel group flex w-full text-left transition-colors duration-200 hover:border-gold/60 focus-visible:border-gold/60 ${
-                  bar ? "h-full flex-col gap-3 px-5 py-4" : "items-center gap-5 px-5 py-4 md:px-6 md:py-5"
+                  bar ? "h-full items-center gap-2 px-3.5 py-3 md:flex-col md:items-stretch md:gap-3 md:px-5 md:py-4" : "items-center gap-5 px-5 py-4 md:px-6 md:py-5"
                 }`}
               >
                 {bar && (
-                  <span className="flex justify-end">
+                  <span className="order-last flex justify-end md:order-none">
                     <Arrow className="text-champagne transition-transform duration-200 motion-safe:group-hover:translate-x-1" />
                   </span>
                 )}
                 <span className="flex-1">
-                  <span className="block text-[0.68rem] font-semibold tracking-[0.22em] text-ivory uppercase">{o.title}</span>
-                  <span className={`mt-1 block text-mist ${bar ? "text-xs leading-relaxed" : "text-sm"}`}>{o.body}</span>
+                  <span className="block text-[0.62rem] font-semibold tracking-[0.18em] text-ivory uppercase md:text-[0.68rem] md:tracking-[0.22em]">{o.title}</span>
+                  <span className={`mt-1 text-mist ${bar ? "hidden text-xs leading-relaxed md:block" : "block text-sm"}`}>{o.body}</span>
                 </span>
                 {!bar && <Arrow className="text-champagne transition-transform duration-200 motion-safe:group-hover:translate-x-1" />}
               </button>
