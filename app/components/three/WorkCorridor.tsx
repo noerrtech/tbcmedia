@@ -242,9 +242,12 @@ export function WorkCorridor({ p, stageH }: { p: Palette; stageH: number }) {
       <mesh rotation-x={Math.PI / 2} position={[X0, H, mid]} material={p.plaster}>
         <planeGeometry args={[HW * 2, len]} />
       </mesh>
-      <mesh material={p.glow} position={[X0, H - 0.02, mid]}>
-        <boxGeometry args={[0.06, 0.01, len - 0.4]} />
-      </mesh>
+      {/* two light lines along the ceiling, off to the sides — the middle stays clear for the words */}
+      {[-1.5, 1.5].map((dx) => (
+        <mesh key={dx} material={p.glow} position={[X0 + dx, H - 0.02, mid]}>
+          <boxGeometry args={[0.05, 0.01, len - 0.4]} />
+        </mesh>
+      ))}
       {SCREENS.map((s, k) => <ScreenOnWall key={s.key} s={s} k={k} brass={brass} />)}
       <EndWall p={p} />
       {[0.15, 0.45, 0.75].map((f) => (

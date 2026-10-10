@@ -178,14 +178,18 @@ export function CorridorRoom() {
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   exit={{ opacity: 0, y: -12, filter: "blur(6px)" }}
                   transition={{ duration: 0.5, ease: ease.out }}
-                  className="max-w-xl text-center [text-shadow:0_2px_24px_rgb(0_0_0/0.8)]"
+                  className="relative max-w-xl px-10 py-6 text-center"
                 >
+                  {/* a pool of dark behind the words, so they hold the eye over the lit corridor */}
+                  <div aria-hidden className="absolute -inset-x-16 -inset-y-10 -z-10 bg-[radial-gradient(closest-side,rgb(21_13_9/0.9),rgb(21_13_9/0.6)_55%,transparent)]" />
                   <p className="eyebrow">{two(near + 1)} / {two(work.length)}</p>
+                  <span aria-hidden className="mx-auto mt-3 block h-px w-10 bg-gold" />
                   <p className="display title-lg mt-3">{c.title}</p>
-                  <p className="mt-3 text-sm text-ivory/80">{c.body}</p>
-                  <button type="button" onClick={() => read(near)} className="pointer-events-auto mt-4 text-[0.65rem] tracking-[0.26em] text-champagne uppercase link-underline">
-                    Click a screen — or read this story →
+                  <p className="mx-auto mt-3 max-w-md text-base text-ivory/85">{c.body}</p>
+                  <button type="button" onClick={() => read(near)} className="btn pointer-events-auto mt-5 bg-ink/50">
+                    Read this story <Arrow />
                   </button>
+                  <p className="mt-3 text-[0.6rem] tracking-[0.26em] text-mist uppercase">or click any screen</p>
                 </motion.div>
               </AnimatePresence>
             </div>

@@ -217,7 +217,8 @@ export function Corridor() {
               height: L,
               transform: `translate3d(${-WALL_X}px, ${-H / 2}px, 0) rotateX(-90deg)`,
               transformOrigin: "0 0",
-              background: "linear-gradient(90deg,#150D09,#1B120D 40%,rgb(217 185 138 / 0.5) 49.6%,rgb(217 185 138 / 0.5) 50.4%,#1B120D 60%,#150D09)",
+              // two light lines off to the sides, so the middle stays clear for the words
+              background: "linear-gradient(90deg,#150D09,#1B120D 18%,rgb(217 185 138 / 0.5) 24.6%,rgb(217 185 138 / 0.5) 25.4%,#1B120D 32%,#150D09 50%,#1B120D 68%,rgb(217 185 138 / 0.5) 74.6%,rgb(217 185 138 / 0.5) 75.4%,#1B120D 82%,#150D09)",
             }}
           />
           {/* left wall */}
@@ -259,8 +260,9 @@ export function Corridor() {
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               exit={{ opacity: 0, y: -12, filter: "blur(6px)" }}
               transition={{ duration: 0.6 }}
-              className="max-w-xl text-center"
+              className="relative max-w-xl px-10 py-6 text-center"
             >
+              <div aria-hidden className="absolute -inset-x-16 -inset-y-10 -z-10 bg-[radial-gradient(closest-side,rgb(21_13_9/0.9),rgb(21_13_9/0.6)_55%,transparent)]" />
               <p className="eyebrow">0{active + 1} / 0{work.length}</p>
               <p className="display title-lg mt-3">{c.title}</p>
               <p className="mt-3 text-sm text-ivory/70">{c.body}</p>
