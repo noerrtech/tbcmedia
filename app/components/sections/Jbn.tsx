@@ -56,6 +56,8 @@ export function JbnOffer({ claimed }: { claimed: number }) {
       "Hi TBC — I'm a JBN member and I'd like to claim my free 20-min social media audit.",
       `Name: ${f.get("name")}`,
       `Brand: ${f.get("brand")}`,
+      `Phone: ${f.get("phone")}`,
+      `JBN Chapter: ${f.get("chapter")}`,
       f.get("handle") ? `Instagram: ${f.get("handle")}` : "",
     ]
       .filter(Boolean)
@@ -103,6 +105,8 @@ export function JbnOffer({ claimed }: { claimed: number }) {
               {[
                 { name: "name", label: "Your name", required: true },
                 { name: "brand", label: "Brand / business", required: true },
+                { name: "phone", label: "Phone number", required: true },
+                { name: "chapter", label: "JBN Chapter", required: true },
                 { name: "handle", label: "Instagram handle (optional)", required: false },
               ].map((field) => (
                 <label key={field.name} className="block">
