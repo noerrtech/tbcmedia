@@ -126,7 +126,8 @@ export function FounderProfile({ immediate = false }: { immediate?: boolean }) {
             </motion.ul>
           </Reveal>
         </div>
-        <FounderPortrait className="order-1 lg:order-2" />
+        {/* up beside the name, and kept in view while the numbers scroll past */}
+        <FounderPortrait className="order-1 lg:order-2 lg:sticky lg:top-24 lg:self-start" />
       </div>
 
       <div className="mt-20 border-t border-line pt-10">

@@ -132,26 +132,11 @@ export function FounderCabin({ p }: { p: Palette }) {
     <group>
       <RoomShell b={CABIN} p={p} door={{ wall: "maxZ", u: 4.7 }} fluted={["minZ"]} />
       <ArchedWindow p={p} pos={[CABIN.maxX - 0.01, 0.75, -13.8]} rotY={-Math.PI / 2} />
-      {/* writing desk */}
-      <group position={[4.7, 0, -15.9]}>
-        {[-1, 1].map((s) => (
-          <mesh key={s} material={p.walnut} position={[s * 1.02, 0.37, 0]} castShadow receiveShadow>
-            <boxGeometry args={[0.5, 0.74, 0.8]} />
-          </mesh>
-        ))}
-        <mesh material={p.stone} position={[0, 0.765, 0]} castShadow receiveShadow>
-          <boxGeometry args={[2.6, 0.05, 0.9]} />
-        </mesh>
-        <mesh material={p.brass} position={[0, 0.735, 0.452]}>
-          <boxGeometry args={[2.6, 0.012, 0.012]} />
-        </mesh>
-        <Model url={assets.furniture.brassVase} position={[0.95, 0.79, -0.15]} scale={0.7} />
-      </group>
-      <Model url={assets.furniture.armchairModern} position={[4.7, 0, -16.85]} rotation-y={Math.PI} />
+      {/* no desk: the room stays open behind Riya's portrait */}
       <Model url={assets.furniture.armchairClassic} position={[2.8, 0, -11.6]} rotation-y={Math.PI - 0.6} />
       <Model url={assets.furniture.plant} position={[7.0, 0, -17.3]} />
       <LampPendant x={4.7} z={-15.7} delay={0} p={p} ceiling={CABIN.h} hang={2.2} intensity={9} />
-      {/* evening light through the window, across the desk */}
+      {/* evening light through the window, across the floor */}
       <primitive object={deskTarget} position={[4.7, 0.8, -15.6]} />
       <spotLight target={deskTarget} position={[5.8, 3.7, -12.4]} angle={0.75} penumbra={1} intensity={35} distance={9} decay={2} color="#ffb47a" />
     </group>
