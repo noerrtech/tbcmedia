@@ -134,7 +134,6 @@ export function FounderCabin({ p }: { p: Palette }) {
       <ArchedWindow p={p} pos={[CABIN.maxX - 0.01, 0.75, -13.8]} rotY={-Math.PI / 2} />
       {/* no desk: the room stays open behind Riya's portrait */}
       <Model url={assets.furniture.armchairClassic} position={[2.8, 0, -11.6]} rotation-y={Math.PI - 0.6} />
-      <Model url={assets.furniture.plant} position={[7.0, 0, -17.3]} />
       <LampPendant x={4.7} z={-15.7} delay={0} p={p} ceiling={CABIN.h} hang={2.2} intensity={9} />
       {/* evening light through the window, across the floor */}
       <primitive object={deskTarget} position={[4.7, 0.8, -15.6]} />

@@ -74,7 +74,6 @@ if [ -x "$BLENDER" ]; then
   blend modern_arm_chair_01_4k armchair_modern
   blend modern_ceiling_lamp_01_4k ceiling_lamp 1024
   blend brass_vase_02_4k brass_vase 1024
-  blend potted_plant_01_4k potted_plant 2048
 else
   echo "Blender not found at $BLENDER — skipping .blend models"
 fi
@@ -92,10 +91,9 @@ node scripts/make-typeface.mjs "$SRC"/manrope/static/manrope-latin-800-normal.wo
 # --- compress for the web --------------------------------------------------
 python3 "$ROOT/scripts/compress-assets.py" "$WORK"
 GT="npx -y @gltf-transform/cli@4.1.1"
-for m in armchair_classic armchair_modern brass_vase ceiling_lamp potted_plant; do
+for m in armchair_classic armchair_modern brass_vase ceiling_lamp; do
   f="$MODELS/$m.glb"
   [ -f "$f" ] || continue
-  if [ "$m" = potted_plant ]; then $GT weld "$f" "$f" && $GT simplify "$f" "$f" --ratio 0.35 --error 0.002; fi
   $GT resize "$f" "$f" --width 1024 --height 1024 && $GT webp "$f" "$f" --quality 85 && $GT meshopt "$f" "$f" --level medium
 done
 

@@ -30,7 +30,6 @@ export const assets = {
     armchairModern: "/assets/models/armchair_modern.glb",
     ceilingLamp: "/assets/models/ceiling_lamp.glb",
     brassVase: "/assets/models/brass_vase.glb",
-    plant: "/assets/models/potted_plant.glb",
   },
   /** The Work room's stage curtain, closed and gathered — scripts/make-curtain.mjs (CC BY 4.0, RomanSn) */
   curtain: "/assets/models/stage_curtain.glb",

@@ -171,7 +171,7 @@ export function Laptop(props: ThreeElements["group"]) {
   );
 }
 
-/** A reading corner: armchair, walnut side table with a brass vase on it, a plant behind. */
+/** A reading corner: armchair, and a walnut side table with a brass vase on it. */
 export function Lounge({ side, p }: { side: -1 | 1; p: Palette }) {
   const [target] = useState(() => new THREE.Object3D());
   const chair = side < 0 ? assets.furniture.armchairClassic : assets.furniture.armchairModern;
@@ -188,7 +188,6 @@ export function Lounge({ side, p }: { side: -1 | 1; p: Palette }) {
         </mesh>
         <Model url={assets.furniture.brassVase} position={[0, 0.58, 0]} scale={0.85} />
       </group>
-      <Model url={assets.furniture.plant} position={[side * 6.25, 0, -3.55]} rotation-y={side * 0.8} />
       {/* a soft pool of light over the corner */}
       <primitive object={target} position={[side * 5.5, 0.4, -2.2]} />
       <spotLight target={target} position={[side * 5, 6, -1.4]} angle={0.42} penumbra={1} intensity={45} distance={9} decay={2} color="#ffd6a3" />
