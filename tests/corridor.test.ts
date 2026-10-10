@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { work } from "~/content/site";
-import { END_WALL, HW, SCREENS, START, X0, caseAt, caseProgress, focusPose, walkAt } from "~/lib/corridor";
+import { END_WALL, HW, SCREEN, SCREENS, START, X0, caseAt, caseProgress, focusPose, walkAt } from "~/lib/corridor";
 
 describe("the work corridor", () => {
   it("has each case study on both walls: title card left, story right", () => {
@@ -22,6 +22,15 @@ describe("the work corridor", () => {
       last = pos[2];
     }
     expect(walkAt(1).pos[2]).toBeGreaterThan(END_WALL + 3); // stops short of the end wall
+  });
+
+  it("hangs every screen clear of its wall, edge to edge, angled or not", () => {
+    for (const s of SCREENS) {
+      const half = SCREEN.w / 2;
+      // the screen's width runs along its local x: (cos rotY, -sin rotY) in world x, z
+      const ends = [-half, half].map((t) => s.at[0] + Math.cos(s.rotY) * t);
+      for (const x of ends) expect(Math.abs(x - X0)).toBeLessThan(HW - 0.05);
+    }
   });
 
   it("knows which case study you're passing", () => {

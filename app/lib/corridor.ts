@@ -22,11 +22,13 @@ export type Side = "left" | "right";
 export type Screen = { key: string; index: number; side: Side; at: P3; rotY: number };
 
 const leftZ = (i: number) => START - FIRST - i * GAP;
+/** How far a screen's centre stands off its wall: angled, its back edge must still clear the wall. */
+const OFF = 0.1 + (SCREEN.w / 2) * Math.sin(SCREEN.angle);
 
 /** Every screen: the case study's title card on the left wall, its story on the right, half a step on. */
 export const SCREENS: Screen[] = work.flatMap((c, i) => [
-  { key: `${c.id}-left`, index: i, side: "left" as Side, at: [X0 - HW + 0.06, SCREEN.y, leftZ(i)] as P3, rotY: Math.PI / 2 - SCREEN.angle },
-  { key: `${c.id}-right`, index: i, side: "right" as Side, at: [X0 + HW - 0.06, SCREEN.y, leftZ(i) - GAP / 2] as P3, rotY: -Math.PI / 2 + SCREEN.angle },
+  { key: `${c.id}-left`, index: i, side: "left" as Side, at: [X0 - HW + OFF, SCREEN.y, leftZ(i)] as P3, rotY: Math.PI / 2 - SCREEN.angle },
+  { key: `${c.id}-right`, index: i, side: "right" as Side, at: [X0 + HW - OFF, SCREEN.y, leftZ(i) - GAP / 2] as P3, rotY: -Math.PI / 2 + SCREEN.angle },
 ]);
 
 export const END_WALL = leftZ(work.length - 1) - GAP / 2 - 6.5;
