@@ -6,7 +6,6 @@
  * pulling the 3D bundle. The canvas reads `world` every frame; pages write to it.
  */
 import type { DoorKey } from "./doors";
-import { stopWalk } from "~/lib/gallery";
 
 export type V3 = [number, number, number];
 export type StationKey = "reception" | "founder" | "story" | "services" | "work" | "jbn" | "next";
@@ -47,17 +46,8 @@ export const workHall = {
   x: -4.7, // the room's centre line
   halfWidth: 3,
   curtainZ: -12.2,
-  start: -12.6, // the hall begins just behind the curtain
-  camStart: -11.5, // through the proscenium once the curtain is open: the "door" of the hall
-  /** the walk line: left of centre, so the pieces on the right wall are seen from a distance */
-  walkX: -1.7,
-  /** the pieces on the right wall, angled out toward the visitor coming down the hall */
-  frame: { x: 2.45, y: 2.05, w: 2.6, h: 1.63, angle: 0.32, ahead: 1.8 },
+  start: -12.6, // the museum's entrance hall begins just behind the curtain
 };
-/** z in the world for a walk distance (metres from the door, negative) */
-export const hallZ = (walk: number) => workHall.camStart + walk;
-/** z of piece i: a little beyond where you stop to look at it */
-export const frameZ = (i: number) => hallZ(stopWalk(i)) - workHall.frame.ahead;
 
 /* ---- store -------------------------------------------------------------- */
 
@@ -81,8 +71,31 @@ export const world = {
   hovered: null as DoorKey | null,
   /** Where the camera is right now — written by the canvas each frame. */
   camera: [...stations.reception.pos] as V3,
-  /** Work room scroll: curtain 0 → 1 (closed → open), hall 0 → 1 (the door → the end wall). */
-  work: { curtain: 0, hall: 0 },
+  /** The Work room's curtain: 0 closed → 1 open. */
+  work: { curtain: 0 },
+  /**
+   * The Museum of Impact (behind the curtain). The page asks to go somewhere by setting `request`;
+   * the camera walks there and reports back (`at`, `walking`, `panel`) with a "tbc:museum" event.
+   */
+  museum: {
+    request: null as { to: string; open: boolean; id: number } | null,
+    /** the node you're standing at — null while walking or exploring freely */
+    at: "stage" as string | null,
+    walking: false,
+    free: false,
+    /** the exhibit whose story is open, or -1 */
+    panel: -1,
+    /** the exhibit under the pointer, or -1 */
+    hovered: -1,
+    /** free exploration input from the page: held keys, and pointer drag to look */
+    keys: { forward: 0, right: 0 },
+    look: { dx: 0, dy: 0 },
+    /** set by a drag, so the click that ends it doesn't count as a click on an exhibit */
+    dragged: false,
+    /** where you are, for the floor plan: x, z and heading (radians) */
+    where: [-4.7, -8.15, Math.PI] as [number, number, number],
+    reset: 0,
+  },
   /** Page scroll, in viewport heights — rooms dolly forward a little as you read. */
   scroll: 0,
   /** A section asking for its own darkness over the 3D (see ScrimZone); null = the default. */
@@ -122,6 +135,16 @@ const walked = new Set<StationKey>();
 const CUT = 0.5; // s — 0.2s to black, 0.3s back
 
 /** Move to a station: the first call places the camera; later calls start a walk (or a cut). */
+let requestId = 0;
+/** Walk to a node of the museum; `open` opens that exhibit's story on arrival. */
+export function museumGo(to: string, open = false) {
+  world.museum.request = { to, open, id: ++requestId };
+}
+/** Tell the page something changed in the museum. */
+export function museumNotify() {
+  if (typeof window !== "undefined") window.dispatchEvent(new Event("tbc:museum"));
+}
+
 export function goTo(to: StationKey, direction: Direction = "forward") {
   const from = world.route;
   world.route = to;
