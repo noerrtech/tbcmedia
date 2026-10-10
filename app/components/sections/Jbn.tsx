@@ -57,7 +57,7 @@ export function JbnOffer({ claimed }: { claimed: number }) {
       `Name: ${f.get("name")}`,
       `Brand: ${f.get("brand")}`,
       `Phone: ${f.get("phone")}`,
-      `JBN Chapter: ${f.get("chapter")}`,
+      `JBN chapter: ${f.get("chapter")}`,
       f.get("handle") ? `Instagram: ${f.get("handle")}` : "",
     ]
       .filter(Boolean)
@@ -103,16 +103,18 @@ export function JbnOffer({ claimed }: { claimed: number }) {
               className="panel mx-auto grid max-w-lg gap-5 p-8 text-left"
             >
               {[
-                { name: "name", label: "Your name", required: true },
+                { name: "name", label: "Your name", required: true, autoComplete: "name" },
                 { name: "brand", label: "Brand / business", required: true },
-                { name: "phone", label: "Phone number", required: true },
-                { name: "chapter", label: "JBN Chapter", required: true },
+                { name: "phone", label: "Phone number", required: true, type: "tel", autoComplete: "tel" },
+                { name: "chapter", label: "JBN chapter", required: true },
                 { name: "handle", label: "Instagram handle (optional)", required: false },
               ].map((field) => (
                 <label key={field.name} className="block">
                   <span className="text-[0.6rem] tracking-[0.28em] text-gold uppercase">{field.label}</span>
                   <input
                     name={field.name}
+                    type={field.type ?? "text"}
+                    autoComplete={field.autoComplete}
                     required={field.required}
                     className="mt-2 w-full border-b border-line bg-transparent py-2 text-ivory outline-none transition-colors focus:border-champagne"
                   />

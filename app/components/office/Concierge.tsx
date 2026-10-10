@@ -1,6 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { BubbleMark } from "~/components/ui/Logo";
 
 /** Types a line out like someone speaking, then calls onDone. */
 export function useTyped(text: string, { speed = 16, start = true } = {}) {
@@ -23,7 +22,7 @@ export function useTyped(text: string, { speed = 16, start = true } = {}) {
   return { out, done: out.length >= text.length };
 }
 
-/** The concierge's speech bubble — the TBC bubble, reimagined in brass and glass. */
+/** The concierge's speech bubble, in brass and glass. */
 export function SpeechBubble({ text, start = true, className = "" }: { text: string; start?: boolean; className?: string }) {
   const { out, done } = useTyped(text, { start });
   return (
@@ -38,7 +37,6 @@ export function SpeechBubble({ text, start = true, className = "" }: { text: str
         role="status"
         aria-live="polite"
       >
-        <BubbleMark className="absolute -top-5 -left-5 h-9 w-12 text-gold" />
         <p className="font-display text-xl leading-snug text-ivory md:text-2xl">
           <span className="sr-only">{text}</span>
           <span aria-hidden>

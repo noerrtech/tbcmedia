@@ -1,5 +1,5 @@
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { useState } from "react";
 import { bookingLink, featuredIn, founder, founderStats } from "~/content/site";
 import { CountUp } from "~/components/ui/CountUp";
 import { Reveal, RevealLines } from "~/components/ui/Reveal";
@@ -9,27 +9,34 @@ import { dur, ease as easing, stagger as STAGGER } from "~/lib/motion";
 
 const ease = easing.out;
 
+/**
+ * Riya in an arched alcove: a solid, lamp-lit niche she sits right down in, on a brass sill with
+ * her name on it — so she reads as a person in the room, not a cut-out floating over it.
+ */
 export function FounderPortrait({ className = "" }: { className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["6%", "-6%"]);
   return (
-    <div ref={ref} className={`relative ${className}`}>
-      {/* desk lamp glow behind */}
-      <div aria-hidden className="animate-flicker absolute inset-x-[5%] top-[8%] bottom-0 rounded-full bg-[radial-gradient(closest-side,rgb(201_164_106/0.35),transparent)] blur-2xl" />
-      {/* arched window frame */}
-      <div aria-hidden className="absolute inset-x-[8%] top-0 bottom-[6%] rounded-t-full border border-line" />
-      <motion.img
-        src={founder.portrait}
-        alt={`${founder.name}, ${founder.roles.join(", ")} of The Brand Cappuccino`}
-        style={{ y }}
-        initial={{ opacity: 0, scale: 1.04 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: dur.headline, ease }}
-        className="relative z-10 mx-auto w-full max-w-md [filter:sepia(0.12)_contrast(1.05)_brightness(0.95)] [mask-image:linear-gradient(180deg,#000_70%,transparent)]"
-      />
-    </div>
+    <figure className={`relative mx-auto w-full max-w-[34rem] ${className}`}>
+      <div className="relative aspect-[5/6] overflow-hidden rounded-t-full border border-champagne/25 bg-[linear-gradient(180deg,#2a1c13_0%,#1c130d_55%,#120b07_100%)] shadow-[0_40px_80px_-30px_rgb(0_0_0/0.9)]">
+        {/* the lamp above her, warming the back of the niche */}
+        <div aria-hidden className="animate-flicker absolute inset-x-[10%] top-[4%] h-[70%] rounded-full bg-[radial-gradient(closest-side,rgb(217_185_138/0.32),transparent)] blur-2xl" />
+        {/* the niche's inner edge, for depth */}
+        <div aria-hidden className="absolute inset-0 rounded-t-full shadow-[inset_0_0_60px_rgb(0_0_0/0.65)]" />
+        <motion.img
+          src={founder.portrait}
+          alt={`${founder.name}, ${founder.roles.join(", ")} of The Brand Cappuccino`}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: dur.headline, ease }}
+          className="absolute bottom-0 left-1/2 w-[94%] max-w-none -translate-x-1/2 [filter:contrast(1.04)_saturate(1.02)_drop-shadow(0_0_30px_rgb(0_0_0/0.55))]"
+        />
+      </div>
+      {/* the sill she rests on, and her nameplate */}
+      <div aria-hidden className="relative -mx-3 h-3 bg-[linear-gradient(180deg,#e2c38c,#a8792f_60%,#6e4c1c)] shadow-[0_14px_24px_-6px_rgb(0_0_0/0.85)]" />
+      <figcaption className="mt-5 text-center text-[0.65rem] tracking-[0.32em] text-champagne uppercase">
+        {founder.name} <span className="text-mist">· Founder</span>
+      </figcaption>
+    </figure>
   );
 }
 

@@ -6,27 +6,23 @@ import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { work, type WorkCategory } from "~/content/site";
 import { END_WALL, H, HW, SCREEN, SCREENS, START, X0, type Screen } from "~/lib/corridor";
 import { assets } from "./assets";
+import { Beam } from "./Beam";
 import { trackedText, useCanvasTexture } from "./canvasTexture";
 import { extrudedText, flutedGeometry, metricUVs, radialTexture } from "./geometry";
 import type { usePalette } from "./materials";
-import { world, workNotify } from "./world";
+import { world, workNotify, type V3 } from "./world";
 
 /**
  * The corridor behind the Work room's curtain: fluted walnut, a light along the ceiling, the case
- * studies lit on both walls — title cards on the left, each story in brief on the right — and 419M+
- * on the end wall. Hover a screen and it lifts; click it and the camera goes over to read it while
+ * studies on portrait displays down both walls, each under its own spot — title cards on the left,
+ * each story in brief on the right — and 419M+ on the end wall. Hover a screen and it lifts; click it and the camera goes over to read it while
  * the page opens the full story (corridorCamera, CorridorRoom).
  */
 
 type Palette = ReturnType<typeof usePalette>;
 
-const palettes = [
-  ["#6b4a2b", "#23170f", "#0b0806"],
-  ["#4b2a2f", "#1c1012", "#090606"],
-  ["#34404a", "#151a1f", "#070809"],
-  ["#6a5532", "#241c10", "#0a0805"],
-  ["#3d4a37", "#161b14", "#070806"],
-];
+/** Each story's accent: a faint tint at the top of its display and the light it throws on the wall. */
+const accents = ["#8a5a2b", "#7a3440", "#2f4d66", "#8a6d32", "#5a3f73"];
 
 function wrapLines(ctx: CanvasRenderingContext2D, text: string, max: number) {
   const lines: string[] = [];
@@ -40,94 +36,142 @@ function wrapLines(ctx: CanvasRenderingContext2D, text: string, max: number) {
   return lines;
 }
 
-function ground(ctx: CanvasRenderingContext2D, w: number, h: number, i: number, fx: number) {
-  const [a, b, d] = palettes[i % palettes.length];
-  const g = ctx.createRadialGradient(w * fx, h * 0.25, 0, w * 0.5, h * 0.5, w * 0.85);
-  g.addColorStop(0, a);
-  g.addColorStop(0.55, b);
-  g.addColorStop(1, d);
-  ctx.fillStyle = g;
+const two = (n: number) => String(n).padStart(2, "0");
+
+/** A lit display: near-black glass, the story's accent glowing in from the top, a status line. */
+function panel(ctx: CanvasRenderingContext2D, w: number, h: number, i: number, label: string) {
+  ctx.fillStyle = "#070606";
   ctx.fillRect(0, 0, w, h);
-  const shade = ctx.createLinearGradient(0, h * 0.35, 0, h);
-  shade.addColorStop(0, "rgba(0,0,0,0)");
-  shade.addColorStop(1, "rgba(0,0,0,0.6)");
-  ctx.fillStyle = shade;
+  const tint = ctx.createRadialGradient(w * 0.7, -h * 0.05, 0, w * 0.7, -h * 0.05, h * 0.75);
+  tint.addColorStop(0, accents[i % accents.length]);
+  tint.addColorStop(1, "rgba(7,6,6,0)");
+  ctx.globalAlpha = 0.75;
+  ctx.fillStyle = tint;
   ctx.fillRect(0, 0, w, h);
+  ctx.globalAlpha = 1;
+  const pad = w * 0.08;
+  // status line: a live dot, which story, of how many
+  ctx.fillStyle = "#E8C887";
+  ctx.beginPath();
+  ctx.arc(pad + 7, pad + 14, 7, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.font = '600 22px "Manrope", sans-serif';
+  trackedText(ctx, label, pad + 28, pad + 22, 5);
+  ctx.fillStyle = "rgba(243,234,216,0.45)";
+  ctx.textAlign = "right";
+  ctx.fillText(`${two(i + 1)} / ${two(work.length)}`, w - pad, pad + 22);
+  ctx.textAlign = "left";
+  ctx.fillStyle = "rgba(243,234,216,0.14)";
+  ctx.fillRect(pad, pad + 52, w - pad * 2, 2);
+  return pad;
+}
+
+/** The call to action along the foot of a display. */
+function cta(ctx: CanvasRenderingContext2D, w: number, h: number, pad: number, text: string) {
+  const y = h - pad - 76;
+  ctx.strokeStyle = "rgba(201,154,69,0.7)";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(pad, y, w - pad * 2, 76);
+  ctx.fillStyle = "#E8C887";
+  ctx.font = '700 24px "Manrope", sans-serif';
+  trackedText(ctx, text, w / 2, y + 46, 5, "center");
 }
 
 /** The title card: which story, what kind of problem, the result where there is one. */
 function paintTitle(c: WorkCategory, i: number) {
   return (ctx: CanvasRenderingContext2D, w: number, h: number) => {
-    ground(ctx, w, h, i, 0.3);
-    const pad = w * 0.07;
-    ctx.fillStyle = "rgba(243,234,216,0.07)";
-    ctx.font = '800 460px "Manrope", sans-serif';
+    const pad = panel(ctx, w, h, i, "CASE STUDY");
+    ctx.fillStyle = "rgba(243,234,216,0.05)";
+    ctx.font = '800 560px "Manrope", sans-serif';
     ctx.textAlign = "right";
-    ctx.fillText(String(i + 1).padStart(2, "0"), w - pad * 0.5, h * 0.62);
+    ctx.fillText(two(i + 1), w + 20, h * 0.5);
     ctx.textAlign = "left";
-    ctx.fillStyle = "#C99A45";
-    ctx.font = '600 28px "Manrope", sans-serif';
-    trackedText(ctx, `NO. ${String(i + 1).padStart(2, "0")}`, pad, pad + 24, 7);
     const m = c.metrics?.[0];
     if (m) {
-      ctx.fillStyle = "#D9B98A";
-      ctx.font = '800 120px "Manrope", sans-serif';
-      ctx.fillText(m.value, pad, h * 0.44);
+      ctx.fillStyle = "#E8C887";
+      ctx.font = '800 150px "Manrope", sans-serif';
+      ctx.fillText(m.value, pad - 6, h * 0.36);
       ctx.fillStyle = "rgba(243,234,216,0.8)";
-      ctx.font = '500 28px "DM Sans", sans-serif';
-      ctx.fillText(m.label, pad + 4, h * 0.44 + 44);
+      ctx.font = '500 30px "DM Sans", sans-serif';
+      wrapLines(ctx, m.label, w - pad * 2).slice(0, 2).forEach((l, n) => ctx.fillText(l, pad, h * 0.36 + 56 + n * 38));
     }
     ctx.fillStyle = "#F3EAD8";
-    ctx.font = '700 104px "Manrope", sans-serif';
-    ctx.fillText(c.title.toUpperCase(), pad, h - pad - 112);
-    ctx.fillStyle = "rgba(243,234,216,0.75)";
-    ctx.font = '500 26px "Manrope", sans-serif';
-    trackedText(ctx, c.subtitle.toUpperCase(), pad, h - pad - 62, 3);
-    ctx.fillStyle = "#C99A45";
-    ctx.font = '700 26px "Manrope", sans-serif';
-    trackedText(ctx, "READ THE STORY  →", pad, h - pad, 5);
+    ctx.font = '700 92px "Manrope", sans-serif';
+    const title = wrapLines(ctx, c.title.toUpperCase(), w - pad * 2).slice(0, 3);
+    const top = h - pad - 76 - 80 - 52 - title.length * 96;
+    title.forEach((l, n) => ctx.fillText(l, pad, top + 80 + n * 96));
+    ctx.fillStyle = "rgba(243,234,216,0.7)";
+    const sub = c.subtitle.toUpperCase();
+    let size = 24;
+    for (; size > 16; size--) {
+      ctx.font = `500 ${size}px "Manrope", sans-serif`;
+      if (ctx.measureText(sub).width + sub.length * 3 <= w - pad * 2) break;
+    }
+    trackedText(ctx, sub, pad, h - pad - 76 - 60, 3);
+    cta(ctx, w, h, pad, "READ THE STORY  →");
   };
 }
 
-/** The story in brief: the three beats, big enough to read across the corridor. */
+/** The story in brief: the three beats, stacked, big enough to read across the corridor. */
 function paintStory(c: WorkCategory, i: number) {
   return (ctx: CanvasRenderingContext2D, w: number, h: number) => {
-    ground(ctx, w, h, i, 0.75);
-    const pad = w * 0.07;
-    let y = pad + 10;
-    for (const [k, v] of [
+    const pad = panel(ctx, w, h, i, c.title.toUpperCase());
+    let y = pad + 120;
+    [
       ["THE PROBLEM", c.problem],
       ["WHAT WE DID", c.approach],
       ["WHAT CHANGED", c.change],
-    ]) {
+    ].forEach(([k, v], n) => {
       ctx.fillStyle = "#C99A45";
-      ctx.font = '600 24px "Manrope", sans-serif';
-      trackedText(ctx, k, pad, y + 20, 5);
-      ctx.fillStyle = "rgba(243,234,216,0.92)";
-      ctx.font = '400 38px "DM Sans", sans-serif';
-      const lines = wrapLines(ctx, v, w - pad * 2).slice(0, 2);
-      lines.forEach((l, n) => ctx.fillText(l, pad, y + 70 + n * 46));
-      y += 70 + lines.length * 46 + 34;
-    }
-    ctx.fillStyle = "#C99A45";
-    ctx.font = '700 26px "Manrope", sans-serif';
-    trackedText(ctx, `${c.title.toUpperCase()}  ·  READ THE STORY  →`, pad, h - pad, 4);
+      ctx.font = '700 22px "Manrope", sans-serif';
+      ctx.fillText(two(n + 1), pad, y);
+      ctx.fillStyle = "#E8C887";
+      ctx.font = '600 22px "Manrope", sans-serif';
+      trackedText(ctx, k, pad + 56, y, 5);
+      ctx.fillStyle = n === 2 ? "#F3EAD8" : "rgba(243,234,216,0.88)";
+      ctx.font = `${n === 2 ? 500 : 400} 40px "DM Sans", sans-serif`;
+      const lines = wrapLines(ctx, v, w - pad * 2 - 56).slice(0, 4);
+      lines.forEach((l, m) => ctx.fillText(l, pad + 56, y + 62 + m * 52));
+      // a hairline down the side, gold for what changed
+      ctx.fillStyle = n === 2 ? "#C99A45" : "rgba(243,234,216,0.18)";
+      ctx.fillRect(pad + 10, y + 22, 2, lines.length * 52 + 8);
+      y += 62 + lines.length * 52 + 70;
+    });
+    cta(ctx, w, h, pad, "READ THE FULL STORY  →");
   };
 }
 
-function ScreenOnWall({ s, k, brass }: { s: Screen; k: number; brass: THREE.Material }) {
+/** A soft diagonal reflection across the glass. */
+function paintGlass(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  const g = ctx.createLinearGradient(0, 0, w, h * 0.6);
+  g.addColorStop(0, "rgba(255,255,255,0.10)");
+  g.addColorStop(0.35, "rgba(255,255,255,0.03)");
+  g.addColorStop(0.36, "rgba(255,255,255,0)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+}
+
+const CANVAS = { w: 820, h: Math.round((820 * SCREEN.h) / SCREEN.w) };
+const BEZEL = 0.05;
+// the spot in the ceiling, out from the wall, throwing its light down over the display to the floor
+const SPOT: V3 = [0, H - SCREEN.y - 0.08, 1];
+const SPOT_TO: V3 = [0, -SCREEN.y, 0.25];
+
+function ScreenOnWall({ s, k, bezel, can }: { s: Screen; k: number; bezel: THREE.Material; can: THREE.Material }) {
   const c = work[s.index];
-  const tex = useCanvasTexture(s.side === "left" ? paintTitle(c, s.index) : paintStory(c, s.index), 1280, 800, `corridor-${s.key}`);
+  const tex = useCanvasTexture(s.side === "left" ? paintTitle(c, s.index) : paintStory(c, s.index), CANVAS.w, CANVAS.h, `corridor-${s.key}`);
+  const glass = useCanvasTexture(paintGlass, 256, 420, "corridor-glass");
   const mat = useRef<THREE.MeshBasicMaterial>(null);
-  const halo = useRef<THREE.MeshBasicMaterial>(null);
+  const wash = useRef<THREE.MeshBasicMaterial>(null);
   useFrame((_, dt) => {
     const on = world.work.hovered === k || world.work.focus === k ? 1 : 0;
     const m = mat.current;
     if (!m) return;
     const v = (m.userData.v ?? 0) + (on - (m.userData.v ?? 0)) * Math.min(1, dt * 6);
     m.userData.v = v;
-    m.color.setScalar(1.15 + v * 0.2);
-    if (halo.current) halo.current.opacity = 0.18 + v * 0.3;
+    m.color.setScalar(1.1 + v * 0.25);
+    if (wash.current) wash.current.opacity = 0.3 + v * 0.25;
   });
   const events = {
     onPointerOver: (e: ThreeEvent<PointerEvent>) => {
@@ -154,32 +198,43 @@ function ScreenOnWall({ s, k, brass }: { s: Screen; k: number; brass: THREE.Mate
   };
   const { w, h } = SCREEN;
   return (
-    <group position={s.at} rotation-y={s.rotY} {...events}>
-      <mesh position={[0, 0, -0.03]}>
-        <planeGeometry args={[w + 1.4, h + 1.1]} />
-        <meshBasicMaterial ref={halo} map={radialTexture()} color={palettes[s.index % palettes.length][0]} transparent opacity={0.18} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
+    <group position={s.at} rotation-y={s.rotY}>
+      {/* the spot's light on the wall: brightest above, where it lands, spilling past the display */}
+      <mesh position={[0, 0.35, -0.06]}>
+        <planeGeometry args={[w + 1.6, h + 1.6]} />
+        <meshBasicMaterial ref={wash} map={radialTexture()} color="#ffcf94" transparent opacity={0.3} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
       </mesh>
-      <mesh>
-        <planeGeometry args={[w, h]} />
-        <meshBasicMaterial ref={mat} map={tex} toneMapped={false} />
+      {/* and a faint backlight in the story's colour */}
+      <mesh position={[0, 0, -0.05]}>
+        <planeGeometry args={[w + 0.7, h + 0.7]} />
+        <meshBasicMaterial map={radialTexture()} color={accents[s.index % accents.length]} transparent opacity={0.5} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
       </mesh>
-      {[
-        [0, h / 2 + 0.03, w + 0.12, 0.06],
-        [0, -h / 2 - 0.03, w + 0.12, 0.06],
-        [-w / 2 - 0.03, 0, 0.06, h + 0.12],
-        [w / 2 + 0.03, 0, 0.06, h + 0.12],
-      ].map(([x, y, bw, bh], n) => (
-        <mesh key={n} material={brass} position={[x, y, 0.01]}>
-          <boxGeometry args={[bw, bh, 0.05]} />
+      <group {...events}>
+        {/* the slim black body */}
+        <mesh material={bezel} position={[0, 0, -0.03]}>
+          <boxGeometry args={[w + BEZEL * 2, h + BEZEL * 2, 0.05]} />
         </mesh>
-      ))}
-      {/* picture light */}
-      <mesh material={brass} position={[0, h / 2 + 0.2, 0.3]}>
-        <boxGeometry args={[w * 0.5, 0.05, 0.08]} />
+        <mesh>
+          <planeGeometry args={[w, h]} />
+          <meshBasicMaterial ref={mat} map={tex} toneMapped={false} />
+        </mesh>
+        <mesh position={[0, 0, 0.002]}>
+          <planeGeometry args={[w, h]} />
+          <meshBasicMaterial map={glass} transparent blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
+        </mesh>
+      </group>
+      {/* the spot: a can in the ceiling, its lit lens, the shaft of light, the pool on the floor */}
+      <mesh material={can} position={[SPOT[0], SPOT[1] + 0.02, SPOT[2]]}>
+        <cylinderGeometry args={[0.11, 0.09, 0.12, 24]} />
       </mesh>
-      <mesh position={[0, h / 2 + 0.175, 0.3]}>
-        <boxGeometry args={[w * 0.48, 0.01, 0.05]} />
-        <meshBasicMaterial color={[3, 2.5, 1.8]} toneMapped={false} />
+      <mesh position={[SPOT[0], SPOT[1] - 0.045, SPOT[2]]} rotation-x={Math.PI / 2}>
+        <circleGeometry args={[0.075, 24]} />
+        <meshBasicMaterial color={[4, 3.3, 2.4]} toneMapped={false} side={THREE.DoubleSide} />
+      </mesh>
+      <Beam from={SPOT} to={SPOT_TO} radius={1.15} opacity={0.06} />
+      <mesh position={[0, -SCREEN.y + 0.006, 0.55]} rotation-x={-Math.PI / 2}>
+        <planeGeometry args={[2.4, 1.7]} />
+        <meshBasicMaterial map={radialTexture()} color="#ffcf94" transparent opacity={0.4} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
       </mesh>
     </group>
   );
@@ -218,8 +273,10 @@ export function WorkCorridor({ p, stageH }: { p: Palette; stageH: number }) {
   const wall = useMemo(() => flutedGeometry(len, H), [len]);
   const endWall = useMemo(() => metricUVs(new THREE.PlaneGeometry(HW * 2, H), 1.6), []);
   const header = useMemo(() => metricUVs(new THREE.PlaneGeometry(HW * 2, stageH - H), 1.6), [stageH]);
-  const brass = useMemo(() => new THREE.MeshStandardMaterial({ color: "#C99A45", metalness: 1, roughness: 0.35 }), []);
-  useLayoutEffect(() => () => brass.dispose(), [brass]);
+  // the displays' black bodies, and the spot cans above them
+  const bezel = useMemo(() => new THREE.MeshStandardMaterial({ color: "#0b0b0c", metalness: 0.6, roughness: 0.3 }), []);
+  const can = useMemo(() => new THREE.MeshStandardMaterial({ color: "#1a1714", metalness: 0.8, roughness: 0.4 }), []);
+  useLayoutEffect(() => () => (bezel.dispose(), can.dispose()), [bezel, can]);
   const inlays = useMemo(() => {
     const zs: number[] = [];
     for (let z = START - 1.2; z > END_WALL; z -= 2.4) zs.push(z);
@@ -248,7 +305,7 @@ export function WorkCorridor({ p, stageH }: { p: Palette; stageH: number }) {
           <boxGeometry args={[0.05, 0.01, len - 0.4]} />
         </mesh>
       ))}
-      {SCREENS.map((s, k) => <ScreenOnWall key={s.key} s={s} k={k} brass={brass} />)}
+      {SCREENS.map((s, k) => <ScreenOnWall key={s.key} s={s} k={k} bezel={bezel} can={can} />)}
       <EndWall p={p} />
       {[0.15, 0.45, 0.75].map((f) => (
         <pointLight key={f} position={[X0, 3.9, START - len * f]} color="#ffd29a" intensity={22} distance={18} decay={2} />
