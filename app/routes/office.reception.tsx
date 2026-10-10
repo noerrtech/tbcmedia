@@ -73,7 +73,7 @@ export default function Reception() {
       <AnimatePresence>
         {ready && !showOptions && (
           <motion.div
-            className="pointer-events-none absolute inset-x-0 top-[22%] px-6 text-center [text-shadow:0_2px_30px_rgb(0_0_0/0.8)]"
+            className="pointer-events-none absolute inset-x-0 top-[12%] px-6 text-center [text-shadow:0_2px_30px_rgb(0_0_0/0.8)] md:top-[22%]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { duration: dur.page, ease: easing.out } }}
             exit={{ opacity: 0, transition: { duration: dur.exit, ease: easing.out } }}
@@ -87,7 +87,7 @@ export default function Reception() {
       {ready && (
         <>
           {/* the concierge stands behind the desk */}
-          <div className="absolute inset-x-0 top-[43%] flex justify-center px-6">
+          <div className="absolute inset-x-0 top-[47%] flex justify-center px-6 md:top-[43%]">
             <SpeechBubble text={line} />
           </div>
 
