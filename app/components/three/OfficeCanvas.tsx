@@ -11,7 +11,7 @@ import { LobbyScene } from "./LobbyScene";
 import { usePalette } from "./materials";
 import { ActionRoomScene, FounderCabin, JbnRoom, Library } from "./Rooms";
 import { WorkHall } from "./WorkHall";
-import { stations, world, type V3 } from "./world";
+import { museumGo, stations, world, type V3 } from "./world";
 import { museumPose } from "./museumCamera";
 
 const INTRO_FROM = new THREE.Vector3(0, 1.9, 11.5);
@@ -207,7 +207,7 @@ function Ready({ onReady }: { onReady: () => void }) {
 function DevHandle() {
   const state = useThree();
   useEffect(() => {
-    if (import.meta.env.DEV) (window as unknown as { __tbc: unknown }).__tbc = state;
+    if (import.meta.env.DEV) Object.assign(window as unknown as Record<string, unknown>, { __tbc: state, __world: world, __museumGo: museumGo });
   }, [state]);
   return null;
 }

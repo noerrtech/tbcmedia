@@ -420,10 +420,13 @@ function Monument({ m }: { m: Mats }) {
       <mesh material={m.brass} position={[0, 0.445, 0]} rotation-x={-Math.PI / 2}>
         <ringGeometry args={[MONUMENT_R - 0.06, MONUMENT_R, 64]} />
       </mesh>
-      {/* read from the entrance, and from the far side */}
+      {/* a stone stele, the figure in gold on both faces: read from the entrance and from the far side */}
+      <mesh material={m.stone} position={[0, 1.14, 0]} castShadow receiveShadow>
+        <boxGeometry args={[4.3, 1.4, 0.18]} />
+      </mesh>
       {[0, Math.PI].map((r) => (
         <group key={r} rotation-y={r}>
-          <mesh geometry={geometry} material={m.gold} position={[0, 0.62, 0.1]} castShadow />
+          <mesh geometry={geometry} material={m.gold} position={[0, 0.66, 0.1]} castShadow />
           <Text font={assets.fonts.sans} fontSize={0.12} letterSpacing={0.45} anchorX="center" position={[0, 0.26, MONUMENT_R + 0.09]}>
             VIEWS · WITHOUT A RUPEE SPENT ON ADS
             <meshBasicMaterial color="#1B120D" toneMapped={false} />
