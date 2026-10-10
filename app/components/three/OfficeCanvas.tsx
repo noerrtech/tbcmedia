@@ -11,7 +11,8 @@ import { LobbyScene } from "./LobbyScene";
 import { usePalette } from "./materials";
 import { ActionRoomScene, FounderCabin, JbnRoom, Library } from "./Rooms";
 import { WorkHall } from "./WorkHall";
-import { stations, workHall, world, type V3 } from "./world";
+import { frameZ, hallZ, stations, workHall, world, type V3 } from "./world";
+import { FRAMES, galleryAt } from "~/lib/gallery";
 
 const INTRO_FROM = new THREE.Vector3(0, 1.9, 11.5);
 const INTRO = 2.2; // s — the walk in from the street
@@ -35,19 +36,32 @@ function lerpYaw(a: number, b: number, t: number) {
 }
 
 /**
- * Where the Work room's camera is. The curtain parts and it steps through the proscenium; then
- * it holds on the act screens — straight on, no turning — with a slow push in across the acts.
+ * Where the Work room's camera is. The curtain parts and it steps through the proscenium into the
+ * hall; then it walks the hall down the left, and at each piece on the right wall it stops and turns
+ * to face it (the same way every time), turns back and walks on — ending at the end wall.
  */
+const hallLook = new THREE.Vector3();
+const pieceLook = new THREE.Vector3();
 function workPose(pos: THREE.Vector3, look: THREE.Vector3) {
-  const { curtain, acts } = world.work;
+  const { curtain, hall } = world.work;
   const X = workHall.x;
   const { pos: from, look: at } = stations.work;
-  const S = workHall.screen;
   const dolly = smooth(0.45, 1, curtain);
-  const z = THREE.MathUtils.lerp(workHall.camStart, workHall.camEnd, smooth(0, 1, acts));
-  const x = X + workHall.camX * smooth(0.6, 1, curtain);
-  pos.set(x, THREE.MathUtils.lerp(from[1], 1.75, dolly), THREE.MathUtils.lerp(from[2], z, dolly));
-  look.set(x, THREE.MathUtils.lerp(at[1], S.y - 0.05, dolly), THREE.MathUtils.lerp(at[2], S.z, dolly));
+  const g = galleryAt(hall);
+  const x = X + workHall.walkX * smooth(0.6, 1, curtain);
+  const z = hallZ(g.walk);
+  pos.set(x, THREE.MathUtils.lerp(from[1], 1.65, dolly), THREE.MathUtils.lerp(from[2], z, dolly));
+  hallLook.set(x, THREE.MathUtils.lerp(at[1], 1.75, dolly), THREE.MathUtils.lerp(at[2], z - 8, dolly));
+  if (g.stop < 0 || g.facing <= 0) return void look.copy(hallLook);
+  if (g.stop >= FRAMES) {
+    // the end wall: straight ahead, a little higher
+    pieceLook.set(X - 0.3, 2.05, z - 8);
+  } else {
+    // aim a little short of the piece (toward the door), so it sits right of the words on screen
+    const F = workHall.frame;
+    pieceLook.set(X + F.x, F.y + 0.05, frameZ(g.stop) + 1.25);
+  }
+  look.lerpVectors(hallLook, pieceLook, g.facing);
 }
 
 /**

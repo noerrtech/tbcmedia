@@ -6,6 +6,7 @@
  * pulling the 3D bundle. The canvas reads `world` every frame; pages write to it.
  */
 import type { DoorKey } from "./doors";
+import { stopWalk } from "~/lib/gallery";
 
 export type V3 = [number, number, number];
 export type StationKey = "reception" | "founder" | "story" | "services" | "work" | "jbn" | "next";
@@ -46,14 +47,17 @@ export const workHall = {
   x: -4.7, // the room's centre line
   halfWidth: 3,
   curtainZ: -12.2,
-  start: -12.6, // backstage begins just behind the curtain
-  depth: 9, // how far back backstage goes
-  /** where the act screens hang: right of centre, so the case study can sit on the left */
-  screen: { x: 0.75, y: 2.3, z: -17.6, w: 3.4, h: 2.13 },
-  camStart: -11.5, // through the proscenium once the curtain is open
-  camEnd: -12.0, // a slow push in over the five acts
-  camX: -0.85, // and a step to the left, looking straight ahead: the screen lands right of the words
+  start: -12.6, // the hall begins just behind the curtain
+  camStart: -11.5, // through the proscenium once the curtain is open: the "door" of the hall
+  /** the walk line: left of centre, so the pieces on the right wall are seen from a distance */
+  walkX: -1.7,
+  /** the pieces on the right wall, angled out toward the visitor coming down the hall */
+  frame: { x: 2.45, y: 2.05, w: 2.6, h: 1.63, angle: 0.32, ahead: 1.8 },
 };
+/** z in the world for a walk distance (metres from the door, negative) */
+export const hallZ = (walk: number) => workHall.camStart + walk;
+/** z of piece i: a little beyond where you stop to look at it */
+export const frameZ = (i: number) => hallZ(stopWalk(i)) - workHall.frame.ahead;
 
 /* ---- store -------------------------------------------------------------- */
 
@@ -77,8 +81,8 @@ export const world = {
   hovered: null as DoorKey | null,
   /** Where the camera is right now — written by the canvas each frame. */
   camera: [...stations.reception.pos] as V3,
-  /** Work room scroll: curtain 0 → 1 (closed → open), acts 0 → 1 (first act → last). */
-  work: { curtain: 0, acts: 0 },
+  /** Work room scroll: curtain 0 → 1 (closed → open), hall 0 → 1 (the door → the end wall). */
+  work: { curtain: 0, hall: 0 },
   /** Page scroll, in viewport heights — rooms dolly forward a little as you read. */
   scroll: 0,
   /** A section asking for its own darkness over the 3D (see ScrimZone); null = the default. */

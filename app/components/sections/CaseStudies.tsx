@@ -7,7 +7,7 @@ import { Reveal, RevealLines } from "~/components/ui/Reveal";
 import { WorkScreen } from "~/components/sections/Work";
 
 /**
- * THE WORK, IN FIVE ACTS — each case study told as a story: the problem, what we did, what changed.
+ * THE WORK — each case study told as a story: the problem, what we did, what changed.
  * The 3D office plays the acts on its stage (WorkRoom3D + WorkHall); this file holds the words, the
  * act bar, and the flat version for the classic site.
  */
@@ -25,7 +25,7 @@ export function CaseStudyPanel({ c, i, active }: { c: WorkCategory; i: number; a
     <article className="swap-panel [grid-area:1/1]" data-active={active} aria-hidden={!active}>
       <Beat i={0}>
         <p className="eyebrow">
-          Act {two(i + 1)} <span className="text-mist">· {c.subtitle}</span>
+          No. {two(i + 1)} <span className="text-mist">· {c.subtitle}</span>
         </p>
       </Beat>
       <Beat i={1}><h3 className="display title-md mt-3 text-ivory">{c.title}</h3></Beat>
@@ -78,7 +78,7 @@ export function ActBar({ active, onGo, fill }: { active: number; onGo: (i: numbe
               aria-current={i === active ? "step" : undefined}
               className={`w-full min-w-36 px-3 py-4 text-left transition-colors duration-300 md:py-5 ${i === active ? "text-ivory" : "text-mist hover:text-ivory"}`}
             >
-              <span className={`block text-[0.6rem] tracking-[0.26em] uppercase ${i === active ? "text-champagne" : ""}`}>Act {two(i + 1)}</span>
+              <span className={`block text-[0.6rem] tracking-[0.26em] uppercase ${i === active ? "text-champagne" : ""}`}>No. {two(i + 1)}</span>
               <span className="mt-1 block text-sm whitespace-nowrap">{w.title}</span>
             </button>
           </li>
@@ -92,10 +92,10 @@ export function ActBar({ active, onGo, fill }: { active: number; onGo: (i: numbe
 export function WorkIntro() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-32 text-center">
-      <Reveal><p className="eyebrow">The work, in five acts</p></Reveal>
+      <Reveal><p className="eyebrow">The hall of work</p></Reveal>
       <RevealLines lines={["Five problems.", "Five kinds of growth."]} className="display title-lg mt-6" />
       <Reveal delay={0.2}>
-        <p className="mt-6 text-mist">Every act is a growth problem we were brought in to solve — what it was, what we did, what changed.</p>
+        <p className="mt-6 text-mist">Every piece on these walls is a growth problem we were brought in to solve — what it was, what we did, what changed.</p>
       </Reveal>
     </div>
   );
