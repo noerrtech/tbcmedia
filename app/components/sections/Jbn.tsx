@@ -123,6 +123,9 @@ export function JbnOffer({ claimed }: { claimed: number }) {
               <button type="submit" className="btn btn-solid mt-4 justify-center">
                 Send claim on WhatsApp <Arrow />
               </button>
+              <p className="mt-2 text-center text-xs text-mist">
+                * Subject to confirmation
+              </p>
             </motion.form>
           )}
         </div>
