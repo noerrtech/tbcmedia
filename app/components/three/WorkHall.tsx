@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { work, type WorkCategory } from "~/content/site";
 import { assets } from "./assets";
+import { isHandheld } from "~/lib/device";
 import { trackedText, useCanvasTexture } from "./canvasTexture";
 import { extrudedText, flutedGeometry, metricUVs, radialTexture } from "./geometry";
 import { velvetMaterial, type usePalette } from "./materials";
@@ -282,7 +283,7 @@ function Stage({ p }: { p: Palette }) {
         decay={2}
         color="#ffcf9a"
         castShadow
-        shadow-mapSize={[1024, 1024]}
+        shadow-mapSize={isHandheld() ? [512, 512] : [1024, 1024]}
         shadow-bias={-0.0004}
         shadow-normalBias={0.02}
         shadow-camera-near={1}

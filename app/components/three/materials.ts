@@ -24,7 +24,10 @@ export function usePalette() {
     prep(brassTex, { srgb: [] });
 
     const walnut = new THREE.MeshStandardMaterial({
-      ...walnutTex,
+      map: walnutTex.map,
+      normalMap: walnutTex.normalMap,
+      aoMap: walnutTex.orm,
+      roughnessMap: walnutTex.orm,
       color: "#6b4630", // the veneer scan is light; tint it down to a deep smoked walnut
       roughness: 0.95,
       normalScale: new THREE.Vector2(0.8, 0.8),

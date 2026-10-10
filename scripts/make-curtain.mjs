@@ -80,32 +80,45 @@ for (let i = 0; i < count; i++) {
 }
 const I = Uint16Array.from(index);
 
+// quantize (KHR_mesh_quantization): every value here already sits in -1…1, so normalized integers
+// carry it exactly enough (0.1 mm on the stage) at a fraction of the size — and need no node transform
+const q16 = (src, n) => {
+  const out = new Int16Array((src.length / n) * 4); // padded to 4 components: attribute strides are 4-byte aligned
+  for (let i = 0; i < src.length / n; i++) for (let k = 0; k < n; k++) out[i * 4 + k] = Math.round(Math.max(-1, Math.min(1, src[i * n + k])) * 32767);
+  return out;
+};
+const q8 = (src) => {
+  const out = new Int8Array((src.length / 3) * 4);
+  for (let i = 0; i < src.length / 3; i++) for (let k = 0; k < 3; k++) out[i * 4 + k] = Math.round(Math.max(-1, Math.min(1, src[i * 3 + k])) * 127);
+  return out;
+};
+const u16 = (src) => Uint16Array.from(src, (v) => Math.round(Math.max(0, Math.min(1, v)) * 65535));
+
 // ---- write the glb
 const chunks = [];
 const views = [];
 const accessors = [];
 let offset = 0;
-function add(array, type, target, minmax = false) {
+const COMPONENT = (a) => (a instanceof Int8Array ? 5120 : a instanceof Int16Array ? 5122 : a instanceof Uint16Array ? 5123 : 5126);
+function add(array, type, target, { stride, count, normalized, minmax } = {}) {
   const buf = Buffer.from(array.buffer, array.byteOffset, array.byteLength);
   const pad = (4 - (buf.length % 4)) % 4;
-  views.push({ buffer: 0, byteOffset: offset, byteLength: buf.length, target });
+  views.push({ buffer: 0, byteOffset: offset, byteLength: buf.length, target, ...(stride ? { byteStride: stride } : {}) });
   chunks.push(buf, Buffer.alloc(pad));
   offset += buf.length + pad;
-  const n = SIZE[type];
-  const acc = { bufferView: views.length - 1, componentType: array instanceof Uint16Array ? 5123 : 5126, count: array.length / n, type };
-  if (minmax) {
-    acc.min = [0, 1, 2].map((k) => range(array, k)[0]);
-    acc.max = [0, 1, 2].map((k) => range(array, k)[1]);
-  }
+  const acc = { bufferView: views.length - 1, componentType: COMPONENT(array), count: count ?? array.length / SIZE[type], type, ...(normalized ? { normalized: true } : {}) };
+  if (minmax) Object.assign(acc, minmax);
   accessors.push(acc);
   return accessors.length - 1;
 }
+const qP = q16(P, 3);
+const box = (a) => ({ min: [0, 1, 2].map((k) => Math.min(...a.filter((_, i) => i % 4 === k))), max: [0, 1, 2].map((k) => Math.max(...a.filter((_, i) => i % 4 === k))) });
 const attributes = {
-  POSITION: add(P, "VEC3", 34962, true),
-  NORMAL: add(N, "VEC3", 34962),
-  TEXCOORD_0: add(uv, "VEC2", 34962),
-  _OPEN_POSITION: add(OP, "VEC3", 34962),
-  _OPEN_NORMAL: add(ON, "VEC3", 34962),
+  POSITION: add(qP, "VEC3", 34962, { stride: 8, count, normalized: true, minmax: box(Array.from(qP)) }),
+  NORMAL: add(q8(N), "VEC3", 34962, { stride: 4, count, normalized: true }),
+  TEXCOORD_0: add(u16(uv), "VEC2", 34962, { normalized: true }),
+  _OPEN_POSITION: add(q16(OP, 3), "VEC3", 34962, { stride: 8, count, normalized: true }),
+  _OPEN_NORMAL: add(q8(ON), "VEC3", 34962, { stride: 4, count, normalized: true }),
 };
 const indices = add(I, "SCALAR", 34963);
 
@@ -115,6 +128,8 @@ const json = {
     generator: "tbc scripts/make-curtain.mjs",
     extras: { ...gltf.asset.extras, note: "Closed and gathered shapes of one curtain; see scripts/make-curtain.mjs" },
   },
+  extensionsUsed: ["KHR_mesh_quantization"],
+  extensionsRequired: ["KHR_mesh_quantization"],
   scene: 0,
   scenes: [{ nodes: [0] }],
   nodes: [{ name: "curtain", mesh: 0 }],

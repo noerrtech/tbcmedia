@@ -1,17 +1,20 @@
 #!/usr/bin/env bash
 # Builds web working copies of the 3D office assets from the original downloads.
-# Originals are never modified. Re-run any time; final compression/resizing is a later pass.
+# Originals are never modified. Re-run any time. Working copies go to .assets-src/ (not deployed);
+# the end of the script compresses them into public/assets (WebP textures in 2k/1k tiers, downsampled
+# lighting, meshopt + WebP models) — see scripts/compress-assets.py.
 #
 #   SRC=~/Downloads bash scripts/prepare-assets.sh
 #
-# Needs: ffmpeg, sips (macOS), node.
+# Needs: ffmpeg, sips (macOS), node, python3 with numpy + Pillow.
 set -euo pipefail
 
 SRC="${SRC:-$HOME/Downloads}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="$ROOT/public/assets"
-TEX="$OUT/textures"
-HDRI="$OUT/hdri"
+WORK="$ROOT/.assets-src"
+TEX="$WORK/textures"
+HDRI="$WORK/hdri"
 MODELS="$OUT/models"
 FONTS="$ROOT/public/fonts"
 SIZE="${SIZE:-2048}"
@@ -35,7 +38,7 @@ rough_from_diff() {
 }
 
 # --- surfaces (Poly Haven, CC0) --------------------------------------------
-for name in smoked_walnut_veneer american_walnut_veneer; do
+for name in smoked_walnut_veneer; do
   d="$SRC/${name}_4k.blend/textures"
   color "$d/${name}_diff_4k.jpg" "$TEX/${name}_diff.jpg"
   data  "$d/${name}_nor_gl_4k.exr" "$TEX/${name}_nor.png"
@@ -57,7 +60,7 @@ SIZE=1024 data "$d/metal_0065_roughness_1k.jpg" "$TEX/brass_rough.png"
 SIZE=1024 data "$d/metal_0065_normal_opengl_1k.png" "$TEX/brass_nor.png"
 
 # --- lighting (Poly Haven HDRIs, CC0) ---------------------------------------
-for name in lythwood_lounge entrance_hall hotel_room; do
+for name in lythwood_lounge; do
   ffmpeg -v error -y -i "$SRC/${name}_4k.exr" -vf "scale=2048:1024:flags=lanczos" -frames:v 1 "$HDRI/${name}_2k.hdr"
 done
 
@@ -86,5 +89,15 @@ cp node_modules/@fontsource-variable/dm-sans/LICENSE "$FONTS/LICENSE-dm-sans.txt
 # extruded 3D lettering (419M+ and the lobby sign)
 node scripts/make-typeface.mjs "$SRC"/manrope/static/manrope-latin-800-normal.woff "$FONTS/manrope-800.typeface.json"
 
+# --- compress for the web --------------------------------------------------
+python3 "$ROOT/scripts/compress-assets.py" "$WORK"
+GT="npx -y @gltf-transform/cli@4.1.1"
+for m in armchair_classic armchair_modern brass_vase ceiling_lamp potted_plant; do
+  f="$MODELS/$m.glb"
+  [ -f "$f" ] || continue
+  if [ "$m" = potted_plant ]; then $GT weld "$f" "$f" && $GT simplify "$f" "$f" --ratio 0.35 --error 0.002; fi
+  $GT resize "$f" "$f" --width 1024 --height 1024 && $GT webp "$f" "$f" --quality 85 && $GT meshopt "$f" "$f" --level medium
+done
+
 echo "Done."
-du -sh "$TEX" "$HDRI" "$MODELS" "$FONTS"
+du -sh "$OUT"/* "$FONTS"

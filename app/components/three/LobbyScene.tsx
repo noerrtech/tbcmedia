@@ -3,6 +3,7 @@ import { useFrame, useLoader } from "@react-three/fiber";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { assets } from "./assets";
+import { isHandheld } from "~/lib/device";
 import { doors } from "./doors";
 import { ARCH_H, ARCH_W, Doorway } from "./Doorway";
 import { flutedGeometry, metricUVs, radialTexture } from "./geometry";
@@ -43,7 +44,7 @@ function Floor() {
         normalScale={new THREE.Vector2(0.35, 0.35)}
         envMapIntensity={0.5}
         blur={REFLECTION_BLUR}
-        resolution={512}
+        resolution={isHandheld() ? 256 : 512}
         mixBlur={1}
         mixStrength={2.2}
         mixContrast={1}

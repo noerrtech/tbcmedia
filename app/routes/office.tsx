@@ -9,6 +9,7 @@ import { goTo, stationForPath, world, type Direction, type StationKey } from "~/
 import { rooms } from "~/content/site";
 import { dur, ease } from "~/lib/motion";
 import { ScrollTrigger } from "~/lib/gsap";
+import { isHandheld } from "~/lib/device";
 import { use3D } from "~/lib/use-3d";
 
 const OfficeCanvas = lazy(() => import("~/components/three/OfficeCanvas"));
@@ -44,7 +45,7 @@ export function LightsComingOn() {
 function useLoadTimeout(active: boolean, onTimeout: () => void) {
   useEffect(() => {
     if (!active) return;
-    let left = 15000;
+    let left = isHandheld() ? 25000 : 15000; // phones on mobile data get longer to build the world
     let started: number | null = null;
     let id = 0;
     const run = () => {

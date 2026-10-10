@@ -3,3 +3,6 @@ node_modules
 /.react-router
 .env
 .DS_Store
+
+# working copies of the 3D assets (scripts/prepare-assets.sh)
+/.assets-src

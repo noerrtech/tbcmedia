@@ -13,6 +13,7 @@ import { ActionRoomScene, FounderCabin, JbnRoom, Library } from "./Rooms";
 import { WorkHall } from "./WorkHall";
 import { stations, world, type V3 } from "./world";
 import { corridorPose } from "./corridorCamera";
+import { isHandheld } from "~/lib/device";
 
 const INTRO_FROM = new THREE.Vector3(0, 1.9, 11.5);
 const INTRO = 2.2; // s — the walk in from the street
@@ -228,8 +229,28 @@ function Building() {
   );
 }
 
+/**
+ * Keeps the view as wide as a person sees on any screen: on a tall phone the 45° lens would show a
+ * sliver of each room, so the lens widens until the view is at least ~58° across (up to 78° tall).
+ */
+function FitLens() {
+  const { camera, size } = useThree();
+  useLayoutEffect(() => {
+    const cam = camera as THREE.PerspectiveCamera;
+    const aspect = size.width / Math.max(1, size.height);
+    const across = THREE.MathUtils.degToRad(58);
+    const tall = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(across / 2) / aspect));
+    cam.fov = THREE.MathUtils.clamp(tall, 45, 78);
+    cam.updateProjectionMatrix();
+  }, [camera, size.width, size.height]);
+  return null;
+}
+
 export default function OfficeCanvas({ onReady }: { onReady: () => void }) {
-  const [dpr, setDpr] = useState(1.5);
+  // phones: a lighter renderer — fewer pixels, no multisampling — the same design
+  const handheld = useState(isHandheld)[0];
+  const top = handheld ? Math.min(1.3, window.devicePixelRatio || 1) : 1.5;
+  const [dpr, setDpr] = useState(top);
   const still = useReducedMotion() ?? false;
   return (
     <Canvas
@@ -238,7 +259,8 @@ export default function OfficeCanvas({ onReady }: { onReady: () => void }) {
       camera={{ position: v3(stations.reception.pos).toArray(), fov: 45, near: 0.1, far: 80 }}
       gl={{ antialias: false, powerPreference: "high-performance" }}
     >
-      <PerformanceMonitor onDecline={() => setDpr(1)} onIncline={() => setDpr(1.5)} />
+      <PerformanceMonitor onDecline={() => setDpr(handheld ? 0.85 : 1)} onIncline={() => setDpr(top)} />
+      <FitLens />
       <color attach="background" args={["#150D09"]} />
       <fog attach="fog" args={["#150D09", 13, 34]} />
       <ambientLight intensity={0.04} />
@@ -249,7 +271,7 @@ export default function OfficeCanvas({ onReady }: { onReady: () => void }) {
         <Ready onReady={onReady} />
         <DevHandle />
       </Suspense>
-      <EffectComposer multisampling={4}>
+      <EffectComposer multisampling={handheld ? 0 : 4}>
         <Bloom mipmapBlur luminanceThreshold={0.95} luminanceSmoothing={0.2} intensity={0.45} />
         <Vignette offset={0.22} darkness={0.85} />
         <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
