@@ -16,7 +16,8 @@ export const STAGE: P3 = [X0, 1.9, -8.15]; // where you stand before the curtain
 export const EYE = 1.65;
 export const FIRST = 6; // metres in to the first case study
 export const GAP = 7; // between case studies
-export const SCREEN = { w: 3.2, h: 2, y: 2.2, angle: 0.2 }; // angled a little toward you as you come
+/** Portrait displays, angled a little toward you as you come; a spot in the ceiling above each. */
+export const SCREEN = { w: 1.7, h: 2.8, y: 2.2, angle: 0.2 };
 
 export type Side = "left" | "right";
 export type Screen = { key: string; index: number; side: Side; at: P3; rotY: number };
@@ -63,6 +64,6 @@ export function focusPose(s: Screen): { pos: P3; look: P3 } {
   const across = s.side === "left" ? 1 : -1; // stand on the opposite side
   const pos: P3 = [X0 + across * (HW - 0.85), EYE, s.at[2] + 0.7];
   // facing the left wall (-x) your right is -z; facing the right wall (+x) it's +z
-  const look: P3 = [s.at[0], s.at[1] - 0.1, s.at[2] + (s.side === "left" ? -1.3 : 1.3)];
+  const look: P3 = [s.at[0], s.at[1] - 0.1, s.at[2] + (s.side === "left" ? -1.1 : 1.1)];
   return { pos, look };
 }
