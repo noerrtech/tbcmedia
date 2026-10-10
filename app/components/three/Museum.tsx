@@ -126,8 +126,8 @@ function paintExhibit(c: WorkCategory, i: number) {
   };
 }
 
-const PANEL_W = 4.4;
-const PANEL_H = 2.75;
+const PANEL_W = 3.2;
+const PANEL_H = 2.0;
 
 /** Pointer handling shared by everything that belongs to an exhibit. */
 function useExhibitPointer(i: number) {
@@ -172,7 +172,7 @@ function ExhibitWall({ c, i, m }: { c: WorkCategory; i: number; m: Mats }) {
     }
   });
   return (
-    <group position={[0, 2.25, R1 - 0.06]} rotation-y={Math.PI} {...pointer}>
+    <group position={[0, 2.15, R1 - 0.06]} rotation-y={Math.PI} {...pointer}>
       {/* the lit niche around it */}
       <mesh position={[0, 0, -0.02]}>
         <planeGeometry args={[PANEL_W + 1.6, PANEL_H + 1.2]} />
@@ -231,9 +231,9 @@ function paintSide(c: WorkCategory, i: number, side: "problem" | "approach") {
   };
 }
 
-const SIDE_W = 2.5;
-const SIDE_H = 1.56;
-const SIDE_TILT = 0.45; // turned toward the visitor coming in from the rotunda
+const SIDE_W = 1.9;
+const SIDE_H = 1.19;
+const SIDE_TILT = Math.PI / 4; // hinged out from the main exhibit's edge, toward the visitor
 
 function SideScreen({ c, i, side, m }: { c: WorkCategory; i: number; side: "problem" | "approach"; m: Mats }) {
   const tex = useCanvasTexture(paintSide(c, i, side), 1280, 800, `side-${side}-${c.id}`);
@@ -247,13 +247,15 @@ function SideScreen({ c, i, side, m }: { c: WorkCategory; i: number; side: "prob
     mat.current.userData.k = next;
     mat.current.color.setScalar(0.88 + next * 0.14);
   });
-  // facing into the gallery (+z), your left is +x: the problem on the left, what we did on the right;
-  // both turned toward the gallery's opening (-z)
+  // a triptych on the back wall: facing into the gallery (+z) your left is +x — the problem on the
+  // left, what we did on the right — each hinged at the main exhibit's edge and turned toward you
   const s = side === "problem" ? 1 : -1;
-  const rot = s < 0 ? Math.PI / 2 + SIDE_TILT : -Math.PI / 2 - SIDE_TILT;
-  const x = s * (GW / 2 - 0.06 - (SIDE_W / 2) * Math.sin(SIDE_TILT));
+  const rot = s > 0 ? -Math.PI + SIDE_TILT : Math.PI - SIDE_TILT;
+  const hinge = PANEL_W / 2 + 0.06;
+  const x = s * (hinge + (SIDE_W / 2) * Math.cos(SIDE_TILT));
+  const z = R1 - 0.1 - (SIDE_W / 2) * Math.sin(SIDE_TILT);
   return (
-    <group position={[x, 2.05, 10.7]} rotation-y={rot} {...pointer}>
+    <group position={[x, 2.15, z]} rotation-y={rot} {...pointer}>
       <mesh>
         <planeGeometry args={[SIDE_W, SIDE_H]} />
         <meshBasicMaterial ref={mat} map={tex} toneMapped={false} />
@@ -268,10 +270,6 @@ function SideScreen({ c, i, side, m }: { c: WorkCategory; i: number; side: "prob
           <boxGeometry args={[w, h, 0.03]} />
         </mesh>
       ))}
-      {/* the bracket that holds it off the wall */}
-      <mesh material={m.brass} position={[(-s * SIDE_W) / 2 + s * 0.05, 0, -0.12]}>
-        <boxGeometry args={[0.04, SIDE_H * 0.6, 0.24]} />
-      </mesh>
     </group>
   );
 }
@@ -356,17 +354,17 @@ function Banner({ x, z, word, m }: { x: number; z: number; word: string; m: Mats
 
 /** Each gallery's installation, on both sides of its walkway (where ~/lib/museum keeps the floor clear). */
 function Installation({ e, m }: { e: Exhibit; m: Mats }) {
-  const z = 12.6;
+  const z = 10.6; // either side of the way in, clear of the line to the exhibits
   switch (e.index) {
     case 0: // built from zero: the blank block, and the brand it became
       return (
         <>
-          <Plinth x={-2.05} z={z} m={m}>
+          <Plinth x={-2.1} z={z} m={m}>
             <mesh material={m.stone} position={[0, 0.32, 0]} rotation-y={0.4} castShadow>
               <boxGeometry args={[0.62, 0.62, 0.62]} />
             </mesh>
           </Plinth>
-          <Plinth x={2.05} z={z} m={m}>
+          <Plinth x={2.1} z={z} m={m}>
             <mesh material={m.gold} position={[0, 0.3, 0]} rotation-y={0.4} castShadow>
               <boxGeometry args={[0.5, 0.5, 0.5]} />
             </mesh>
@@ -376,14 +374,14 @@ function Installation({ e, m }: { e: Exhibit; m: Mats }) {
     case 1: // repositioned: the shelf of look-alikes, and the one that stands apart
       return (
         <>
-          <Plinth x={-2.05} z={z} w={1.1} h={0.7} m={m}>
+          <Plinth x={-2.1} z={z} w={1.1} h={0.7} m={m}>
             {[-0.36, -0.12, 0.12, 0.36].map((dx) => (
               <mesh key={dx} material={m.grey} position={[dx, 0.17, 0]}>
                 <boxGeometry args={[0.18, 0.34, 0.18]} />
               </mesh>
             ))}
           </Plinth>
-          <Plinth x={2.05} z={z} h={1.15} w={0.7} m={m}>
+          <Plinth x={2.1} z={z} h={1.15} w={0.7} m={m}>
             <mesh material={m.gold} position={[0, 0.2, 0]}>
               <boxGeometry args={[0.2, 0.4, 0.2]} />
             </mesh>
@@ -393,28 +391,28 @@ function Installation({ e, m }: { e: Exhibit; m: Mats }) {
     case 2: // made visible: towers of reels
       return (
         <>
-          <ReelTower x={-2.05} z={z} i={e.index} m={m} />
-          <ReelTower x={2.05} z={z} i={e.index} m={m} />
+          <ReelTower x={-2.1} z={z} i={e.index} m={m} />
+          <ReelTower x={2.1} z={z} i={e.index} m={m} />
         </>
       );
     case 3: // made desirable: campaign banners
       return (
         <>
-          <Banner x={-2.05} z={z} word={work[3].services[0]} m={m} />
-          <Banner x={2.05} z={z} word={work[3].services[1]} m={m} />
+          <Banner x={-2.1} z={z} word={work[3].services[0]} m={m} />
+          <Banner x={2.1} z={z} word={work[3].services[1]} m={m} />
         </>
       );
     default: // made to grow: results rising, and the reach of the community
       return (
         <>
-          <Plinth x={-2.05} z={z} h={0.5} w={1.1} m={m}>
+          <Plinth x={-2.1} z={z} h={0.5} w={1.1} m={m}>
             {[0.35, 0.6, 0.9, 1.25, 1.65].map((hh, k) => (
               <mesh key={k} material={m.brass} position={[-0.4 + k * 0.2, hh / 2, 0]}>
                 <boxGeometry args={[0.13, hh, 0.13]} />
               </mesh>
             ))}
           </Plinth>
-          <Plinth x={2.05} z={z} m={m}>
+          <Plinth x={2.1} z={z} m={m}>
             <mesh material={m.brass} position={[0, 0.42, 0]}>
               <sphereGeometry args={[0.38, 20, 14]} />
               <meshStandardMaterial color="#C99A45" metalness={1} roughness={0.3} wireframe />

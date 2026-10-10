@@ -79,11 +79,12 @@ export const EXHIBITS: Exhibit[] = work.map((c, i) => {
     panelRotY: Math.atan2(-dx, -dz),
     node: `gallery${i + 1}`,
     obstacles: [
-      { at: side(-2.05, 12.6), r: 0.75 },
-      { at: side(2.05, 12.6), r: 0.75 },
-      // the story screens on either wall
-      { at: side(-2.35, 10.7), r: 0.6 },
-      { at: side(2.35, 10.7), r: 0.6 },
+      // the installations, either side of the way in
+      { at: side(-2.1, 10.6), r: 0.75 },
+      { at: side(2.1, 10.6), r: 0.75 },
+      // the story screens, angled out from the back wall either side of the main exhibit
+      { at: side(-2.3, 14.2), r: 0.6 },
+      { at: side(2.3, 14.2), r: 0.6 },
     ],
   };
 });
@@ -126,8 +127,8 @@ export const NODES: Record<string, Node> = {
   ...ringNodes,
   ...Object.fromEntries(
     EXHIBITS.map((e) => {
-      // back far enough to take in the whole wall, and the screens either side
-      const p = at(e.deg, R1 - 5.6);
+      // back far enough to take in the whole triptych: the main exhibit and the screens either side
+      const p = at(e.deg, R1 - 6);
       return [e.node, { at: p, y: EYE, look: [e.panel[0], 2.05, e.panel[2]] as P3, label: work[e.index].title }];
     }),
   ),
