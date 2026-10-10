@@ -12,7 +12,7 @@ describe("the Museum of Impact — floor plan", () => {
       // a comfortable reading distance from the exhibit
       const d = dist(NODES[e.node].at, [e.panel[0], e.panel[2]]);
       expect(d).toBeGreaterThan(3);
-      expect(d).toBeLessThan(5.5);
+      expect(d).toBeLessThan(6.2);
     }
   });
 

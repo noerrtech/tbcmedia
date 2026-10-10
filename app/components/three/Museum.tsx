@@ -198,6 +198,85 @@ function ExhibitWall({ c, i, m }: { c: WorkCategory; i: number; m: Mats }) {
 }
 
 /* ------------------------------------------------------------------------- */
+/*  The screens either side: the story in two beats                          */
+/* ------------------------------------------------------------------------- */
+
+/** Left: the problem. Right: what we did, and with what. */
+function paintSide(c: WorkCategory, i: number, side: "problem" | "approach") {
+  return (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+    const t = tones[i % tones.length];
+    const g = ctx.createLinearGradient(0, 0, w, h);
+    g.addColorStop(0, side === "problem" ? t.c : t.b);
+    g.addColorStop(1, side === "problem" ? t.b : t.c);
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+    const pad = w * 0.08;
+    ctx.fillStyle = "#C99A45";
+    ctx.font = '600 30px "Manrope", sans-serif';
+    trackedText(ctx, side === "problem" ? "THE PROBLEM" : "WHAT WE DID", pad, pad + 24, 5);
+    ctx.fillStyle = "#F3EAD8";
+    ctx.font = '600 58px "Manrope", sans-serif';
+    const text = side === "problem" ? c.problem : c.approach;
+    const lines = wrapLines(ctx, text, w - pad * 2).slice(0, 5);
+    lines.forEach((l, k) => ctx.fillText(l, pad, pad + 120 + k * 72));
+    if (side === "approach") {
+      ctx.fillStyle = "rgba(217,185,138,0.9)";
+      ctx.font = '500 28px "Manrope", sans-serif';
+      trackedText(ctx, c.services.join("  ·  ").toUpperCase(), pad, h - pad, 3);
+    } else {
+      ctx.fillStyle = "rgba(243,234,216,0.55)";
+      ctx.font = '500 28px "Manrope", sans-serif';
+      trackedText(ctx, `GALLERY ${String(i + 1).padStart(2, "0")}  ·  ${c.title.toUpperCase()}`, pad, h - pad, 3);
+    }
+  };
+}
+
+const SIDE_W = 2.5;
+const SIDE_H = 1.56;
+const SIDE_TILT = 0.45; // turned toward the visitor coming in from the rotunda
+
+function SideScreen({ c, i, side, m }: { c: WorkCategory; i: number; side: "problem" | "approach"; m: Mats }) {
+  const tex = useCanvasTexture(paintSide(c, i, side), 1280, 800, `side-${side}-${c.id}`);
+  const mat = useRef<THREE.MeshBasicMaterial>(null);
+  const pointer = useExhibitPointer(i);
+  useFrame((_, dt) => {
+    const on = world.museum.hovered === i || world.museum.panel === i ? 1 : 0;
+    if (!mat.current) return;
+    const k = mat.current.userData.k ?? 0;
+    const next = k + (on - k) * Math.min(1, dt * 6);
+    mat.current.userData.k = next;
+    mat.current.color.setScalar(0.88 + next * 0.14);
+  });
+  // facing into the gallery (+z), your left is +x: the problem on the left, what we did on the right;
+  // both turned toward the gallery's opening (-z)
+  const s = side === "problem" ? 1 : -1;
+  const rot = s < 0 ? Math.PI / 2 + SIDE_TILT : -Math.PI / 2 - SIDE_TILT;
+  const x = s * (GW / 2 - 0.06 - (SIDE_W / 2) * Math.sin(SIDE_TILT));
+  return (
+    <group position={[x, 2.05, 10.7]} rotation-y={rot} {...pointer}>
+      <mesh>
+        <planeGeometry args={[SIDE_W, SIDE_H]} />
+        <meshBasicMaterial ref={mat} map={tex} toneMapped={false} />
+      </mesh>
+      {[
+        [0, SIDE_H / 2 + 0.015, SIDE_W + 0.06, 0.03],
+        [0, -SIDE_H / 2 - 0.015, SIDE_W + 0.06, 0.03],
+        [-SIDE_W / 2 - 0.015, 0, 0.03, SIDE_H + 0.06],
+        [SIDE_W / 2 + 0.015, 0, 0.03, SIDE_H + 0.06],
+      ].map(([px, py, w, h], k) => (
+        <mesh key={k} material={m.brass} position={[px, py, 0.015]}>
+          <boxGeometry args={[w, h, 0.03]} />
+        </mesh>
+      ))}
+      {/* the bracket that holds it off the wall */}
+      <mesh material={m.brass} position={[(-s * SIDE_W) / 2 + s * 0.05, 0, -0.12]}>
+        <boxGeometry args={[0.04, SIDE_H * 0.6, 0.24]} />
+      </mesh>
+    </group>
+  );
+}
+
+/* ------------------------------------------------------------------------- */
 /*  The installations: each gallery composed for its story                   */
 /* ------------------------------------------------------------------------- */
 
@@ -380,6 +459,8 @@ function Gallery({ e, p, m }: { e: Exhibit; p: Palette; m: Mats }) {
         <boxGeometry args={[GW, 0.006, 0.05]} />
       </mesh>
       <ExhibitWall c={c} i={e.index} m={m} />
+      <SideScreen c={c} i={e.index} side="problem" m={m} />
+      <SideScreen c={c} i={e.index} side="approach" m={m} />
       <group {...pointer}>
         <Installation e={e} m={m} />
       </group>

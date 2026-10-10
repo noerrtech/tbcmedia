@@ -60,7 +60,7 @@ function FloorPlan({ onGo }: { onGo: (node: string) => void }) {
     let raf = 0;
     const tick = () => {
       const [x, z, yaw] = world.museum.where;
-      you.current?.setAttribute("transform", `translate(${x - X0} ${z - CZ}) rotate(${(-yaw * 180) / Math.PI})`);
+      if (Number.isFinite(x) && Number.isFinite(z)) you.current?.setAttribute("transform", `translate(${x - X0} ${z - CZ}) rotate(${Number.isFinite(yaw) ? (-yaw * 180) / Math.PI : 0})`);
       raf = requestAnimationFrame(tick);
     };
     tick();
