@@ -10,7 +10,7 @@ import { extrudedText, flutedGeometry, metricUVs, radialTexture } from "./geomet
 import { velvetMaterial, type usePalette } from "./materials";
 import { RoomShell, type Bounds } from "./Rooms";
 import { workHall, world, type V3 } from "./world";
-import { Museum } from "./Museum";
+import { WorkCorridor } from "./WorkCorridor";
 
 type Palette = ReturnType<typeof usePalette>;
 
@@ -311,7 +311,7 @@ export function WorkHall({ p }: { p: Palette }) {
   return (
     <group>
       <Stage p={p} />
-      <Museum p={p} />
+      <WorkCorridor p={p} stageH={STAGE.h} />
     </group>
   );
 }

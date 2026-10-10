@@ -1,5 +1,8 @@
-import { useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { work, type WorkCategory } from "~/content/site";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { bookingLink, work, type WorkCategory } from "~/content/site";
+import { Arrow } from "~/components/ui/Arrow";
+import { ease } from "~/lib/motion";
 import { gsap, useGSAP } from "~/lib/gsap";
 import { ACTS, actAt, actProgress, fly } from "~/lib/acts";
 import { useLenis } from "~/lib/smooth-scroll";
@@ -61,6 +64,52 @@ export function CaseStudyPanel({ c, i, active }: { c: WorkCategory; i: number; a
         ))}
       </Beat>
     </article>
+  );
+}
+
+/**
+ * A case study's full story, opened from a screen in the corridor: slides in on the right and keeps
+ * the corridor in view on the left. Escape or Close puts it away.
+ */
+export function StoryPanel({ index, onClose, onNext }: { index: number; onClose: () => void; onNext?: (i: number) => void }) {
+  useEffect(() => {
+    if (index < 0) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [index, onClose]);
+  const c = index >= 0 ? work[index] : null;
+  return (
+    <AnimatePresence>
+      {c && (
+        <motion.aside
+          key={c.id}
+          aria-label={`${c.title} — the story`}
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: 40 }}
+          transition={{ duration: 0.5, ease: ease.out }}
+          className="pointer-events-auto fixed top-20 right-0 bottom-0 z-40 w-[min(30rem,92vw)] overflow-y-auto border-l border-line bg-ink/95 px-8 py-8 backdrop-blur-md md:w-[min(30rem,42vw)]"
+        >
+          <button type="button" onClick={onClose} className="absolute top-5 right-6 text-sm text-mist hover:text-ivory" aria-label="Close the story">
+            Close ✕
+          </button>
+          <div className="grid pt-6">
+            <CaseStudyPanel c={c} i={index} active />
+          </div>
+          <div className="mt-8 flex flex-wrap gap-3 pb-6">
+            <a href={bookingLink(`Hi — I saw “${c.title}” in your work. I'd like to talk about my brand.`)} target="_blank" rel="noreferrer" className="btn-cta">
+              Talk to us about a story like this <span className="chip"><Arrow /></span>
+            </a>
+            {onNext && index < work.length - 1 && (
+              <button type="button" onClick={() => onNext(index + 1)} className="btn">
+                Next story <Arrow />
+              </button>
+            )}
+          </div>
+        </motion.aside>
+      )}
+    </AnimatePresence>
   );
 }
 

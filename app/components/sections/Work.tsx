@@ -1,8 +1,10 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { brand, work, type WorkCategory } from "~/content/site";
-import { gsap, useGSAP } from "~/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP } from "~/lib/gsap";
 import { useLenis } from "~/lib/smooth-scroll";
+import { Reveal, RevealLines } from "~/components/ui/Reveal";
+import { StoryPanel } from "~/components/sections/CaseStudies";
 
 /** Cinematic palettes for the "screens" until real case-study footage is dropped in. */
 const palettes = [
@@ -127,6 +129,169 @@ export function Curtain() {
 }
 
 /* ------------------------------------------------------------------------- */
+/*  CORRIDOR — a walk past lit screens, organised by business problem        */
+/* ------------------------------------------------------------------------- */
+
+const D = 1300; // distance between categories (px)
+const WALL_X = 640; // half corridor width
+const H = 640; // corridor height
+const START = 900; // first screen distance
+const L = START + work.length * D + 800; // corridor length
+
+export function Corridor() {
+  const wrap = useRef<HTMLDivElement>(null);
+  const world = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  const [story, setStory] = useState(-1);
+  const lenis = useLenis();
+
+  useGSAP(
+    () => {
+      const el = world.current!;
+      let scale = 1;
+      let camZ = 0;
+      let mx = 0;
+      let my = 0;
+      const render = () => {
+        el.style.transform = `scale3d(${scale},${scale},${scale}) rotateY(${mx * 2.5}deg) rotateX(${my * -1.5}deg) translate3d(0,0,${camZ}px)`;
+      };
+      const resize = () => {
+        scale = Math.min(1, Math.max(0.55, window.innerWidth / 1500));
+        render();
+      };
+      resize();
+      window.addEventListener("resize", resize);
+
+      const onMove = (e: PointerEvent) => {
+        mx = e.clientX / window.innerWidth - 0.5;
+        my = e.clientY / window.innerHeight - 0.5;
+        render();
+      };
+      window.addEventListener("pointermove", onMove);
+
+      const st = ScrollTrigger.create({
+        trigger: wrap.current,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: true,
+        onUpdate: (self) => {
+          camZ = self.progress * (L - 700);
+          render();
+          // which category are we passing?
+          const idx = Math.round((camZ - START + 500) / D);
+          setActive(Math.max(0, Math.min(work.length - 1, idx)));
+        },
+      });
+
+      return () => {
+        st.kill();
+        window.removeEventListener("resize", resize);
+        window.removeEventListener("pointermove", onMove);
+      };
+    },
+    { scope: wrap },
+  );
+
+  const goTo = (i: number) => {
+    const el = wrap.current;
+    if (!el) return;
+    const progress = (START + i * D - 500) / (L - 700);
+    const top = el.offsetTop + progress * (el.offsetHeight - window.innerHeight);
+    lenis ? lenis.scrollTo(top, { duration: 1.8 }) : window.scrollTo({ top, behavior: "smooth" });
+  };
+
+  const c = work[active];
+
+  return (
+    <section ref={wrap} className="relative" style={{ height: `${(work.length + 1) * 110}vh` }} aria-label="The work, organised by business problem">
+      <div className="sticky top-0 h-screen overflow-hidden bg-ink [perspective:900px]">
+        {/* the world */}
+        <div ref={world} className="absolute top-1/2 left-1/2 h-0 w-0 [transform-style:preserve-3d]">
+          {/* floor */}
+          <div className="corridor-floor absolute" style={{ width: WALL_X * 2, height: L, transform: `translate3d(${-WALL_X}px, ${H / 2}px, 0) rotateX(-90deg)`, transformOrigin: "0 0" }} />
+          {/* ceiling with light strip */}
+          <div
+            className="absolute"
+            style={{
+              width: WALL_X * 2,
+              height: L,
+              transform: `translate3d(${-WALL_X}px, ${-H / 2}px, 0) rotateX(-90deg)`,
+              transformOrigin: "0 0",
+              background: "linear-gradient(90deg,#150D09,#1B120D 40%,rgb(217 185 138 / 0.5) 49.6%,rgb(217 185 138 / 0.5) 50.4%,#1B120D 60%,#150D09)",
+            }}
+          />
+          {/* left wall */}
+          <div className="fluted absolute [transform-style:preserve-3d]" style={{ width: L, height: H, transform: `translate3d(${-WALL_X}px, ${-H / 2}px, 0) rotateY(90deg)`, transformOrigin: "0 0" }}>
+            {work.map((w, i) => (
+              <button type="button" key={w.id} onClick={() => setStory(i)} aria-label={`${w.title} — read the story`} className="absolute cursor-pointer text-left text-[15px] transition-[filter] duration-300 hover:brightness-125" style={{ left: START + i * D - 260, top: 110, width: 520, height: 330, transform: "translateZ(4px)" }}>
+                <WorkScreen c={w} i={i} />
+              </button>
+            ))}
+          </div>
+          {/* right wall */}
+          <div className="fluted absolute [transform-style:preserve-3d]" style={{ width: L, height: H, transform: `translate3d(${WALL_X}px, ${-H / 2}px, ${-L}px) rotateY(-90deg)`, transformOrigin: "0 0" }}>
+            {work.map((w, i) => (
+              <button type="button" key={w.id} onClick={() => setStory(i)} aria-label={`${w.title} — read the story`} className="absolute cursor-pointer text-left text-[15px] transition-[filter] duration-300 hover:brightness-125" style={{ left: L - (START + i * D + 420) - 260, top: 110, width: 520, height: 330, transform: "translateZ(4px)" }}>
+                <WorkScreen c={w} i={i} variant="detail" />
+              </button>
+            ))}
+          </div>
+          {/* end wall */}
+          <div
+            className="absolute flex flex-col items-center justify-center text-center"
+            style={{ width: WALL_X * 2, height: H, transform: `translate3d(${-WALL_X}px, ${-H / 2}px, ${-L}px)`, background: "radial-gradient(50% 60% at 50% 45%, rgb(217 185 138 / 0.28), #150D09 75%)" }}
+          >
+            <p className="eyebrow">And counting</p>
+            <p className="stat-num stat-hero mt-4">419M+</p>
+            <p className="stat-label mt-4">Views. <span className="soft">{brand.proof}</span></p>
+          </div>
+        </div>
+
+        {/* vignette + fog */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_70%_at_50%_50%,transparent_40%,rgb(0_0_0/0.85))]" />
+
+        {/* HUD: what you're looking at */}
+        <div className="pointer-events-none absolute inset-x-0 top-24 flex justify-center px-6">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={c.id}
+              initial={{ opacity: 0, y: 12, filter: "blur(6px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -12, filter: "blur(6px)" }}
+              transition={{ duration: 0.6 }}
+              className="max-w-xl text-center"
+            >
+              <p className="eyebrow">0{active + 1} / 0{work.length}</p>
+              <p className="display title-lg mt-3">{c.title}</p>
+              <p className="mt-3 text-sm text-ivory/70">{c.body}</p>
+              <p className="mt-4 text-[0.6rem] tracking-[0.26em] text-champagne uppercase">Click a screen to read its story</p>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        <nav className="absolute inset-x-0 bottom-0 border-t border-line bg-ink/60 backdrop-blur-md" aria-label="Work categories">
+          <ul className="mx-auto flex max-w-6xl overflow-x-auto">
+            {work.map((w, i) => (
+              <li key={w.id} className="flex-1">
+                <button
+                  type="button"
+                  onClick={() => goTo(i)}
+                  className={`relative w-full min-w-32 px-3 py-5 text-[0.6rem] tracking-[0.24em] uppercase transition-colors ${i === active ? "text-champagne" : "text-mist hover:text-ivory"}`}
+                >
+                  {w.title}
+                  {i === active && <motion.span layoutId="corridor-active" className="absolute inset-x-6 top-0 h-px bg-champagne" />}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+      <StoryPanel index={story} onClose={() => setStory(-1)} onNext={setStory} />
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------------- */
 /*  GALLERY — the classic-site version: a pinned horizontal track            */
 /* ------------------------------------------------------------------------- */
 
@@ -178,6 +343,19 @@ export function WorkGallery() {
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+/** Small heading used above the corridor in the work room. */
+export function CorridorIntro() {
+  return (
+    <div className="mx-auto max-w-3xl px-6 py-32 text-center">
+      <Reveal><p className="eyebrow">Walk the corridor</p></Reveal>
+      <RevealLines lines={["Five problems.", "Five kinds of growth."]} className="display title-lg mt-6" />
+      <Reveal delay={0.2}>
+        <p className="mt-6 text-mist">We organise our work by the business problem it solved. Scroll to walk.</p>
+      </Reveal>
     </div>
   );
 }

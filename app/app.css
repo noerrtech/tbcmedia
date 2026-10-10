@@ -322,8 +322,8 @@
 .gl-nudge { display: inline-block; animation: gl-nudge 2s ease-in-out infinite; }
 @keyframes gl-nudge { 50% { transform: translateY(5px); } }
 
-/* The Museum of Impact: the page over the 3D lets clicks through to the exhibits, except on its UI */
-main:has([data-museum]) { pointer-events: none; }
+/* The Work room: the page over the 3D lets clicks through to the screens, except on its UI */
+main:has([data-passthrough]) { pointer-events: none; }
 
 /* Lenis */
 html.lenis, html.lenis body { height: auto; }

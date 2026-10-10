@@ -11,8 +11,8 @@ import { LobbyScene } from "./LobbyScene";
 import { usePalette } from "./materials";
 import { ActionRoomScene, FounderCabin, JbnRoom, Library } from "./Rooms";
 import { WorkHall } from "./WorkHall";
-import { museumGo, stations, world, type V3 } from "./world";
-import { museumPose } from "./museumCamera";
+import { stations, world, type V3 } from "./world";
+import { corridorPose } from "./corridorCamera";
 
 const INTRO_FROM = new THREE.Vector3(0, 1.9, 11.5);
 const INTRO = 2.2; // s — the walk in from the street
@@ -136,7 +136,7 @@ function Director({ still }: { still: boolean }) {
       st.glance.x = THREE.MathUtils.damp(st.glance.x, still ? 0 : gx, 3, dt);
       st.glance.y = THREE.MathUtils.damp(st.glance.y, still || !door ? 0 : -0.25, 3, dt);
     } else if (key === "work") {
-      museumPose(pos, look, dt, now, still);
+      corridorPose(pos, look, dt, still);
     } else {
       // a slow dolly into the room as you read down the page
       const d = st.tmp.subVectors(look, pos).setY(0).normalize();
@@ -207,7 +207,7 @@ function Ready({ onReady }: { onReady: () => void }) {
 function DevHandle() {
   const state = useThree();
   useEffect(() => {
-    if (import.meta.env.DEV) Object.assign(window as unknown as Record<string, unknown>, { __tbc: state, __world: world, __museumGo: museumGo });
+    if (import.meta.env.DEV) Object.assign(window as unknown as Record<string, unknown>, { __tbc: state, __world: world });
   }, [state]);
   return null;
 }
